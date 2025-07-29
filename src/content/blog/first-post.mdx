@@ -1,0 +1,126 @@
+---
+title: "Frog in my house"
+description: "A frog got into my house. This is my story about it."
+pubDate: "2025-07-29"
+#heroImage: "~/assets/images/hero/F.jpeg"
+---
+
+import { Image } from "astro:assets";
+import T from "~/components/T.astro";
+
+import frogOnLeafImage from "~/assets/images/blog/FrogyOnLeaf.jpeg";
+import centipedeImage from "~/assets/images/blog/house-centipede.jpg";
+import frogFaceImage from "~/assets/images/blog/frog-face.jpeg";
+import ventImage from "~/assets/images/blog/vent.jpg";
+import frogInJarImage from "~/assets/images/blog/frog-in-jar.jpeg";
+import catImage from "~/assets/images/blog/stray-cat.jpeg";
+
+<figure>
+  <Image src={frogOnLeafImage} alt="A bright green frog resting on a leaf" />
+  <figcaption>
+    <T
+      en="A bright green frog on a tree"
+      ja="木の上にいる鮮やかな緑色のカエル"
+      en_simple="A green frog on a tree"
+    />
+  </figcaption>
+</figure>
+
+## <T en="Frogs?" ja="カエル？" en_simple="Frogs?" />
+
+<p>
+  <T
+    en="Living in the Japanese countryside means my backyard is basically rice paddies. Rice paddies are full of water, so they attract lots of bugs, and frogs. Starting a month or two ago, the “frog times”(self created name) started. That's when I can hear the thousands or perhaps millions? Of frogs making their frog ribbit ribbit sounds every night. It's also when I start seeing them pop up on my kitchen windows. All those bugs drawn to the light inside my house become a buffet just waiting outside, and the frogs know it. They'll climb right up, sometimes sticking to the glass, other times just chilling on the tree next to the window."
+    ja="日本の田舎に住んでいると、家の裏は基本的に田んぼです。田んぼには水がたくさんあるので、虫がたくさん集まり、そしてカエルもたくさん集まります。一、二ヶ月前から、僕が勝手に名付けた「カエルの季節」が始まりました。それは、毎晩何千、いや何百万ものカエルが「ゲロゲロ」と鳴く声が聞こえる時期のことです。キッチンの窓にカエルが現れ始めるのもこの頃です。家の中の明かりに引き寄せられた虫たちが、外で待っているカエルたちのごちそうになるのです。カエルたちはそれをよく知っています。彼らは壁をよじ登り、時にはガラスに張り付いたり、窓の隣の木でくつろいだりしています。"
+    en_simple="I live in the countryside in Japan. My backyard is full of rice fields. Rice fields have a lot of water. The water brings bugs, and the bugs bring frogs. About a month ago, the 'frog times' started. This is when I can hear thousands of frogs making 'ribbit ribbit' sounds every night. It is also when I see them on my kitchen windows. The bugs like the light from my house. The frogs wait outside to eat the bugs. They climb the walls, stick to the window, or just sit on a tree."
+  />
+</p>
+
+<figure>
+  <Image src={centipedeImage} alt="A Japanese house centipede (gejigeji)" />
+  <figcaption>
+    <T
+      en="Scary looking, but a friend to the house."
+      ja="見た目は怖いけど、益虫です。"
+      en_simple="It looks scary, but it is a helpful bug."
+    />
+  </figcaption>
+</figure>
+
+### <T en="A case of mistaken identity" ja="虫違い" en_simple="A case of mistaken identity" />
+
+<p>
+  <T
+    en="On this day however, as I was walking through my kitchen in the dark getting ready to go to sleep I felt something brush against my foot. At first I thought it was a house centipede, since I get a lot of those in my house, and I rushed for my bug spray. I usually let them live since they eat other bugs, but this one started me and I needed revenge."
+    ja="しかし、その日は、暗いキッチンを歩いて寝ようとしていた時、何かが足に触れました。最初、それはゲジゲジだと思いました。家にはよく出るので。普段は他の虫を食べてくれるので生かしておくのですが、この時はびっくりさせられたので、仕返しが必要でした。僕は急いで虫スプレーを取りに行きました。"
+    en_simple="One night, I was walking in my dark kitchen. I was getting ready for bed. Something touched my foot. At first, I thought it was a house centipede. I see them a lot. I usually let them live because they eat other bugs. But this time, it scared me. I wanted revenge. I went to get my bug spray."
+  />
+</p>
+
+<figure>
+  <Image src={frogFaceImage} alt="A close-up of the small frog's face" />
+  <figcaption>
+    <T en="The culprit" ja="犯人" en_simple="The one who did it" />
+  </figcaption>
+</figure>
+
+### <T en="The culprit revealed" ja="犯人判明" en_simple="The culprit revealed" />
+
+<p>
+  <T
+    en="When I flicked on the light, ready for battle, I found it wasn’t an alien-looking centipede at all. It was a tiny, perfect, and very cute Japanese Tree Frog. I have no idea how it got in, but I'm guessing it climbed the overgrown tree next to my house and slipped in through the ventilation fan."
+    ja="戦いの準備を整え、電気をつけると、そこにいたのはエイリアンのようなゲジゲジではなく、小さくて完璧で、とてもかわいいニホンアマガエルでした。どうやって入ってきたのか全く分かりませんが、たぶん、家の隣の伸びすぎた木を登って、換気扇から滑り込んだのでしょう。"
+    en_simple="I turned on the light. I was ready to fight. But it was not a scary bug. It was a small, perfect, and very cute Japanese Tree Frog. I do not know how it got inside. I think it climbed a tree and came in through a fan vent."
+  />
+</p>
+
+<figure>
+  <Image src={ventImage} alt="An exterior ventilation fan cover" />
+  <figcaption>
+    <T
+      en="I wonder what else comes in through here."
+      ja="ここから他に何が入ってくるんだろう？"
+      en_simple="I wonder what else can get in here."
+    />
+  </figcaption>
+</figure>
+
+### <T en="A Fleeting Dream of Pet Ownership" ja="ペットオーナーという儚い夢" en_simple="A Short Dream of Having a Pet" />
+
+<p>
+  <T
+    en='"You have to catch it!" said my girlfriend over the phone. Taking her advice, I gently coaxed the frog into a glass jar.My future with this little guy flashed before my eyes. I imagined him getting bigger and bigger. Would I need to buy an aquarium? How long do frogs even live? I named him froggy.'
+    ja="「捕まえて！」と、その時電話していた彼女が言いました。そのアドバイスに従い、僕はそっとカエルをガラスの瓶に入れました。この小さな相棒との未来が目の前に広がりました。彼がどんどん大きくなるのを想像しました。水槽を買う必要があるかな？カエルってどのくらい生きるんだろう？僕は彼を「カエルくん」と名付けました。"
+    en_simple='"You have to catch it!" said my girlfriend over the phone. So, I put the frog in a glass jar. I thought about my future with this little frog. I imagined him getting bigger. Would I need to buy a tank? How long do frogs live? I named him froggy.'
+  />
+</p>
+
+<figure>
+  <Image src={frogInJarImage} alt="The small frog inside a glass jar" />
+  <figcaption>
+    <T
+      en="Our future together could have been so bright."
+      ja="僕たちの未来は明るかったはずなのに。"
+      en_simple="We could have had a great future."
+    />
+  </figcaption>
+</figure>
+
+<p>
+  <T
+    en="Unfortunately my dreams were shattered almost immediately after my girlfriend read the google search result “they only eat live food”. The reality of trying to catch live flies for the froggy hit me. I realized I was far too lazy to raise a frog. I took him outside and released him into the darkness to hopefully fight another day, and more importantly, not get eaten by the stray cat I’d seen earlier."
+    ja="残念ながら、その夢は彼女がGoogleの検索結果を読み上げた直後に打ち砕かれました。「生きた餌しか食べないんだって」。カエルくんのために生きたハエを捕まえるという現実が、僕に重くのしかかりました。僕はカエルを育てるには怠けすぎると気づきました。彼を外に連れて行き、暗闇に放してあげました。うまくいけば、彼はまた別の日を戦い抜き、そして、その日早くに見かけた野良猫に食べられないことを祈ります。"
+    en_simple="Sadly, my dream ended very fast. My girlfriend read something from Google. She said, “they only eat live food.” I thought about catching live flies for froggy. I knew I was too lazy to raise a frog. I took him outside and let him go into the dark. I hope he will be okay, and I hope the stray cat I saw earlier did not eat him."
+  />
+</p>
+
+<figure>
+  <Image src={catImage} alt="A stray cat looking at the camera" />
+  <figcaption>
+    <T
+      en="never seen before and never saw again"
+      ja="一度も見たことがなく、二度と会うこともなかった猫"
+      en_simple="I never saw this cat before, and I never saw it again."
+    />
+  </figcaption>
+</figure>

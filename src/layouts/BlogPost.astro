@@ -1,12 +1,17 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { Image } from 'astro:assets';
+
 import BaseHead from '../components/BaseHead.astro';
+import LanguageSelector from "../components/LanguageSelector.astro";
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
+
+// Get current slug and find all versions
+
 
 const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 ---
@@ -29,7 +34,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 				border-radius: 12px;
 				box-shadow: var(--box-shadow);
 				max-height: 510px;  
-    object-fit: cover;  
+    			object-fit: cover;  
 			}
 			.prose {
 				width: 720px;
@@ -59,7 +64,9 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 
 	<body>
 		<Header />
+		<LanguageSelector />
 		<main>
+			
 			<article>
 				<div class="hero-image">
 					{heroImage && 

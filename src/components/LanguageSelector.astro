@@ -1,0 +1,88 @@
+---
+// src/components/LanguageSelector.astro
+---
+
+<div class="language-controls" aria-label="Content language">
+    <button data-lang-btn="en" class="lang-btn">English</button>
+    <button data-lang-btn="en_simple" class="lang-btn">Simple English</button>
+    <button data-lang-btn="ja" class="lang-btn">日本語</button>
+  </div>
+  
+  <script>
+    type Language = "en" | "ja" | "en_simple";
+  
+    function isLanguage(value: any): value is Language {
+      return ["en", "ja", "en_simple"].includes(value);
+    }
+  
+    // This function will contain all our logic.
+    function initializeLanguageSwitcher() {
+      const buttons = document.querySelectorAll("[data-lang-btn]");
+      const content = document.querySelectorAll("[data-lang-content]");
+      const storageKey = "takko-blog-lang";
+  
+      // If no buttons are found on the page, do nothing.
+      if (buttons.length === 0) return;
+  
+      function setLanguage(lang: Language) {
+        content.forEach((el) => {
+          const isVisible = el.getAttribute("data-lang-content") === lang;
+          el.classList.toggle("hidden", !isVisible);
+        });
+  
+        buttons.forEach((btn) => {
+          const isActive = btn.getAttribute("data-lang-btn") === lang;
+          btn.classList.toggle("active", isActive);
+          btn.setAttribute("aria-pressed", String(isActive));
+        });
+  
+        localStorage.setItem(storageKey, lang);
+      }
+  
+      const savedLang = localStorage.getItem(storageKey);
+      const initialLang: Language = isLanguage(savedLang) ? savedLang : "en";
+      setLanguage(initialLang);
+  
+      buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const langAttr = button.getAttribute("data-lang-btn");
+          if (isLanguage(langAttr)) {
+            setLanguage(langAttr);
+          }
+        });
+      });
+    }
+  
+    // This is the key: We listen for Astro's navigation event.
+    // This will run on the initial page load AND every subsequent page change.
+    document.addEventListener("astro:page-load", initializeLanguageSwitcher);
+  </script>
+  
+  <style>
+    /* Styles remain the same */
+    .language-controls {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    .lang-btn {
+      padding: 0.5rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      background-color: #f9f9f9;
+      cursor: pointer;
+      font-size: 2rem;
+      transition: all 0.2s ease;
+    }
+    .lang-btn:hover {
+      background-color: #eee;
+      border-color: #bbb;
+    }
+    .lang-btn.active {
+      background-color: #1e40af;
+      color: white;
+      border-color: #1e40af;
+      font-weight: 600;
+    }
+  </style>

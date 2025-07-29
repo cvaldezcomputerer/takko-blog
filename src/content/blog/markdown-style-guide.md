@@ -1,8 +1,9 @@
 ---
 title: "Markdown Style Guide"
-description: "Here is a sample of some basic Markdown syntax that can be used when writing Markdown content in Astro."
-pubDate: "Jun 19 2024"
-heroImage: "/blog-placeholder-1.jpg"
+description: "Examples of all the Markdown syntax supported by Astro."
+# Change the date to the YYYY-MM-DD format
+pubDate: "2022-07-08"
+# heroImage: "/blog-placeholder-1.jpg"
 ---
 
 Here is a sample of some basic Markdown syntax that can be used when writing Markdown content in Astro.
