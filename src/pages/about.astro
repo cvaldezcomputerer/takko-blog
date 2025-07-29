@@ -1,12 +1,14 @@
 ---
 import Layout from '../layouts/BlogPost.astro';
+import { Image } from 'astro:assets';
+import aboutHeroImage from '../assets/images/blog/trianMuseum.jpeg'; // Move your image here
 ---
 
 <Layout
 	title="About Me"
 	description="Learn more about me and my journey"
 	pubDate={new Date('August 08 2025')}
-	heroImage="/aboutMeHeader.webp"
+	heroImage={aboutHeroImage}
 >
 
 <h3>Hello!</h3>
