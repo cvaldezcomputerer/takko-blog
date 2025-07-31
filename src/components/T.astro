@@ -1,20 +1,12 @@
 ---
 // src/components/T.astro
-export interface Props {
-  en: string;
-  ja: string;
-  en_simple: string;
-}
 
-const { en, ja, en_simple } = Astro.props;
 ---
 
 <span class="translatable-text">
-  <span data-lang-content="en" class="lang-en">{en}</span>
-  <span data-lang-content="ja" class="lang-ja hidden">{ja}</span>
-  <span data-lang-content="en_simple" class="lang-en_simple hidden"
-    >{en_simple}</span
-  >
+  <span data-lang-content="en" class="lang-en"><slot name="en" /></span>
+  <span data-lang-content="ja" class="lang-ja hidden"><slot name="ja" /></span>
+  <span data-lang-content="en_simple" class="lang-en_simple hidden"><slot name="en_simple" /></span>
 </span>
 
 <style is:global>

@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/BlogPost.astro';
-import { Image } from 'astro:assets';
-import aboutHeroImage from '../assets/images/blog/trianMuseum.jpeg'; // Move your image here
+import aboutHeroImage from '../assets/images/blog/trianMuseum.jpeg';
+import T from '../components/T.astro';
 ---
 
 <Layout
@@ -11,27 +11,127 @@ import aboutHeroImage from '../assets/images/blog/trianMuseum.jpeg'; // Move you
 	heroImage={aboutHeroImage}
 >
 
-<h3>Hello!</h3>
-<p>
-  Hello! My name is Cristian. I am a U.S. citizen living in Japan and working as an English teacher in the small town of 田子町. As of writing I am 29 years old, and have lived here for almost 3 years.
-</p>
-  
-<h3>Why This Blog?</h3>
-<p>
-  I have been able to experience some amazing, and not so amazing things since coming here, and I've always wanted to document them in a way that feels more tangible than an Instagram post. Thus, I decided to make this blog. I have studied web development a bit, but when it comes to writing and taking pictures, I'm a complete amateur! So I hope I can keep it interesting.
-</p>
-
-<h3>Takko machi
+<h3>
+  <T>
+    <span slot="en">Hi</span>
+    <span slot="ja">こにちゅは！</span>
+    <span slot="en_simple">HELLO</span>
+  </T>
 </h3>
 <p>
-  Like many towns in the Japanese countryside, Takko is slowly dwindling in population. Since coming here the population has already dropped by 10%, and 2 of the remaining 3 elementary schools closed down! I might very well be one of the last English teachers to work here, and foreigners to ever live here.
+  <T>
+    <span slot="en">
+      Hello! My name is Cristian. I am a U.S. citizen living in Japan and
+      working as an English teacher in the small town of 田子町. As of writing I
+      am 29 years old, and have lived here for almost 3 years.
+    </span>
+    <span slot="ja">
+      こんにちは！クリスチャンです。アメリカ出身で、日本にある田子町という小さな町で英語の先生をしています。これを書いている時点で29歳で、ここに住んで3年近くになります。
+    </span>
+    <span slot="en_simple">
+      Hi, my name is Cristian. I am from the U.S. and I live in Japan. I am an
+      English teacher in a small town called 田子町 (Takko-machi). I am 29 years
+      old. I have lived here for almost 3 years.
+    </span>
+  </T>
 </p>
-  
-<h3>My Vision</h3>
-<p>
-  Inspired by websites like NHK easy, I want to expand this site so that each post has not only a Japanese translation, but a version that is written in very simple English that hopefully even some of my students can read. I also want to make complimentary videos for each post. For now though, I just want to get some posts out there!
-</p>
-  </div>
 
+<h3>
+  <T>
+    <span slot="en">Why This Blog?</span>
+    <span slot="ja">なぜこのブログを？</span>
+    <span slot="en_simple">Why This Blog?</span>
+  </T>
+</h3>
+<p>
+  <T>
+    <span slot="en">
+      I have been able to experience some amazing, and not so amazing things
+      since coming here, and I've always wanted to document them in a way that
+      feels more tangible than an Instagram post. Thus, I decided to make this
+      blog. I have studied web development a bit, but when it comes to writing
+      and taking pictures, I'm a complete amateur! So I hope I can keep it
+      interesting.
+    </span>
+    <span slot="ja">
+      ここに来てから、素晴らしいことも、そうでもないことも、色々なことを経験してきました。そして、インスタグラムの投稿よりももっと形に残る方法で記録したいとずっと思っていました。そこで、このブログを作ることにしました。ウェブ開発は少し勉強したことがありますが、文章を書いたり写真を撮ったりすることに関しては、全くの素人です！なので、楽しんでもらえるような内容を続けられたら嬉しいです。
+    </span>
+    <span slot="en_simple">
+      Since I came to Japan, I have had good and bad experiences. I wanted to
+      write about them in a way that was more than just an Instagram post. So, I
+      made this blog. I know a little about making websites, but I am new to
+      writing and taking photos. I hope you think it is interesting.
+    </span>
+  </T>
+</p>
+
+<h3>
+  <T>
+    <span slot="en">Takko-machi</span>
+    <span slot="ja">田子町</span>
+    <span slot="en_simple">Takko-machi</span>
+  </T>
+</h3>
+<p>
+  <T>
+    <span slot="en">
+      Like many towns in the Japanese countryside, Takko is slowly dwindling in
+      population. Since coming here the population has already dropped by 10%,
+      and 2 of the remaining 3 elementary schools closed down! I might very well
+      be one of the last English teachers to work here, and foreigners to ever
+      live here.
+    </span>
+    <span slot="ja">
+      日本の多くの田舎町と同じように、田子町の人口は少しずつ減っています。僕がここに来てから、人口はすでに10%も減少し、残っていた3つの小学校のうち2つが閉校になりました！僕がここで働く最後の英語教師の一人、そしてここに住む最後の外国人の一人になるかもしれません。
+    </span>
+    <span slot="en_simple">
+      Takko is a small town in the country. Like many small towns in Japan, its
+      population is getting smaller. Since I came here, the population dropped
+      by 10%. There were 3 elementary schools. Now, only 1 is open. Maybe I will
+      be one of the last English teachers here, and one of the last foreigners
+      to live here.
+    </span>
+  </T>
+</p>
+
+<h3>
+  <T>
+    <span slot="en">My Vision</span>
+    <span slot="ja">僕のビジョン</span>
+    <span slot="en_simple">My Vision</span>
+  </T>
+</h3>
+<p>
+  <T>
+    <span slot="en">
+      Inspired by websites like <a
+        href="https://www.nhk.or.jp/news/easy/"
+        target="_blank"
+        rel="noopener noreferrer">NHK easy</a
+      >, I want to expand this site so that each post has not only a Japanese
+      translation, but a version that is written in very simple English that
+      hopefully even some of my students can read. I also want to make
+      complimentary videos for each post. For now though, I just want to get
+      some posts out there!
+    </span>
+    <span slot="ja">
+      <a
+        href="https://www.nhk.or.jp/news/easy/"
+        target="_blank"
+        rel="noopener noreferrer">NHK easy</a
+      >のようなウェブサイトに影響を受けて、このサイトを拡張して、各記事に日本語訳だけでなく、とても簡単な英語で書かれたバージョンも載せたいと思っています。うまくいけば、僕の生徒たちも読めるような。各記事に合わせたビデオも作りたいです。でも、今のところは、まずは記事をいくつか公開したいです！
+    </span>
+    <span slot="en_simple">
+      I was inspired by websites like <a
+        href="https://www.nhk.or.jp/news/easy/"
+        target="_blank"
+        rel="noopener noreferrer">NHK easy</a
+      >. I want every post to have a Japanese version and a version with very
+      simple English. I hope my students can read the simple English version. I
+      also want to make a video for each post. But for now, I just want to write
+      some posts!
+    </span>
+  </T>
+</p>
 
 </Layout>
