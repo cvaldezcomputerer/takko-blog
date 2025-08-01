@@ -1,82 +1,120 @@
 ---
+import { Image } from 'astro:assets';
 import HeaderLink from './HeaderLink.astro';
 import { SITE_TITLE } from '../consts';
-
+import logoImage from '../assets/images/logo.png';
 ---
 
 <header>
 	<nav>
 		
-		<div class="site-title">
-			<img src="/logo_100.png" alt="Doggy Bloggy Logo" class="site-icon" >
-			<h2><a href="/">{SITE_TITLE}</a></h2>
-		</div>
+		<a href="/" class="logo-link">
+			<Image
+				src={logoImage}
+				alt="Takko Blog homepage"
+				width={100}
+				height={100}
+			/>
+			<span class="site-title-text">{SITE_TITLE}</span>
+		</a>
+
 		
-		<div class="internal-links">
-			<HeaderLink href="/">Home</HeaderLink>
-			<HeaderLink href="/blog">Blog</HeaderLink>
-			<HeaderLink href="/about">About</HeaderLink>
+		<div class="menu-content">
+			<div class="internal-links">
+				<HeaderLink href="/">Home</HeaderLink>
+				<HeaderLink href="/blog">Blog</HeaderLink>
+				<HeaderLink href="/about">About</HeaderLink>
+			</div>
+
+			<div class="social-links">
+				<a href="https://www.youtube.com/@takkotaco" target="_blank">
+					<span class="sr-only">my youtube channel</span>
+					<svg viewBox="0 0 16 16" aria-hidden="true" width="32" height="32">
+						<path
+							fill="currentColor"
+							d="M15.75 4.8s-.18-1.28-.73-1.83c-.6-.55-1.25-.55-1.56-.6C11.2 2.3 8 2.3 8 2.3s-3.2 0-5.46.07c-.3.05-.96-.05-1.56-.6C.43 3.52.25 4.8.25 4.8S.07 6.3.07 7.8v.4c0 1.5 0 3 .07 3s.18 1.28.73 1.83c.6.55 1.25-.55 1.56.6C4.8 13.7 8 13.7 8 13.7s3.2 0 5.46-.07c.3-.05.96-.05 1.56-.6.55-.55.73-1.83.73-1.83S15.93 9.7 15.93 8.2v-.4c0-1.5 0-3-.07-3zM6.41 10.3V5.7l4.5 2.3-4.5 2.3z"
+						></path>
+					</svg>
+				</a>
+			</div>
 		</div>
-		<div class="social-links">
-			<!-- <a href="https://m.webtoo.ls/@astro" target="_blank">
-				<span class="sr-only">Follow Astro on Mastodon</span>
-				<svg viewBox="0 0 16 16" aria-hidden="true" width="32" height="32"
-					><path
-						fill="currentColor"
-						d="M11.19 12.195c2.016-.24 3.77-1.475 3.99-2.603.348-1.778.32-4.339.32-4.339 0-3.47-2.286-4.488-2.286-4.488C12.062.238 10.083.017 8.027 0h-.05C5.92.017 3.942.238 2.79.765c0 0-2.285 1.017-2.285 4.488l-.002.662c-.004.64-.007 1.35.011 2.091.083 3.394.626 6.74 3.78 7.57 1.454.383 2.703.463 3.709.408 1.823-.1 2.847-.647 2.847-.647l-.06-1.317s-1.303.41-2.767.36c-1.45-.05-2.98-.156-3.215-1.928a3.614 3.614 0 0 1-.033-.496s1.424.346 3.228.428c1.103.05 2.137-.064 3.188-.189zm1.613-2.47H11.13v-4.08c0-.859-.364-1.295-1.091-1.295-.804 0-1.207.517-1.207 1.541v2.233H7.168V5.89c0-1.024-.403-1.541-1.207-1.541-.727 0-1.091.436-1.091 1.296v4.079H3.197V5.522c0-.859.22-1.541.66-2.046.456-.505 1.052-.764 1.793-.764.856 0 1.504.328 1.933.983L8 4.39l.417-.695c.429-.655 1.077-.983 1.934-.983.74 0 1.336.259 1.791.764.442.505.661 1.187.661 2.046v4.203z"
-					></path></svg
-				>
-			</a> -->
-			<a href="https://www.youtube.com/@takkotaco" target="_blank">
-				<span class="sr-only">my youtube channel</span>
-				<svg viewBox="0 0 16 16" aria-hidden="true" width="32" height="32">
-					<path
-						fill="currentColor"
-						d="M15.75 4.8s-.18-1.28-.73-1.83c-.6-.55-1.25-.55-1.56-.6C11.2 2.3 8 2.3 8 2.3s-3.2 0-5.46.07c-.3.05-.96.05-1.56.6C.43 3.52.25 4.8.25 4.8S.07 6.3.07 7.8v.4c0 1.5 0 3 .07 3s.18 1.28.73 1.83c.6.55 1.25.55 1.56.6C4.8 13.7 8 13.7 8 13.7s3.2 0 5.46-.07c.3-.05.96-.05 1.56-.6.55-.55.73-1.83.73-1.83S15.93 9.7 15.93 8.2v-.4c0-1.5 0-3-.07-3zM6.41 10.3V5.7l4.5 2.3-4.5 2.3z"
-					></path>
-				</svg>
-			</a>
-			<!-- <a href="https://github.com/withastro/astro" target="_blank">
-				<span class="sr-only">Go to Astro's GitHub repo</span>
-				<svg viewBox="0 0 16 16" aria-hidden="true" width="32" height="32"
-					><path
-						fill="currentColor"
-						d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"
-					></path></svg
-				>
-			</a> -->
-		</div>
-		
+
+		{/* The hamburger button remains a direct child */}
+		<button class="hamburger-menu" aria-label="Open menu" aria-expanded="false">
+			<svg class="icon-hamburger" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+			<svg class="icon-close" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+		</button>
 	</nav>
 </header>
+
 <style>
 	header {
 		margin: 0;
 		padding: 0 1em;
 		background: white;
 		box-shadow: 0 2px 8px rgba(var(--black), 5%);
-	}
-	.site-title {
-		display: flex;
-		align-items: center;
-		gap: 0.5em;
-	}
-	.site-icon {
-		flex-shrink: 0;
-	}
-	h2 {
-		margin: 0;
-		font-size: 1em;
-	}
-
-	h2 a,
-	h2 a.active {
-		text-decoration: none;
+		position: relative;
+		z-index: 10;
 	}
 	nav {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		gap: 1em;
+
+	}
+	.logo-link {
+		display: flex;
+		align-items: center;
+		gap: 0.75em;
+		padding: 0.5em 0;
+		text-decoration: none;
+		font-size: 1.125em;
+		font-weight: 600;
+		color: var(--black);
+		flex-shrink: 0;
+	}
+	.logo-link img {
+		height: 2.5em;
+		width: auto;
+		border-radius: 9999px;
+	}
+
+	/* Hamburger Menu Button */
+	.hamburger-menu {
+		display: none;
+		padding: 0.5rem;
+		border: none;
+		background: none;
+		cursor: pointer;
+		z-index: 20;
+	}
+	.hamburger-menu .icon-close {
+		display: none;
+	}
+	.is-menu-open .hamburger-menu .icon-close {
+		display: block;
+	}
+	.is-menu-open .hamburger-menu .icon-hamburger {
+		display: none;
+	}
+
+	/* Desktop Styles for Links */
+	.menu-content {
+		display: flex;
+		align-items: center;
+		gap: 1.5em; 
+		
+		
+	}
+	.internal-links {
+		display: flex;
+		gap: 0.5em;
+		
+	}
+	.social-links {
+		display: flex;
+		
 	}
 	nav a {
 		padding: 1em 0.5em;
@@ -88,14 +126,54 @@ import { SITE_TITLE } from '../consts';
 		text-decoration: none;
 		border-bottom-color: var(--accent);
 	}
-	.social-links,
-	.social-links a {
-		display: flex;
-	}
+
+	/* Mobile Styles */
 	@media (max-width: 720px) {
-		.social-links {
+		.hamburger-menu {
+			display: block;
+		}
+		/* --- CSS FIX: Hide the entire menu content wrapper --- */
+		.menu-content {
+			display: none;
+			position: absolute;
+			top: 100%;
+			left: 0;
+			right: 0;
+			background: white;
+			box-shadow: 0 4px 8px rgba(var(--black), 10%);
+			padding: 1rem;
+			margin-inline: 0; /* Reset the auto margin */
+		}
+		/* --- CSS FIX: When open, show it as a vertical list --- */
+		.is-menu-open .menu-content {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 1rem;
+		}
+		.internal-links {
+			flex-direction: column;
+			align-items: center;
+			width: 100%;
+		}
+		.internal-links a {
+			width: 100%;
+			text-align: center;
+		}
+		.site-title-text {
 			display: none;
 		}
 	}
-	
 </style>
+
+<script>
+	const hamburgerButton = document.querySelector('.hamburger-menu');
+	const header = document.querySelector('header');
+
+	if (hamburgerButton && header) {
+		hamburgerButton.addEventListener('click', () => {
+			const isMenuOpen = header.classList.toggle('is-menu-open');
+			hamburgerButton.setAttribute('aria-expanded', String(isMenuOpen));
+		});
+	}
+</script>
