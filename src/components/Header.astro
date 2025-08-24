@@ -38,8 +38,6 @@ import logoImage from '../assets/images/logo.png';
 				</a>
 			</div>
 		</div>
-
-		{/* The hamburger button remains a direct child */}
 		<button class="hamburger-menu" aria-label="Open menu" aria-expanded="false">
 			<svg class="icon-hamburger" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
 			<svg class="icon-close" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -51,8 +49,9 @@ import logoImage from '../assets/images/logo.png';
 	header {
 		margin: 0;
 		padding: 0 1em;
-		background: white;
-		box-shadow: 0 2px 8px rgba(var(--black), 5%);
+		background: #f5f1eb; /* Warm beige-brown background */
+		border-top: 4px solid var(--accent); /* Green top accent border */
+		box-shadow: 0 2px 12px rgba(var(--black), 8%); /* Enhanced shadow for better separation */
 		position: relative;
 		z-index: 10;
 	}
@@ -103,13 +102,16 @@ import logoImage from '../assets/images/logo.png';
 	.menu-content {
 		display: flex;
 		align-items: center;
-		gap: 1.5em; 
+		gap: 2em; 
 		
 		
 	}
 	.internal-links {
 		display: flex;
-		gap: 0.5em;
+		gap: 1em;
+		align-items: center;
+		border-left: 1px solid #e5e7eb;
+		padding-left: 1.5em;
 		
 	}
 	.social-links {
@@ -121,10 +123,16 @@ import logoImage from '../assets/images/logo.png';
 		color: var(--black);
 		border-bottom: 4px solid transparent;
 		text-decoration: none;
+		transition: all 0.2s ease; /* Smooth transitions for interactions */
+	}
+	nav a:hover {
+		color: var(--accent); /* Green text on hover */
+		border-bottom-color: var(--accent); /* Green underline on hover */
 	}
 	nav a.active {
 		text-decoration: none;
 		border-bottom-color: var(--accent);
+		color: var(--accent); /* Green text for active state */
 	}
 
 	/* Mobile Styles */
@@ -139,27 +147,37 @@ import logoImage from '../assets/images/logo.png';
 			top: 100%;
 			left: 0;
 			right: 0;
-			background: white;
-			box-shadow: 0 4px 8px rgba(var(--black), 10%);
+			background: #f5f1eb; /* Match header background */
+			box-shadow: 0 4px 12px rgba(var(--black), 12%); /* Enhanced mobile shadow */
 			padding: 1rem;
 			margin-inline: 0; /* Reset the auto margin */
+			border-top: 1px solid #e5e7eb; /* Subtle separator */
 		}
 		/* --- CSS FIX: When open, show it as a vertical list --- */
 		.is-menu-open .menu-content {
 			display: flex;
 			flex-direction: column;
 			align-items: center;
-			gap: 1rem;
+			gap: 1.5rem;
 		}
 		.internal-links {
 			flex-direction: column;
 			align-items: center;
 			width: 100%;
 		}
-		.internal-links a {
-			width: 100%;
-			text-align: center;
-		}
+		.social-links {
+    border-left: none; /* Remove separator on mobile */
+    padding-left: 0;
+    margin-top: 0.5rem; /* Add space from nav links */
+  }
+  .internal-links a {
+    padding: 0.75rem 1rem; /* Better touch targets */
+    border-radius: 0.375rem; /* Rounded corners */
+    transition: background-color 0.2s;
+  }
+  .internal-links a:hover {
+    background-color: #f0f9ff; /* Light blue hover background */
+  }
 		.site-title-text {
 			display: none;
 		}
@@ -167,13 +185,31 @@ import logoImage from '../assets/images/logo.png';
 </style>
 
 <script>
-	const hamburgerButton = document.querySelector('.hamburger-menu');
-	const header = document.querySelector('header');
+	function initializeHamburgerMenu() {
+		const hamburgerButton = document.querySelector('.hamburger-menu');
+		const header = document.querySelector('header');
 
-	if (hamburgerButton && header) {
-		hamburgerButton.addEventListener('click', () => {
+		if (hamburgerButton && header) {
+			// Remove any existing event listeners first
+			hamburgerButton.removeEventListener('click', handleHamburgerClick);
+			// Add the event listener
+			hamburgerButton.addEventListener('click', handleHamburgerClick);
+		}
+	}
+
+	function handleHamburgerClick() {
+		const header = document.querySelector('header');
+		const hamburgerButton = document.querySelector('.hamburger-menu');
+		
+		if (header && hamburgerButton) {
 			const isMenuOpen = header.classList.toggle('is-menu-open');
 			hamburgerButton.setAttribute('aria-expanded', String(isMenuOpen));
-		});
+		}
 	}
+
+	// Initialize on page loa
+	initializeHamburgerMenu();
+
+	// Re-initialize on Astro page transitions
+	document.addEventListener('astro:page-load', initializeHamburgerMenu);
 </script>

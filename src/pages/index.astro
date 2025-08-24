@@ -2,6 +2,8 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import T from '../components/T.astro';
+import LanguageSelector from '../components/LanguageSelector.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 ---
 
@@ -9,16 +11,107 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 <html lang="en">
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<style>
+			.main-title {
+				font-size: 3.5rem;
+				text-align: center;
+				margin-bottom: 2rem;
+				text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+				word-wrap: break-word;
+				overflow-wrap: break-word;
+			}
+			
+			/* Fix for Japanese text overflow */
+			main {
+				width: 800px; /* Increased from 720px to accommodate longer Japanese text */
+				max-width: calc(100% - 2em);
+			}
+			
+			/* Better text wrapping for all languages */
+			p {
+				word-wrap: break-word;
+				overflow-wrap: break-word;
+				hyphens: auto;
+				line-height: 1.8;
+			}
+			
+			/* Japanese text specific adjustments */
+			[data-lang-content="ja"] p {
+				line-height: 2.2; /* More spacing for Japanese characters */
+				text-align: justify; /* Better text distribution */
+			}
+			
+			/* Responsive adjustments */
+			@media (max-width: 800px) {
+				main {
+					width: 95%;
+					padding: 2em 1em;
+				}
+				
+				.main-title {
+					font-size: 2.5rem;
+				}
+				
+				/* Adjust Japanese text size on smaller screens */
+				[data-lang-content="ja"] p {
+					font-size: 0.95em;
+					line-height: 2.0;
+				}
+			}
+			
+			@media (max-width: 480px) {
+				main {
+					width: 98%;
+					padding: 1.5em 0.5em;
+				}
+				
+				.main-title {
+					font-size: 2rem;
+				}
+				
+				[data-lang-content="ja"] p {
+					font-size: 0.9em;
+					line-height: 1.9;
+				}
+			}
+		</style>
 	</head>
 	<body>
 		<Header />
 		<main>
-			<h1>Welcome to Bloggy Doggy!</h1>
-			<p>Hello! I'm Cristian, an English teacher living in the small Japanese town of 田子町 (Takko machi). This blog is where I share my experiences of life in rural Japan.</p>
+			<LanguageSelector />
+			
+			<h1 class="main-title">
+				<T>
+					<span slot="en">Welcome to Bloggy Doggy!</span>
+					<span slot="ja">ブログ・ドギーへようこそ！</span>
+					<span slot="en_simple">Welcome!</span>
+				</T>
+			</h1>
+			
+			<p>
+				<T>
+					<span slot="en">Hello! I'm Cristian, an English teacher living in the small Japanese town of 田子町 (Takko machi). This blog is where I share my experiences of life in rural Japan.</span>
+					<span slot="ja">こんにちは！クリスチャンです。田子町という小さな町で英語の先生をしています。このブログでは、日本の田舎での生活体験を共有しています。</span>
+					<span slot="en_simple">Hello! I'm Cristian. I am an English teacher. I live in a small town in Japan called 田子町 (Takko machi). This blog is where I write about my life in the countryside of Japan.</span>
+				</T>
+			</p>
 
-			<p>I'm building this site to be accessible for English learners, with plans to add Japanese translations and simplified English versions of each post. It's a work in progress!</p>
+			<p>
+				<T>
+					<span slot="en">I'm building this site to be accessible for English learners, with plans to add Japanese translations and simplified English versions of each post. It's a work in progress!</span>
+					<span slot="ja">このサイトは英語学習者にもアクセスしやすいように作っています。各投稿に日本語訳と簡易英語版を追加する予定です。まだ制作中です！</span>
+					<span slot="en_simple">I am making this site for English learners. I want to add Japanese translations and simple English versions of each post. It is still being made!</span>
+				</T>
+			</p>
 
-			<p><a href="/blog">Read my latest posts</a> or <a href="/about">learn more about me</a>.</p>
+			<p>
+				<T>
+					<span slot="en"><a href="/blog">Read my latest posts</a> or <a href="/about">learn more about me</a>.</span>
+					<span slot="ja"><a href="/blog">最新の投稿を読む</a>か<a href="/about">私についてもっと知る</a>。</span>
+					<span slot="en_simple"><a href="/blog">Read my latest posts</a> or <a href="/about">learn more about me</a>.</span>
+				</T>
+			</p>
 		</main>
 		<Footer />
 	</body>

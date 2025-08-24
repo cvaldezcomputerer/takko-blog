@@ -15,7 +15,7 @@
       return ["en", "ja", "en_simple"].includes(value);
     }
   
-    // This function will contain all our logic.
+   
     function initializeLanguageSwitcher() {
       const buttons = document.querySelectorAll("[data-lang-btn]");
       const content = document.querySelectorAll("[data-lang-content]");
@@ -73,45 +73,71 @@
       -moz-appearance: none;
       appearance: none;
       
+      padding: 0.75rem 1.5rem; 
+      border-radius: 8px;
       
-      padding: 0.5rem 1.25rem; 
-      
-      
-      
-      background-color: #ffffff; 
-      border: 1px solid #d1d5db; 
-      color: #374151; 
-      font-size: 0.9rem;
+      background-color: #f0f9ff; 
+      font-size: 0.95rem;
       font-weight: 600; 
       cursor: pointer;
-      transition: all 0.2s ease-in-out;
-      box-shadow: 0 1px 3px 0 transparent, 0 1px 2px -1px transparent;
+      transition: all 0.3s ease-in-out;
+      box-shadow: 0 2px 4px rgba(14, 165, 233, 0.1);
+      position: relative;
+      overflow: hidden;
     }
   
     
     .lang-btn:hover {
-      background-color: #f3f4f6; 
-      border-color: #9ca3af; 
-      color: #111827; 
+      background-color: #0ea5e9;
+      border-color: #0284c7; 
+      color: #ffffff; 
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
+    }
+
+    .lang-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 6px rgba(14, 165, 233, 0.2);
     }
   
     .lang-btn.active {
-      background-color: #4f46e5;
-      border-color: #4f46e5;
+      background-color: #059669; 
+      border-color: #059669;
       color: #ffffff; 
-      font-weight: 600; 
-      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+      font-weight: 700; 
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+      transform: translateY(-1px);
     }
-    @media (max-width: 480px) {
-    .language-controls {
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem; /* Slightly smaller gap for vertical stacking */
+
+    .lang-btn.active:hover {
+      background-color: #047857; 
+      border-color: #047857;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(5, 150, 105, 0.4);
+    }
+
+    /* Focus states for accessibility */
+    .lang-btn:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
+    }
+
+    .lang-btn.active:focus {
+      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.3);
     }
     
-    .lang-btn {
-      width: 100%;
-      max-width: 200px; /* Limit width for better appearance */
+    @media (max-width: 480px) {
+      .language-controls {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      
+      .lang-btn {
+        width: 100%;
+        max-width: 220px;
+        padding: 0.875rem 1.5rem;
+        font-size: 1rem;
+      }
     }
-  }
   </style>
