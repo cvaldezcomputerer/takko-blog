@@ -1,0 +1,365 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import T from '../components/T.astro';
+import LanguageSelector from '../components/LanguageSelector.astro';
+import { SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Contact - ${SITE_TITLE}`} description="Get in touch with Cristian about life in rural Japan" />
+		<style>
+			.contact-container {
+				max-width: 600px;
+				margin: 0 auto;
+				padding: 2rem 1rem;
+			}
+			
+			.contact-title {
+				font-size: 2.5rem;
+				text-align: center;
+				margin-bottom: 2rem;
+				color: var(--accent-dark);
+				text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+			}
+			
+			.contact-intro {
+				text-align: center;
+				margin-bottom: 3rem;
+				font-size: 1.1rem;
+				line-height: 1.6;
+				color: rgb(var(--gray));
+			}
+			
+			.contact-form {
+				background: white;
+				padding: 2.5rem;
+				border-radius: 12px;
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+				border: 1px solid var(--secondary);
+			}
+			
+			.form-group {
+				margin-bottom: 1.5rem;
+			}
+			
+			.form-label {
+				display: block;
+				margin-bottom: 0.5rem;
+				font-weight: 600;
+				color: rgb(var(--black));
+				font-size: 1rem;
+			}
+			
+			.form-input,
+			.form-textarea {
+				width: 100%;
+				padding: 0.875rem;
+				border: 2px solid #e5e7eb;
+				border-radius: 8px;
+				font-size: 1rem;
+				font-family: inherit;
+				transition: all 0.2s ease;
+				background: white;
+			}
+			
+			.form-input:focus,
+			.form-textarea:focus {
+				outline: none;
+				border-color: var(--accent);
+				box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+			}
+			
+			.form-textarea {
+				min-height: 120px;
+				resize: vertical;
+			}
+			
+			.submit-button {
+				background: var(--accent);
+				color: white;
+				border: none;
+				padding: 1rem 2rem;
+				font-size: 1.1rem;
+				font-weight: 600;
+				border-radius: 8px;
+				cursor: pointer;
+				transition: all 0.2s ease;
+				width: 100%;
+			}
+			
+			.submit-button:hover {
+				background: var(--accent-dark);
+				transform: translateY(-2px);
+				box-shadow: 0 6px 20px rgba(5, 150, 105, 0.3);
+			}
+			
+			.submit-button:disabled {
+				background: #9ca3af;
+				cursor: not-allowed;
+				transform: none;
+				box-shadow: none;
+			}
+			
+			.form-message {
+				padding: 1rem;
+				border-radius: 8px;
+				margin-bottom: 1rem;
+				text-align: center;
+				font-weight: 500;
+			}
+			
+			.form-message.success {
+				background: #d1fae5;
+				color: #065f46;
+				border: 1px solid #a7f3d0;
+			}
+			
+			.form-message.error {
+				background: #fee2e2;
+				color: #991b1b;
+				border: 1px solid #fca5a5;
+			}
+			
+			.form-message.loading {
+				background: #dbeafe;
+				color: #1e40af;
+				border: 1px solid #93c5fd;
+			}
+			
+			@media (max-width: 600px) {
+				.contact-container {
+					padding: 1rem 0.5rem;
+				}
+				
+				.contact-title {
+					font-size: 2rem;
+				}
+				
+				.contact-form {
+					padding: 1.5rem;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<LanguageSelector />
+			
+			<div class="contact-container">
+				<h1 class="contact-title">
+					<T>
+						<span slot="en">Contact Me</span>
+						<span slot="ja">お問い合わせ</span>
+						<span slot="en_simple">Contact</span>
+					</T>
+				</h1>
+				
+				<p class="contact-intro">
+					<T>
+						<span slot="en">Have a question about life in rural Japan? Want to share your own experiences? I'd love to hear from you!</span>
+						<span slot="ja">日本の田舎での生活について質問がありますか？あなたの体験を共有したいですか？お気軽にお声かけください！</span>
+						<span slot="en_simple">Do you have a question ? Do you want to share something? Tell me!</span>
+					</T>
+				</p>
+				
+				<form class="contact-form" id="contactForm">
+					<!-- Honeypot field to catch bots -->
+					<div class="hp-field" aria-hidden="true">
+						<label for="trap" class="sr-only">Leave this field empty</label>
+						<input type="text" id="trap" name="trap" tabindex="-1" autocomplete="off" class="form-input" style="position:absolute; left:-10000px; top:auto; width:1px; height:1px; overflow:hidden;" />
+					</div>
+					<div class="form-group">
+						<label for="name" class="form-label">
+							<T>
+								<span slot="en">Name *</span>
+								<span slot="ja">お名前 *</span>
+								<span slot="en_simple">Name *</span>
+							</T>
+						</label>
+						<input 
+							type="text" 
+							id="name" 
+							name="name" 
+							class="form-input" 
+							required
+							placeholder="Your name"
+						>
+					</div>
+					
+					<div class="form-group">
+						<label for="email" class="form-label">
+							<T>
+								<span slot="en">Email *</span>
+								<span slot="ja">メールアドレス *</span>
+								<span slot="en_simple">Email *</span>
+							</T>
+						</label>
+						<input 
+							type="email" 
+							id="email" 
+							name="email" 
+							class="form-input" 
+							required
+							placeholder="your.email@example.com"
+						>
+					</div>
+					
+					<div class="form-group">
+						<label for="subject" class="form-label">
+							<T>
+								<span slot="en">Subject *</span>
+								<span slot="ja">件名 *</span>
+								<span slot="en_simple">About *</span>
+							</T>
+						</label>
+						<input 
+							type="text" 
+							id="subject" 
+							name="subject" 
+							class="form-input" 
+							required
+							placeholder="What's this about?"
+						>
+					</div>
+					
+					<div class="form-group">
+						<label for="message" class="form-label">
+							<T>
+								<span slot="en">Message *</span>
+								<span slot="ja">メッセージ *</span>
+								<span slot="en_simple">Message *</span>
+							</T>
+						</label>
+						<textarea 
+							id="message" 
+							name="message" 
+							class="form-textarea" 
+							required
+							placeholder="Tell me what's on your mind..."
+						></textarea>
+					</div>
+					
+					<button type="submit" class="submit-button" id="submitBtn">
+						<T>
+							<span slot="en">Send Message</span>
+							<span slot="ja">メッセージを送信</span>
+							<span slot="en_simple">SEND</span>
+						</T>
+					</button>
+				</form>
+			</div>
+		</main>
+		<Footer />
+		
+		<script>
+			// Contact form handling
+			document.addEventListener('astro:page-load', function() {
+				const contactForm = document.getElementById('contactForm') as HTMLFormElement;
+				const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement;
+				
+				if (contactForm && submitBtn) {
+					contactForm.addEventListener('submit', handleFormSubmit);
+				}
+				
+				async function handleFormSubmit(e: Event) {
+					e.preventDefault();
+					
+					if (!contactForm || !submitBtn) return;
+					
+					// Get form data
+					const formData = new FormData(contactForm);
+					const data = {
+						name: formData.get('name') as string,
+						email: formData.get('email') as string,
+						subject: formData.get('subject') as string,
+						message: formData.get('message') as string
+					};
+					
+					// Basic validation
+					if (!data.name || !data.email || !data.subject || !data.message) {
+						showMessage('Please fill in all required fields.', 'error');
+						return;
+					}
+					
+					if (!isValidEmail(data.email)) {
+						showMessage('Please enter a valid email address.', 'error');
+						return;
+					}
+					
+					// Show loading state
+					setLoading(true);
+					
+					try {
+						// Submit to your backend API using environment variable
+						const apiUrl = import.meta.env.PUBLIC_API_BASE_URL || 'http://localhost:3000';
+						const response = await fetch(`${apiUrl}/api/contact`, {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json',
+							},
+							body: JSON.stringify(data)
+						});
+						
+						if (response.ok) {
+							showMessage('Message sent successfully! I\'ll get back to you soon.', 'success');
+							contactForm.reset();
+						} else {
+							const errorData = await response.json();
+							showMessage(errorData.message || 'Failed to send message. Please try again.', 'error');
+						}
+					} catch (error) {
+						console.error('Error:', error);
+						showMessage('Network error. Please check your connection and try again.', 'error');
+					} finally {
+						setLoading(false);
+					}
+				}
+				
+				function showMessage(message: string, type: 'success' | 'error' | 'loading') {
+					if (!contactForm) return;
+					
+					// Remove existing messages
+					const existingMessage = document.querySelector('.form-message');
+					if (existingMessage) {
+						existingMessage.remove();
+					}
+					
+					// Create new message
+					const messageDiv = document.createElement('div');
+					messageDiv.className = `form-message ${type}`;
+					messageDiv.textContent = message;
+					
+					// Insert before form
+					const parent = contactForm.parentNode;
+					if (parent) {
+						parent.insertBefore(messageDiv, contactForm);
+					}
+					
+					// Auto-remove after 5 seconds
+					setTimeout(() => {
+						if (messageDiv.parentNode) {
+							messageDiv.remove();
+						}
+					}, 5000);
+				}
+				
+				function setLoading(loading: boolean) {
+					if (!submitBtn) return;
+					
+					submitBtn.disabled = loading;
+					submitBtn.setAttribute('aria-busy', String(loading));
+				}
+				
+				function isValidEmail(email: string): boolean {
+					const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+					return emailRegex.test(email);
+				}
+			});
+		</script>
+	</body>
+</html>

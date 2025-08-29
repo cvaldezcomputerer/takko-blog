@@ -24,6 +24,7 @@ import logoImage from '../assets/images/logo.png';
 				<HeaderLink href="/">Home</HeaderLink>
 				<HeaderLink href="/blog">Blog</HeaderLink>
 				<HeaderLink href="/about">About</HeaderLink>
+				<HeaderLink href="/contact">Contact</HeaderLink>
 			</div>
 
 			<div class="social-links">
@@ -123,16 +124,10 @@ import logoImage from '../assets/images/logo.png';
 		color: var(--black);
 		border-bottom: 4px solid transparent;
 		text-decoration: none;
-		transition: all 0.2s ease; /* Smooth transitions for interactions */
-	}
-	nav a:hover {
-		color: var(--accent); /* Green text on hover */
-		border-bottom-color: var(--accent); /* Green underline on hover */
 	}
 	nav a.active {
 		text-decoration: none;
 		border-bottom-color: var(--accent);
-		color: var(--accent); /* Green text for active state */
 	}
 
 	/* Mobile Styles */
@@ -147,11 +142,10 @@ import logoImage from '../assets/images/logo.png';
 			top: 100%;
 			left: 0;
 			right: 0;
-			background: #f5f1eb; /* Match header background */
-			box-shadow: 0 4px 12px rgba(var(--black), 12%); /* Enhanced mobile shadow */
+			background: white;
+			box-shadow: 0 4px 8px rgba(var(--black), 10%);
 			padding: 1rem;
 			margin-inline: 0; /* Reset the auto margin */
-			border-top: 1px solid #e5e7eb; /* Subtle separator */
 		}
 		/* --- CSS FIX: When open, show it as a vertical list --- */
 		.is-menu-open .menu-content {
@@ -176,7 +170,7 @@ import logoImage from '../assets/images/logo.png';
     transition: background-color 0.2s;
   }
   .internal-links a:hover {
-    background-color: #f0f9ff; /* Light blue hover background */
+    background-color: #f3f4f6; /* Hover feedback */
   }
 		.site-title-text {
 			display: none;
