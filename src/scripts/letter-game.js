@@ -1,10 +1,31 @@
-// Types
-type Config = {
-  letters: string[];
-  images: Record<string, string[]>; // category -> images mapping
-  randomize: boolean;
-  seed?: number;
-};
+// Types removed - using plain JavaScript
+
+/*
+RECOMMENDED IMAGE HOSTING OPTIONS:
+=================================
+
+OPTION 1: Cloudflare R2 (Recommended)
+- Free tier: 10GB storage, 1M requests/month
+- No egress fees, global CDN
+- Proper image optimization
+- Instant cache updates
+- Designed for this use case
+
+OPTION 2: Imgur (Simple alternative)
+- Unlimited free uploads
+- Direct image URLs
+- No setup complexity
+- Good for testing
+
+OPTION 3: Local Astro assets (Simplest)
+- Use Astro's built-in image optimization
+- Keep images in src/assets/images/letter-game/
+- No external dependencies
+- Best performance with proper optimization
+
+NOTE: jsDelivr is not recommended as it's against their AUP for non-package hosting
+and lacks proper image optimization features.
+*/
 
 // Build image pools from category folders at build time
 // Structure: src/assets/images/letter-game/{category}/
@@ -30,14 +51,14 @@ const natureImages = import.meta.glob(
 
 // Organize images by category
 const imagesFromGlob = {
-  food: Object.values(foodImages) as string[],
-  animals: Object.values(animalsImages) as string[],
-  objects: Object.values(objectsImages) as string[],
-  nature: Object.values(natureImages) as string[],
+  food: Object.values(foodImages),
+  animals: Object.values(animalsImages),
+  objects: Object.values(objectsImages),
+  nature: Object.values(natureImages),
 };
 
 // Defaults (edit for your project)
-const defaultConfig: Config = {
+const defaultConfig = {
   letters: [
     "A",
     "B",
@@ -80,9 +101,9 @@ const defaultConfig: Config = {
 const LS_KEYS = {
   randomize: "lg-randomize",
   letters: "lg-letters",
-} as const;
+};
 
-function loadSettings(cfg: Config): Config {
+function loadSettings(cfg) {
   try {
     const lettersStr = localStorage.getItem(LS_KEYS.letters);
     const letters = lettersStr
@@ -94,6 +115,7 @@ function loadSettings(cfg: Config): Config {
     const randomize = JSON.parse(
       localStorage.getItem(LS_KEYS.randomize) || "null"
     );
+
     return {
       ...cfg,
       letters,
@@ -103,7 +125,8 @@ function loadSettings(cfg: Config): Config {
     return cfg;
   }
 }
-function saveSettings(partial: Partial<Config>) {
+
+function saveSettings(partial) {
   if (partial.letters)
     localStorage.setItem(LS_KEYS.letters, partial.letters.join(","));
   if (typeof partial.randomize === "boolean")
@@ -111,7 +134,7 @@ function saveSettings(partial: Partial<Config>) {
 }
 
 // Seeded shuffle (Fisher–Yates)
-function seededShuffle<T>(arr: T[], seed = 1): T[] {
+function seededShuffle(arr, seed = 1) {
   const a = arr.slice();
   let s = seed >>> 0;
   function rnd() {
@@ -128,29 +151,22 @@ function seededShuffle<T>(arr: T[], seed = 1): T[] {
   return a;
 }
 
-// Pair generation removed - now generating pairs individually as needed
-
 // DOM refs
-const elBoard = document.querySelector(".letter-game__board") as HTMLElement;
-const elCards = Array.from(
-  elBoard.querySelectorAll(".letter-game__card")
-) as HTMLButtonElement[];
-const elProgress = document.querySelector(
-  ".letter-game__progress"
-) as HTMLElement;
-const elToast = document.querySelector(".letter-game__toast") as HTMLElement;
-const elNext = document.querySelector(
-  ".letter-game__next"
-) as HTMLButtonElement;
+const elBoard = document.querySelector(".letter-game__board");
+const elCards = elBoard
+  ? Array.from(elBoard.querySelectorAll(".letter-game__card"))
+  : [];
+const elProgress = document.querySelector(".letter-game__progress");
+const elToast = document.querySelector(".letter-game__toast");
+const elNext = document.querySelector(".letter-game__next");
 const elSettingsToggle = document.querySelector(
   ".letter-game__settings-toggle"
-) as HTMLButtonElement;
-const elSettingsPanel = document.querySelector(
-  "#lg-settings-panel"
-) as HTMLDivElement;
-const elRandomize = document.querySelector("#lg-randomize") as HTMLInputElement;
+);
+const elSettingsPanel = document.querySelector("#lg-settings-panel");
+const elRandomize = document.querySelector("#lg-randomize");
 
 let config = loadSettings(defaultConfig);
+
 // Initialize settings UI
 elRandomize.checked = config.randomize;
 
@@ -171,7 +187,7 @@ elRandomize.addEventListener("change", () => {
 function updateLetterSelection() {
   const checkboxes = document.querySelectorAll(
     'input[name="lg-letter"]:checked'
-  ) as NodeListOf<HTMLInputElement>;
+  );
   const selectedLetters = Array.from(checkboxes).map((cb) => cb.value);
   if (selectedLetters.length > 0) {
     config.letters = selectedLetters;
@@ -183,9 +199,11 @@ function updateLetterSelection() {
 // Initialize letter checkboxes from saved settings
 function initializeLetterCheckboxes() {
   const savedLetters = config.letters;
-  const checkboxes = document.querySelectorAll(
-    'input[name="lg-letter"]'
-  ) as NodeListOf<HTMLInputElement>;
+  const checkboxes = document.querySelectorAll('input[name="lg-letter"]');
+
+  if (checkboxes.length === 0) {
+    return false;
+  }
 
   checkboxes.forEach((checkbox) => {
     // Set checked state based on saved settings
@@ -194,22 +212,47 @@ function initializeLetterCheckboxes() {
     // Add event listener
     checkbox.addEventListener("change", updateLetterSelection);
   });
+
+  return true;
 }
 
-// Call initialization after DOM is ready
-document.addEventListener("DOMContentLoaded", () => {
-  initializeLetterCheckboxes();
-  // Initialize the game after checkboxes are set up
-  resetGame();
-});
+// Track if game is already initialized
+let gameInitialized = false;
+
+// Initialize the game - multiple strategies to handle navigation
+function initializeGame() {
+  if (gameInitialized) return; // Prevent multiple initializations
+
+  // Wait a bit for DOM elements to be available
+  setTimeout(() => {
+    if (gameInitialized) return; // Double-check
+
+    const checkboxesReady = initializeLetterCheckboxes();
+    if (checkboxesReady) {
+      resetGame();
+      gameInitialized = true;
+    }
+  }, 100);
+}
+
+// Try immediate initialization first
+if (document.readyState === "loading") {
+  // Document is still loading
+  document.addEventListener("DOMContentLoaded", initializeGame);
+} else {
+  // Document is already loaded (navigation from another page)
+  initializeGame();
+}
+
+// Also try initialization after a short delay as backup
+setTimeout(initializeGame, 500);
 
 // Game state
-let currentPair: [string, string] = ["", ""]; // Image URLs
-let currentLetters: [string, string] = ["", ""]; // Letters for card fronts
-let currentCategory: string = "";
-let flippedCards: boolean[] = [false, false];
+let currentPair = ["", ""]; // Image URLs
+let currentLetters = ["", ""]; // Letters for card fronts
+let currentCategory = "";
+let flippedCards = [false, false];
 let roundCount = 0;
-// Local image selection; simple cache not required now
 
 function resetGame() {
   flippedCards = [false, false];
@@ -264,7 +307,7 @@ function generateNewPair() {
 }
 
 // Generate two random letters for the front of the cards
-function generateLetterPair(): [string, string] {
+function generateLetterPair() {
   const shuffled = config.randomize
     ? seededShuffle(config.letters.slice(), config.seed)
     : config.letters.slice();
@@ -281,10 +324,7 @@ function updateNextDisabled() {
   if (elNext) elNext.disabled = false; // Always allow next
 }
 
-function setCardContent(
-  card: HTMLButtonElement,
-  content: HTMLElement | string
-) {
+function setCardContent(card, content) {
   card.innerHTML = "";
   if (typeof content === "string") {
     card.textContent = content;
@@ -310,16 +350,14 @@ function renderCurrentPair() {
   updateNextDisabled();
 }
 
-function getImageForCard(side: 0 | 1): string {
+function getImageForCard(side) {
   if (side === 0) return currentPair[0] || "";
   if (side === 1) return currentPair[1] || "";
   return "";
 }
 
-// Audio functionality removed
-
 // Selection - flip a card to reveal image
-function handleSelect(side: 0 | 1) {
+function handleSelect(side) {
   if (flippedCards[side]) return; // Already flipped
 
   const imageUrl = getImageForCard(side);
@@ -371,17 +409,15 @@ function goNext() {
 // Wire buttons
 elCards[0].addEventListener("click", () => handleSelect(0));
 elCards[1].addEventListener("click", () => handleSelect(1));
+
 // Keyboard activation for cards: Enter/Space
 elCards.forEach((card, idx) => {
   card.addEventListener("keydown", (e) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      handleSelect(idx as 0 | 1);
+      handleSelect(idx);
     }
   });
 });
+
 elNext.addEventListener("click", () => goNext());
-
-// Keyboard support removed (mouse only)
-
-console.log("[letter-game] client script loaded - waiting for DOM");
