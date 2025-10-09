@@ -5,10 +5,13 @@ import sitemap from "@astrojs/sitemap";
 import { fileURLToPath } from "url";
 import path from "path";
 
+import sentry from "@sentry/astro";
+import spotlightjs from "@spotlightjs/astro";
+
 // https://astro.build/config
 export default defineConfig({
   site: "https://bloggydoggy.com",
-  integrations: [mdx(), sitemap()],
+  integrations: [mdx(), sitemap(), sentry(), spotlightjs()],
   vite: {
     resolve: {
       alias: {

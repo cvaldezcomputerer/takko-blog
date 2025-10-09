@@ -329,14 +329,49 @@ function setCardContent(card, content) {
   if (typeof content === "string") {
     card.textContent = content;
   } else {
+    // Add the content and ensure it has proper styling
     card.appendChild(content);
+    if (content.tagName === "IMG") {
+      content.style.cssText =
+        "width: 100%; height: 100%; object-fit: cover; border-radius: 1rem; position: absolute; top: 0; left: 0;";
+    }
   }
+}
+
+// Random colors for cards
+const cardColors = [
+  "linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)",
+  "linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)",
+  "linear-gradient(135deg, #45b7d1 0%, #96c93d 100%)",
+  "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+  "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+  "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+  "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+  "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+  "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+  "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+  "linear-gradient(135deg, #fad0c4 0%, #ffd1ff 100%)",
+  "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+];
+
+function setRandomCardColors() {
+  if (!elCards || elCards.length < 2) return;
+
+  // Set random colors for each card
+  elCards.forEach((card) => {
+    const randomColor =
+      cardColors[Math.floor(Math.random() * cardColors.length)];
+    card.style.background = randomColor;
+  });
 }
 
 function renderCurrentPair() {
   if (!elCards || elCards.length < 2) return;
 
   const [letter1, letter2] = currentLetters;
+
+  // Set random colors for the cards
+  setRandomCardColors();
 
   // Show letters on cards initially
   setCardContent(elCards[0], letter1);
