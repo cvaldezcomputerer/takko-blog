@@ -1,0 +1,256 @@
+---
+// File: src/pages/letter-game.astro
+
+/* README (inline):
+  - To change letters: edit defaultConfig.letters.
+  - Map letters → audio: defaultConfig.audioMap (name/phonics per letter).
+  - Images via API: update defaultConfig.imagesFromApi and placeholders.
+    - Add your API keys via env and reference as ${env:KEY_NAME} below.
+  - Switch name vs phonics: UI Settings panel or set defaultConfig.mode.
+*/
+
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`${SITE_TITLE} — Letter Flip Game`} description="Practice letters by flipping cards to reveal random images" />
+	</head>
+	<body>
+		<Header />
+
+		<main class="letter-game">
+			<h1 class="letter-game__title">Letter Flip Game</h1>
+
+			<!-- Settings -->
+			<section class="letter-game__settings">
+				<button class="letter-game__settings-toggle" data-testid="settings-toggle" aria-expanded="false" aria-controls="lg-settings-panel">
+					Settings
+				</button>
+				<div class="letter-game__settings-panel" id="lg-settings-panel" hidden>
+					<!-- Letters selection with checkboxes -->
+					<div class="letter-game__field">
+						<label class="letter-game__field-label">Select Letters:</label>
+						<div class="letter-game__letter-grid" id="lg-letter-grid">
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="A" checked><span>A</span></label>
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="B" checked><span>B</span></label>
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="C" checked><span>C</span></label>
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="D" checked><span>D</span></label>
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="E" checked><span>E</span></label>
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="F" checked><span>F</span></label>
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="G" checked><span>G</span></label>
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="H" checked><span>H</span></label>
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="I" checked><span>I</span></label>
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="J" checked><span>J</span></label>
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="K" checked><span>K</span></label>
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="L" checked><span>L</span></label>
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="M" checked><span>M</span></label>
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="N" checked><span>N</span></label>
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="O" checked><span>O</span></label>
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="P" checked><span>P</span></label>
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="Q" checked><span>Q</span></label>
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="R" checked><span>R</span></label>
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="S" checked><span>S</span></label>
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="T" checked><span>T</span></label>
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="U" checked><span>U</span></label>
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="V" checked><span>V</span></label>
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="W" checked><span>W</span></label>
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="X" checked><span>X</span></label>
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="Y" checked><span>Y</span></label>
+							<label class="letter-game__checkbox-label"><input type="checkbox" name="lg-letter" value="Z" checked><span>Z</span></label>
+						</div>
+					</div>
+
+					<div class="letter-game__field">
+						<label><input type="checkbox" id="lg-randomize"> Randomize</label>
+					</div>
+				</div>
+			</section>
+
+			<!-- Progress -->
+			<div class="letter-game__progress" aria-live="polite"></div>
+
+			<!-- Cards -->
+			<section class="letter-game__board" aria-label="Flip letters to reveal images">
+				<button class="letter-game__card" data-testid="card-0" aria-label="Left letter card - click to flip"></button>
+				<button class="letter-game__card" data-testid="card-1" aria-label="Right letter card - click to flip"></button>
+			</section>
+
+			<!-- Attribution removed in simplified version -->
+
+			<!-- Toast / feedback -->
+			<div class="letter-game__toast" data-testid="toast" aria-live="polite"></div>
+
+			<!-- Controls -->
+			<div class="letter-game__controls">
+				<button class="letter-game__next" data-testid="next-btn" disabled>Next</button>
+			</div>
+
+		</main>
+
+		<Footer />
+
+		<style>
+			/* Reuse your site variables (e.g., --accent, --black). New styles are scoped. */
+			.letter-game {
+				max-width: 900px;
+				margin: 0 auto;
+				padding: 1rem;
+			}
+			.letter-game__title {
+				margin: 0.5rem 0 1rem;
+			}
+			.letter-game__settings {
+				margin-bottom: 1rem;
+			}
+			.letter-game__settings-toggle {
+				border: 1px solid #e5e7eb;
+				background: #fff;
+				padding: 0.5rem 0.75rem;
+				cursor: pointer;
+				border-radius: 0.375rem;
+			}
+			.letter-game__settings-panel {
+				margin-top: 0.75rem;
+				border: 1px solid #e5e7eb;
+				border-radius: 0.5rem;
+				padding: 0.75rem;
+				background: #fff;
+			}
+			.letter-game__field {
+				margin-bottom: 0.75rem;
+			}
+			.letter-game__field-label {
+				display: block;
+				font-weight: 600;
+				margin-bottom: 0.5rem;
+			}
+			.letter-game__letter-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+				gap: 0.5rem;
+				max-height: 200px;
+				overflow-y: auto;
+				padding: 0.5rem;
+				border: 1px solid #e5e7eb;
+				border-radius: 0.375rem;
+				background: #f9fafb;
+			}
+			.letter-game__checkbox-label {
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+				padding: 0.25rem 0.5rem;
+				border-radius: 0.25rem;
+				cursor: pointer;
+				font-size: 0.9rem;
+				transition: background-color 0.15s ease;
+			}
+			.letter-game__checkbox-label:hover {
+				background-color: #e5e7eb;
+			}
+			.letter-game__checkbox-label input[type="checkbox"] {
+				margin: 0;
+			}
+			.letter-game__keys {
+				display: flex;
+				gap: 0.75rem;
+				flex-wrap: wrap;
+			}
+
+			.letter-game__progress {
+				margin: 0.5rem 0 1rem;
+				font-weight: 600;
+			}
+
+			.letter-game__board {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 1rem;
+				align-items: stretch;
+			}
+			@media (max-width: 640px) {
+				.letter-game__board { grid-template-columns: 1fr; }
+			}
+
+			.letter-game__card {
+				position: relative;
+				display: grid;
+				place-items: center;
+				min-height: 200px;
+				border: 2px solid #e5e7eb;
+				border-radius: 0.75rem;
+				background: #fff;
+				font-size: clamp(2rem, 8vw, 7rem);
+				font-weight: 800;
+				color: var(--black);
+				cursor: pointer;
+				transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+				outline: none;
+			}
+			.letter-game__card:hover {
+				box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+				border-color: var(--accent);
+			}
+			.letter-game__card:focus-visible {
+				box-shadow: 0 0 0 3px rgba(99,102,241,0.4);
+			}
+
+			/* Flip/fade animation */
+			.letter-game__card--flipped {
+				animation: lg-flip 260ms ease forwards;
+			}
+			@keyframes lg-flip {
+				0%   { transform: rotateY(0deg); opacity: 1; }
+				50%  { transform: rotateY(90deg); opacity: 0; }
+				100% { transform: rotateY(0deg); opacity: 1; }
+			}
+
+			.letter-game__card img {
+				max-width: 100%;
+				max-height: 100%;
+				object-fit: cover;
+				border-radius: 0.5rem;
+			}
+
+			.letter-game__controls {
+				display: flex;
+				justify-content: center;
+				margin-top: 1rem;
+			}
+			.letter-game__next {
+				background: var(--accent);
+				color: white;
+				border: none;
+				padding: 0.75rem 1.25rem;
+				border-radius: 0.5rem;
+				cursor: pointer;
+				font-weight: 700;
+			}
+			.letter-game__next[disabled] {
+				opacity: 0.5;
+				cursor: not-allowed;
+			}
+
+			.letter-game__toast {
+				min-height: 1.25rem;
+				margin-top: 0.5rem;
+				color: #374151;
+			}
+
+			.letter-game__attribution {
+				margin-top: 0.5rem;
+				font-size: 0.85rem;
+				color: #6b7280;
+			}
+		</style>
+
+<script type="module">
+    import '/src/scripts/letter-game.ts';
+  </script>
+	</body>
+</html>
