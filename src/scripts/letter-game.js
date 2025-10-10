@@ -1,34 +1,3 @@
-// Types removed - using plain JavaScript
-
-/*
-RECOMMENDED IMAGE HOSTING OPTIONS:
-=================================
-
-OPTION 1: Cloudflare R2 (Recommended)
-- Free tier: 10GB storage, 1M requests/month
-- No egress fees, global CDN
-- Proper image optimization
-- Instant cache updates
-- Designed for this use case
-
-OPTION 2: Imgur (Simple alternative)
-- Unlimited free uploads
-- Direct image URLs
-- No setup complexity
-- Good for testing
-
-OPTION 3: Local Astro assets (Simplest)
-- Use Astro's built-in image optimization
-- Keep images in src/assets/images/letter-game/
-- No external dependencies
-- Best performance with proper optimization
-
-NOTE: jsDelivr is not recommended as it's against their AUP for non-package hosting
-and lacks proper image optimization features.
-*/
-
-// Build image pools from category folders at build time
-// Structure: src/assets/images/letter-game/{category}/
 const foodImages = import.meta.glob(
   "/src/assets/images/letter-game/food/*.{jpg,jpeg,png,webp,gif}",
   { eager: true, query: "?url", import: "default" }
@@ -216,11 +185,16 @@ function initializeLetterCheckboxes() {
   return true;
 }
 
-// Track if game is already initialized
+// Track if game is already initialized for this page load
 let gameInitialized = false;
 
 // Initialize the game - multiple strategies to handle navigation
 function initializeGame() {
+  // Reset initialization flag for new page loads
+  if (window.location.pathname.includes("letter-game")) {
+    gameInitialized = false;
+  }
+
   if (gameInitialized) return; // Prevent multiple initializations
 
   // Wait a bit for DOM elements to be available
@@ -235,6 +209,17 @@ function initializeGame() {
   }, 100);
 }
 
+// Handle page navigation (Astro client-side routing)
+function handlePageNavigation() {
+  if (window.location.pathname.includes("letter-game")) {
+    gameInitialized = false; // Reset for new page load
+    setTimeout(initializeGame, 50); // Quick re-initialization
+  }
+}
+
+// Listen for navigation events
+window.addEventListener("popstate", handlePageNavigation);
+
 // Try immediate initialization first
 if (document.readyState === "loading") {
   // Document is still loading
@@ -246,6 +231,9 @@ if (document.readyState === "loading") {
 
 // Also try initialization after a short delay as backup
 setTimeout(initializeGame, 500);
+
+// Additional backup for client-side navigation
+setTimeout(initializeGame, 1000);
 
 // Game state
 let currentPair = ["", ""]; // Image URLs
