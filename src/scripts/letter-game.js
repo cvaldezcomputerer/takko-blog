@@ -121,36 +121,53 @@ function seededShuffle(arr, seed = 1) {
 }
 
 // DOM refs
-const elBoard = document.querySelector(".letter-game__board");
-const elCards = elBoard
-  ? Array.from(elBoard.querySelectorAll(".letter-game__card"))
-  : [];
-const elProgress = document.querySelector(".letter-game__progress");
-const elToast = document.querySelector(".letter-game__toast");
-const elNext = document.querySelector(".letter-game__next");
-const elSettingsToggle = document.querySelector(
-  ".letter-game__settings-toggle"
-);
-const elSettingsPanel = document.querySelector("#lg-settings-panel");
-const elRandomize = document.querySelector("#lg-randomize");
+// DOM elements (will be initialized when DOM is ready)
+let elBoard;
+let elCards = [];
+let elProgress;
+let elToast;
+let elNext;
+let elSettingsToggle;
+let elSettingsPanel;
+let elRandomize;
+
+// Initialize DOM elements
+function initializeDOMElements() {
+  elBoard = document.querySelector(".letter-game__board");
+  elCards = elBoard
+    ? Array.from(elBoard.querySelectorAll(".letter-game__card"))
+    : [];
+  elProgress = document.querySelector(".letter-game__progress");
+  elToast = document.querySelector(".letter-game__toast");
+  elNext = document.querySelector(".letter-game__next");
+  elSettingsToggle = document.querySelector(".letter-game__settings-toggle");
+  elSettingsPanel = document.querySelector("#lg-settings-panel");
+  elRandomize = document.querySelector("#lg-randomize");
+}
+
+// Game state
+let currentPair = ["", ""]; // Image URLs
+let currentLetters = ["", ""]; // Letters for card fronts
+let currentCategory = "";
+let flippedCards = [false, false];
+let roundCount = 0;
+
+// Random colors for cards
+const cardColors = [
+  "linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)",
+  "linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)",
+  "linear-gradient(135deg, #45b7d1 0%, #96c93d 100%)",
+  "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+  "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+  "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+  "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+  "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+  "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+  "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+  "linear-gradient(135deg, #fad0c4 0%, #ffd1ff 100%)",
+];
 
 let config = loadSettings(defaultConfig);
-
-// Initialize settings UI
-elRandomize.checked = config.randomize;
-
-elSettingsToggle.addEventListener("click", () => {
-  const isHidden = elSettingsPanel.hasAttribute("hidden");
-  if (isHidden) elSettingsPanel.removeAttribute("hidden");
-  else elSettingsPanel.setAttribute("hidden", "");
-  elSettingsToggle.setAttribute("aria-expanded", String(isHidden));
-});
-
-elRandomize.addEventListener("change", () => {
-  config.randomize = elRandomize.checked;
-  saveSettings({ randomize: config.randomize });
-  resetGame();
-});
 
 // Letters input - now handled by checkbox system
 function updateLetterSelection() {
@@ -185,71 +202,51 @@ function initializeLetterCheckboxes() {
   return true;
 }
 
-// Track if game is already initialized for this page load
+// Track if game is already initialized
 let gameInitialized = false;
 
-// Initialize the game - multiple strategies to handle navigation
+// Initialize the game once
 function initializeGame() {
-  // Reset initialization flag for new page loads
-  if (window.location.pathname.includes("letter-game")) {
-    gameInitialized = false;
-  }
-
   if (gameInitialized) return; // Prevent multiple initializations
 
-  // Wait a bit for DOM elements to be available
-  setTimeout(() => {
-    if (gameInitialized) return; // Double-check
+  // Initialize DOM elements first
+  initializeDOMElements();
 
-    const checkboxesReady = initializeLetterCheckboxes();
-    if (checkboxesReady) {
+  // Initialize settings UI
+  if (elRandomize) {
+    elRandomize.checked = config.randomize;
+  }
+
+  if (elSettingsToggle && elSettingsPanel) {
+    elSettingsToggle.addEventListener("click", () => {
+      const isHidden = elSettingsPanel.hasAttribute("hidden");
+      if (isHidden) elSettingsPanel.removeAttribute("hidden");
+      else elSettingsPanel.setAttribute("hidden", "");
+      elSettingsToggle.setAttribute("aria-expanded", String(isHidden));
+    });
+  }
+
+  if (elRandomize) {
+    elRandomize.addEventListener("change", () => {
+      config.randomize = elRandomize.checked;
+      saveSettings({ randomize: config.randomize });
       resetGame();
-      gameInitialized = true;
-    }
-  }, 100);
-}
+    });
+  }
 
-// Handle page navigation (Astro client-side routing)
-function handlePageNavigation() {
-  if (window.location.pathname.includes("letter-game")) {
-    gameInitialized = false; // Reset for new page load
-    setTimeout(initializeGame, 50); // Quick re-initialization
+  const checkboxesReady = initializeLetterCheckboxes();
+  if (checkboxesReady) {
+    initializeEventListeners();
+    resetGame();
+    gameInitialized = true;
   }
 }
 
-// Listen for navigation events
-window.addEventListener("popstate", handlePageNavigation);
-
-// Try immediate initialization first
+// Initialize when DOM is ready
 if (document.readyState === "loading") {
-  // Document is still loading
   document.addEventListener("DOMContentLoaded", initializeGame);
 } else {
-  // Document is already loaded (navigation from another page)
   initializeGame();
-}
-
-// Also try initialization after a short delay as backup
-setTimeout(initializeGame, 500);
-
-// Additional backup for client-side navigation
-setTimeout(initializeGame, 1000);
-
-// Game state
-let currentPair = ["", ""]; // Image URLs
-let currentLetters = ["", ""]; // Letters for card fronts
-let currentCategory = "";
-let flippedCards = [false, false];
-let roundCount = 0;
-
-function resetGame() {
-  flippedCards = [false, false];
-  roundCount = 0;
-  generateNewPair();
-  updateProgress();
-  renderCurrentPair();
-  updateNextDisabled();
-  if (elToast) elToast.textContent = "";
 }
 
 function updateProgress() {
@@ -326,22 +323,6 @@ function setCardContent(card, content) {
   }
 }
 
-// Random colors for cards
-const cardColors = [
-  "linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)",
-  "linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)",
-  "linear-gradient(135deg, #45b7d1 0%, #96c93d 100%)",
-  "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-  "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
-  "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
-  "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
-  "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
-  "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-  "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-  "linear-gradient(135deg, #fad0c4 0%, #ffd1ff 100%)",
-  "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
-];
-
 function setRandomCardColors() {
   if (!elCards || elCards.length < 2) return;
 
@@ -370,6 +351,12 @@ function renderCurrentPair() {
   elCards[0].disabled = false;
   elCards[1].disabled = false;
   flippedCards = [false, false];
+
+  // Remove both-flipped class from board
+  if (elBoard) {
+    elBoard.classList.remove("both-flipped");
+  }
+
   updateNextDisabled();
 }
 
@@ -391,6 +378,11 @@ function handleSelect(side) {
 
   // Visual flip to image
   elCards[side].classList.add("letter-game__card--flipped");
+
+  // Check if both cards are flipped and add class to board
+  if (flippedCards[0] && flippedCards[1] && elBoard) {
+    elBoard.classList.add("both-flipped");
+  }
 
   // Try to load the image
   const img = new Image();
@@ -429,18 +421,35 @@ function goNext() {
   renderCurrentPair();
 }
 
-// Wire buttons
-elCards[0].addEventListener("click", () => handleSelect(0));
-elCards[1].addEventListener("click", () => handleSelect(1));
+function resetGame() {
+  flippedCards = [false, false];
+  roundCount = 0;
+  generateNewPair();
+  updateProgress();
+  renderCurrentPair();
+  updateNextDisabled();
+  if (elToast) elToast.textContent = "";
+}
 
-// Keyboard activation for cards: Enter/Space
-elCards.forEach((card, idx) => {
-  card.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      handleSelect(idx);
-    }
-  });
-});
+// Wire up event listeners for game controls
+function initializeEventListeners() {
+  // Wire buttons
+  if (elCards.length >= 2) {
+    elCards[0].addEventListener("click", () => handleSelect(0));
+    elCards[1].addEventListener("click", () => handleSelect(1));
 
-elNext.addEventListener("click", () => goNext());
+    // Keyboard activation for cards: Enter/Space
+    elCards.forEach((card, idx) => {
+      card.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleSelect(idx);
+        }
+      });
+    });
+  }
+
+  if (elNext) {
+    elNext.addEventListener("click", () => goNext());
+  }
+}

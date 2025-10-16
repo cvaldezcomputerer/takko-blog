@@ -19,6 +19,9 @@ import { SITE_TITLE } from '../consts';
 <html lang="en">
 	<head>
 		<BaseHead title={`${SITE_TITLE} — Letter Flip Game`} description="Practice letters by flipping cards to reveal random images" />
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&display=swap" rel="stylesheet">
 		<style>
 			body {
 				margin: 0;
@@ -33,7 +36,7 @@ import { SITE_TITLE } from '../consts';
 		<main class="letter-game">
 			<div class="letter-game__header">
 				<h1 class="letter-game__title">Letter Flip Game</h1>
-				<a href="/" class="letter-game__back-link">← Back to Site</a>
+				<a href="/" class="letter-game__back-link" data-astro-reload>← Back to Site</a>
 			</div>
 
 			<!-- Settings -->
@@ -86,8 +89,12 @@ import { SITE_TITLE } from '../consts';
 
 			<!-- Cards -->
 			<section class="letter-game__board" aria-label="Flip letters to reveal images">
-				<button class="letter-game__card" data-testid="card-0" aria-label="Left letter card - click to flip"></button>
-				<button class="letter-game__card" data-testid="card-1" aria-label="Right letter card - click to flip"></button>
+				<div class="letter-game__card-wrapper">
+					<button class="letter-game__card" data-testid="card-0" aria-label="Left letter card - click to flip"></button>
+				</div>
+				<div class="letter-game__card-wrapper">
+					<button class="letter-game__card" data-testid="card-1" aria-label="Right letter card - click to flip"></button>
+				</div>
 			</section>
 
 			<!-- Attribution removed in simplified version -->
@@ -239,10 +246,18 @@ import { SITE_TITLE } from '../consts';
 				display: grid;
 				grid-template-columns: 1fr 1fr;
 				gap: 2rem;
-				align-items: center;
+				align-items: start;
 				flex: 1;
 				max-width: 1200px;
 				margin: 0 auto;
+				width: 100%;
+				position: relative;
+				padding-bottom: 120px; /* Space for celebration GIFs below */
+			}
+			
+			/* Wrapper for each card + its celebration */
+			.letter-game__card-wrapper {
+				position: relative;
 				width: 100%;
 			}
 
@@ -268,9 +283,15 @@ import { SITE_TITLE } from '../consts';
 				border: 4px solid rgba(255,255,255,0.3);
 				border-radius: 1.5rem;
 				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-				font-size: clamp(4rem, 10vw, 8rem);
-				font-weight: 900;
+				font-size: clamp(5rem, 12vw, 10rem);
+				font-weight: 700;
+				font-family: 'Fredoka', 'Comic Sans MS', 'Marker Felt', 'Chalkboard SE', cursive, sans-serif;
 				color: white;
+				text-shadow: 
+					4px 4px 0px rgba(0,0,0,0.5),
+					-2px -2px 0px rgba(0,0,0,0.3),
+					2px 2px 0px rgba(0,0,0,0.3);
+				letter-spacing: 0.05em;
 				cursor: pointer;
 				transition: all 0.3s ease;
 				outline: none;
@@ -304,51 +325,145 @@ import { SITE_TITLE } from '../consts';
 				background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
 			}
 
-			/* Present bow effect - proper bow with loops */
-			.letter-game__card::before {
-				content: '';
-				position: absolute;
-				top: 15px;
-				left: 50%;
-				transform: translateX(-50%);
-				width: 80px;
-				height: 40px;
-				background: #e53e3e;
-				border-radius: 20px 20px 0 0;
-				z-index: 3;
-				box-shadow: 
-					0 0 0 4px #f56565,
-					0 4px 12px rgba(0,0,0,0.3);
-				transition: opacity 0.3s ease;
-			}
-
-			.letter-game__card::after {
-				content: '';
-				position: absolute;
-				top: 15px;
-				left: 50%;
-				transform: translateX(-50%);
-				width: 40px;
-				height: 60px;
-				background: #e53e3e;
-				border-radius: 0 0 20px 20px;
-				z-index: 3;
-				box-shadow: 
-					0 0 0 4px #f56565,
-					0 4px 12px rgba(0,0,0,0.3);
-				transition: opacity 0.3s ease;
-			}
-
-			/* Hide bow when card is opened */
-			.letter-game__card--flipped::before,
-			.letter-game__card--flipped::after {
-				opacity: 0;
-			}
-
 			.letter-game__card:hover {
 				transform: translateY(-4px) scale(1.02);
 				box-shadow: 0 16px 48px rgba(0,0,0,0.2);
 				border-color: rgba(255,255,255,0.6);
+			}
+
+			/* Hover animation effect - shows on hover ONLY before card is flipped, hidden on mobile */
+			.letter-game__card:not(.letter-game__card--flipped):hover::after {
+				content: '';
+				background-image: url('/src/assets/images/letter-game/animations/takko-frame-1.png');
+				background-size: contain;
+				background-repeat: no-repeat;
+				background-position: center;
+				background-color: rgba(0, 0, 0, 0.85);
+				width: 180px;
+				height: 180px;
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				border-radius: 50%;
+				box-shadow: 
+					0 8px 32px rgba(0,0,0,0.6),
+					inset 0 0 20px rgba(255,255,255,0.1);
+				border: 4px solid rgba(255,255,255,0.3);
+				z-index: 5;
+				animation: takko-frames 10s ease-in-out infinite;
+			}
+
+			@keyframes takko-frames {
+				0% { 
+					background-image: url('/src/assets/images/letter-game/animations/takko-frame-1.png');
+					transform: translate(-50%, -50%) scale(1);
+				}
+				20% { 
+					background-image: url('/src/assets/images/letter-game/animations/takko-frame-2.png');
+					transform: translate(-50%, -50%) scale(1.05);
+				}
+				50% { 
+					background-image: url('/src/assets/images/letter-game/animations/takko-frame-3.png');
+					transform: translate(-50%, -50%) scale(1.08);
+				}
+				100% { 
+					background-image: url('/src/assets/images/letter-game/animations/takko-frame-3.png');
+					transform: translate(-50%, -50%) scale(1.08);
+				}
+			}
+
+			/* Show celebration GIF below card when clicked/flipped */
+			.letter-game__card-wrapper:has(.letter-game__card--flipped)::after {
+				content: '';
+				position: absolute;
+				top: calc(100% + 10px);
+				left: 50%;
+				transform: translateX(-50%);
+				width: 120px;
+				height: 120px;
+				background-image: url('/src/assets/images/letter-game/animations/takko-celebrate.gif');
+				background-size: contain;
+				background-repeat: no-repeat;
+				background-position: center;
+				background-color: rgba(0, 0, 0, 0.85);
+				border-radius: 50%;
+				box-shadow: 
+					0 8px 32px rgba(0,0,0,0.6),
+					inset 0 0 20px rgba(255,255,255,0.1);
+				border: 4px solid rgba(255,255,255,0.3);
+				z-index: 10;
+				opacity: 1;
+				animation: celebrate-bounce-up 0.6s ease-out;
+			}
+
+			@keyframes celebrate-bounce-up {
+				0% { 
+					transform: translateX(-50%) translateY(20px) scale(0); 
+					opacity: 0; 
+				}
+				50% { 
+					transform: translateX(-50%) translateY(-10px) scale(1.15); 
+				}
+				100% { 
+					transform: translateX(-50%) translateY(0) scale(1); 
+					opacity: 1; 
+				}
+			}
+
+			/* Show center GIF when both cards are flipped */
+			.letter-game__board::after {
+				content: '';
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%) scale(0);
+				width: 200px;
+				height: 200px;
+				background-image: url('/src/assets/images/letter-game/animations/takko-both-opened.gif');
+				background-size: contain;
+				background-repeat: no-repeat;
+				background-position: center;
+				background-color: rgba(0, 0, 0, 0.9);
+				border-radius: 50%;
+				box-shadow: 
+					0 12px 48px rgba(0,0,0,0.8),
+					inset 0 0 30px rgba(255,255,255,0.2);
+				border: 5px solid rgba(255,255,255,0.4);
+				z-index: 15;
+				opacity: 0;
+				pointer-events: none;
+				transition: all 0.5s ease-out;
+			}
+
+			.letter-game__board.both-flipped::after {
+				transform: translate(-50%, -50%) scale(1);
+				opacity: 1;
+				animation: center-celebration 0.8s ease-out;
+			}
+
+			@keyframes center-celebration {
+				0% { transform: translate(-50%, -50%) scale(0) rotate(-10deg); }
+				50% { transform: translate(-50%, -50%) scale(1.15) rotate(5deg); }
+				100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+			}
+
+			/* Hide hover effect on mobile */
+			@media (max-width: 768px) {
+				.letter-game__card:hover::after {
+					background-image: none;
+					background: #e53e3e;
+					width: 40px;
+					height: 60px;
+					top: 15px;
+					left: 50%;
+					transform: translateX(-50%);
+					border-radius: 0 0 20px 20px;
+					animation: none;
+					box-shadow: 
+						0 0 0 4px #f56565,
+						0 4px 12px rgba(0,0,0,0.3);
+				}
 			}
 
 			.letter-game__card:focus-visible {
@@ -424,8 +539,8 @@ import { SITE_TITLE } from '../consts';
 			}
 		</style>
 
-<script >
-    import '/src/scripts/letter-game.js';
-  </script>
+<script>
+import '/src/scripts/letter-game.js';
+</script>
 	</body>
 </html>
