@@ -151,6 +151,9 @@ let currentLetters = ["", ""]; // Letters for card fronts
 let currentCategory = "";
 let flippedCards = [false, false];
 let roundCount = 0;
+let recentImages = []; // Track recently used images for cooldown (3 turns = 6 images)
+let currentSeed = Math.floor(Math.random() * 1000000); // Generate random seed for each session
+let preloadedImages = []; // Cache for preloaded images
 
 // Random colors for cards
 const cardColors = [
@@ -258,6 +261,26 @@ function updateProgress() {
   }
 }
 
+// Preload images to make flipping instant
+function preloadImages(imageUrls) {
+  imageUrls.forEach((url) => {
+    if (!url) return;
+    
+    // Check if already preloaded
+    const alreadyLoaded = preloadedImages.find((img) => img.src === url);
+    if (alreadyLoaded) return;
+    
+    const img = new Image();
+    img.src = url;
+    preloadedImages.push(img);
+  });
+  
+  // Keep cache reasonable size (only last 20 images)
+  if (preloadedImages.length > 20) {
+    preloadedImages = preloadedImages.slice(-20);
+  }
+}
+
 function generateNewPair() {
   // Generate random letters for the front of the cards
   currentLetters = generateLetterPair();
@@ -278,10 +301,18 @@ function generateNewPair() {
     categoryWithImages[Math.floor(Math.random() * categoryWithImages.length)];
   const categoryImages = config.images[currentCategory];
 
-  // Select two random images from the chosen category
+  // Filter out images that are in cooldown (recently used)
+  const availableImages = categoryImages.filter(
+    (img) => !recentImages.includes(img)
+  );
+
+  // If we don't have enough available images, use all images (fallback)
+  const imagesToUse = availableImages.length >= 2 ? availableImages : categoryImages;
+
+  // Select two random images from available images
   const shuffled = config.randomize
-    ? seededShuffle(categoryImages.slice(), config.seed)
-    : categoryImages.slice();
+    ? seededShuffle(imagesToUse.slice(), currentSeed + roundCount)
+    : imagesToUse.slice();
   const image1 = shuffled[Math.floor(Math.random() * shuffled.length)];
   let image2;
   do {
@@ -289,12 +320,23 @@ function generateNewPair() {
   } while (image2 === image1 && shuffled.length > 1);
 
   currentPair = [image1, image2];
+
+  // Preload the current pair of images
+  preloadImages([image1, image2]);
+
+  // Add current images to recent images queue
+  recentImages.push(image1, image2);
+
+  // Keep only the last 6 images (3 turns × 2 images per turn)
+  if (recentImages.length > 6) {
+    recentImages = recentImages.slice(-6);
+  }
 }
 
 // Generate two random letters for the front of the cards
 function generateLetterPair() {
   const shuffled = config.randomize
-    ? seededShuffle(config.letters.slice(), config.seed)
+    ? seededShuffle(config.letters.slice(), currentSeed + roundCount)
     : config.letters.slice();
   const letter1 = shuffled[Math.floor(Math.random() * shuffled.length)];
   let letter2;
@@ -419,16 +461,57 @@ function goNext() {
   generateNewPair();
   updateProgress();
   renderCurrentPair();
+  
+  // Preload next round's images in background for even smoother experience
+  preloadNextRound();
+}
+
+// Preload the next round's images in the background
+function preloadNextRound() {
+  // Simulate what the next round would generate
+  const categories = Object.keys(config.images);
+  const categoryWithImages = categories.filter(
+    (cat) => config.images[cat].length >= 2
+  );
+  
+  if (categoryWithImages.length === 0) return;
+  
+  // Pick a random category for next round
+  const nextCategory =
+    categoryWithImages[Math.floor(Math.random() * categoryWithImages.length)];
+  const categoryImages = config.images[nextCategory];
+  
+  // Filter out images in cooldown
+  const availableImages = categoryImages.filter(
+    (img) => !recentImages.includes(img)
+  );
+  
+  const imagesToUse = availableImages.length >= 2 ? availableImages : categoryImages;
+  
+  // Preload a few random images from this category
+  const samplesToPreload = Math.min(4, imagesToUse.length);
+  for (let i = 0; i < samplesToPreload; i++) {
+    const randomImg = imagesToUse[Math.floor(Math.random() * imagesToUse.length)];
+    if (randomImg) {
+      preloadImages([randomImg]);
+    }
+  }
 }
 
 function resetGame() {
   flippedCards = [false, false];
   roundCount = 0;
+  recentImages = []; // Clear cooldown queue on reset
+  currentSeed = Math.floor(Math.random() * 1000000); // Generate new random seed
+  preloadedImages = []; // Clear preload cache
   generateNewPair();
   updateProgress();
   renderCurrentPair();
   updateNextDisabled();
   if (elToast) elToast.textContent = "";
+  
+  // Preload next round in background
+  preloadNextRound();
 }
 
 // Wire up event listeners for game controls
