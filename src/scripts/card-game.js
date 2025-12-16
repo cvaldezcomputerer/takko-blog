@@ -3,14 +3,12 @@
 // Game data - customize events
 const gameData = {
   events: [
-    "Double Points!",
-    "Lose a Turn",
-    "Steal Points",
-    "Bonus Round",
-    "Switch Teams",
-    "Free Draw",
-    "Skip Next Card",
-    "Wild Card",
+    "SWAP: ランダムなチームとポイントを交換",
+    "Double Points: ポイント2倍",
+    "Steal 5 Points: 選んだチームから5ポイント奪う",
+    "Gift 5 Points: 他のチームに5ポイントあげる",
+    "Mystery Box: コイン表+10／裏-5",
+    "Lottery: 全チームから1ポイントもらう",
   ],
 };
 
