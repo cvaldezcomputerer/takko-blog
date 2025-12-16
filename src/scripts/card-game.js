@@ -9,6 +9,7 @@ const gameData = {
     "Gift 5 Points: 他のチームに5ポイントあげる",
     "Mystery Box: コイン表+10／裏-5",
     "Lottery: 全チームから1ポイントもらう",
+    "Oh no!: ポイントはゼロになった",
   ],
 };
 
@@ -26,8 +27,14 @@ function generatePointsCard() {
 
   if (rand < 0.8) {
     // 80% - Normal points card (1-5 points)
-    const points = Math.floor(Math.random() * 5) + 1;
-    return { type: "points", value: points, display: `${points} Points` };
+    const choices = [-2, -1, 1, 3, 5];
+    const points = choices[Math.floor(Math.random() * choices.length)];
+
+    return {
+      type: "points",
+      value: points,
+      display: `${points} Points`,
+    };
   } else {
     // 20% - Event card
     const event =
