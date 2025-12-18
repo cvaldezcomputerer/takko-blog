@@ -33,7 +33,7 @@ function generatePointsCard() {
     return {
       type: "points",
       value: points,
-      display: `${points} Points`,
+      display: `${points}`,
     };
   } else {
     // 20% - Event card
