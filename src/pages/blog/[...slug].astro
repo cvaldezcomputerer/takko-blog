@@ -1,5 +1,6 @@
 ---
-import { type CollectionEntry, getCollection } from 'astro:content';
+// @ts-nocheck - TypeScript checking disabled in jsconfig.json
+import { getCollection } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
 
 export async function getStaticPaths() {
@@ -7,12 +8,11 @@ export async function getStaticPaths() {
 	return posts.map((post) => ({
 		// THE FIX IS HERE: Use post.slug instead of post.id
 		params: { slug: post.slug },
-		props: post,
+		props: { post },
 	}));
 }
-type Props = CollectionEntry<'blog'>;
 
-const post = Astro.props;
+const { post } = Astro.props;
 // Use the modern post.render() method
 const { Content } = await post.render();
 ---

@@ -1,5 +1,4 @@
 ---
-import type { CollectionEntry } from 'astro:content';
 import { Image } from 'astro:assets';
 
 import BaseHead from '../components/BaseHead.astro';
@@ -7,11 +6,6 @@ import LanguageSelector from "../components/LanguageSelector.astro";
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
-
-type Props = CollectionEntry<'blog'>['data'];
-
-// Get current slug and find all versions
-
 
 const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 ---
@@ -59,6 +53,24 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 			.last-updated-on {
 				font-style: italic;
 			}
+			.prose :global(figure) {
+				margin: 2em 0;
+			}
+			.prose :global(figure img) {
+				display: block;
+				margin: 0 auto;
+				border-radius: 12px;
+				box-shadow: var(--box-shadow);
+			}
+			.prose :global(figcaption) {
+				margin-top: 0.75em;
+				font-size: 0.875em ;
+				color: rgb(var(--gray)) ;
+				text-align: center;
+				font-style: italic;
+				font-weight: 700 ;
+				line-height: 1.5;
+			}
 		</style>
 	</head>
 
@@ -68,16 +80,6 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 		<main>
 			
 			<article>
-				<div class="hero-image">
-					{heroImage && 
-					<Image
-					 width={1020}
-					 height={510}
-					  src={heroImage}
-					   alt=""
-					    format="webp" />
-						}
-				</div>
 				<div class="prose">
 					<div class="title">
 						<div class="date">
@@ -94,6 +96,18 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 						
 						<hr />
 					</div>
+				</div>
+				<div class="hero-image">
+					{heroImage && 
+					<Image
+					 width={1020}
+					 height={510}
+					  src={heroImage}
+					   alt=""
+					    format="webp" />
+						}
+				</div>
+				<div class="prose">
 					<LanguageSelector />
 					<slot />
 				</div>
