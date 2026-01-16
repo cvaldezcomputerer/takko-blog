@@ -8,10 +8,14 @@ import path from "path";
 import sentry from "@sentry/astro";
 import spotlightjs from "@spotlightjs/astro";
 
+import cloudflare from "@astrojs/cloudflare";
+
 // https://astro.build/config
 export default defineConfig({
   site: "https://bloggydoggy.com",
+  output: "server",
   integrations: [mdx(), sitemap(), sentry(), spotlightjs()],
+
   vite: {
     resolve: {
       alias: {
@@ -19,4 +23,11 @@ export default defineConfig({
       },
     },
   },
+
+  adapter: cloudflare({
+    imageService: "compile",
+    platformProxy: {
+      enabled: true,
+    },
+  }),
 });
