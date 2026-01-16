@@ -4,8 +4,9 @@
     "paths": {
       "~/*": ["src/*"]
     },
-    "checkJs": false
+    "checkJs": false,
+    "skipLibCheck": true
   },
   "include": ["src/**/*"],
-  "exclude": ["dist"]
+  "exclude": ["dist", "node_modules"]
 }
