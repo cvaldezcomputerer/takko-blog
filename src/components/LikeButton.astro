@@ -28,7 +28,10 @@ const { slug } = Astro.props;
 
       // 1. Fetch the current like count on load
       fetch(`/api/likes/${slug}`)
-        .then(res => res.json())
+        .then(async res => {
+          if (!res.ok) throw new Error(await res.text());
+          return res.json();
+        })
         .then(data => {
           countSpan.textContent = data.count;
         })
@@ -83,7 +86,10 @@ const { slug } = Astro.props;
       countSpan.textContent = current + 1;
 
       fetch(`/api/likes/${slug}`, { method: 'POST' })
-        .then(res => res.json())
+        .then(async res => {
+          if (!res.ok) throw new Error(await res.text());
+          return res.json();
+        })
         .then(data => { countSpan.textContent = data.count; })
         .catch(e => console.error("Failed to update likes", e));
     }
