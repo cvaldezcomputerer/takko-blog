@@ -14,6 +14,12 @@ import cloudflare from "@astrojs/cloudflare";
 export default defineConfig({
   site: "https://bloggydoggy.com",
   output: "server",
+  adapter: cloudflare({
+    imageService: "compile",
+    platformProxy: {
+      enabled: true,
+    },
+  }),
   integrations: [mdx(), sitemap(), sentry(), spotlightjs()],
 
   vite: {
@@ -23,11 +29,4 @@ export default defineConfig({
       },
     },
   },
-
-  adapter: cloudflare({
-    imageService: "compile",
-    platformProxy: {
-      enabled: true,
-    },
-  }),
 });
