@@ -12,21 +12,7 @@ export async function getStaticPaths() {
 	}));
 }
 
-// Try to get post from props first (for static generation)
-// If not available, fetch by slug (for server mode)
-let post = Astro.props.post;
-
-if (!post) {
-	const { slug } = Astro.params;
-	if (slug) {
-		const posts = await getCollection('blog');
-		post = posts.find((p) => p.slug === slug);
-	}
-}
-
-if (!post) {
-	return new Response('Post not found', { status: 404 });
-}
+const { post } = Astro.props;
 
 // Use the modern post.render() method
 const { Content } = await post.render();

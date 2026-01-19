@@ -2,7 +2,8 @@
   "name": "takko-blog",
   "compatibility_date": "2026-01-16",
   "compatibility_flags": [
-    "nodejs_compat"
+    "nodejs_compat",
+    "disable_nodejs_process_v2"
   ],
   "pages_build_output_dir": "./dist",
   "d1_databases": [
