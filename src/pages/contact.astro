@@ -130,6 +130,18 @@ import { SITE_TITLE } from '../consts';
 				border: 1px solid #93c5fd;
 			}
 			
+			.sr-only {
+				position: absolute;
+				width: 1px;
+				height: 1px;
+				padding: 0;
+				margin: -1px;
+				overflow: hidden;
+				clip: rect(0, 0, 0, 0);
+				white-space: nowrap;
+				border-width: 0;
+			}
+			
 			@media (max-width: 600px) {
 				.contact-container {
 					padding: 1rem 0.5rem;
@@ -259,14 +271,14 @@ import { SITE_TITLE } from '../consts';
 		<script>
 			// Contact form handling
 			document.addEventListener('astro:page-load', function() {
-				const contactForm = document.getElementById('contactForm') as HTMLFormElement;
-				const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement;
+				const contactForm = document.getElementById('contactForm');
+				const submitBtn = document.getElementById('submitBtn');
 				
 				if (contactForm && submitBtn) {
 					contactForm.addEventListener('submit', handleFormSubmit);
 				}
 				
-				async function handleFormSubmit(e: Event) {
+				async function handleFormSubmit(e) {
 					e.preventDefault();
 					
 					if (!contactForm || !submitBtn) return;
@@ -274,10 +286,11 @@ import { SITE_TITLE } from '../consts';
 					// Get form data
 					const formData = new FormData(contactForm);
 					const data = {
-						name: formData.get('name') as string,
-						email: formData.get('email') as string,
-						subject: formData.get('subject') as string,
-						message: formData.get('message') as string
+						name: formData.get('name'),
+						email: formData.get('email'),
+						subject: formData.get('subject'),
+						message: formData.get('message'),
+						trap: formData.get('trap')
 					};
 					
 					// Basic validation
@@ -295,9 +308,8 @@ import { SITE_TITLE } from '../consts';
 					setLoading(true);
 					
 					try {
-						// Submit to your backend API using environment variable
-						const apiUrl = import.meta.env.PUBLIC_API_BASE_URL || 'http://localhost:3000';
-						const response = await fetch(`${apiUrl}/api/contact`, {
+						// Submit to internal API endpoint
+						const response = await fetch('/api/contact', {
 							method: 'POST',
 							headers: {
 								'Content-Type': 'application/json',
@@ -320,7 +332,7 @@ import { SITE_TITLE } from '../consts';
 					}
 				}
 				
-				function showMessage(message: string, type: 'success' | 'error' | 'loading') {
+				function showMessage(message, type) {
 					if (!contactForm) return;
 					
 					// Remove existing messages
@@ -348,14 +360,14 @@ import { SITE_TITLE } from '../consts';
 					}, 5000);
 				}
 				
-				function setLoading(loading: boolean) {
+				function setLoading(loading) {
 					if (!submitBtn) return;
 					
 					submitBtn.disabled = loading;
 					submitBtn.setAttribute('aria-busy', String(loading));
 				}
 				
-				function isValidEmail(email: string): boolean {
+				function isValidEmail(email) {
 					const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 					return emailRegex.test(email);
 				}
