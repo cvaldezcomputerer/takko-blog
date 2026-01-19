@@ -42,7 +42,7 @@ export const POST = async ({ request, locals }) => {
       },
       body: JSON.stringify({
         from: 'Takko Blog Contact <onboarding@resend.dev>', // Use onboarding@resend.dev until you verify your domain
-        to: 'blogggydogggy@gmail.com',
+        to: 'cvaldezana@gmail.com',
         reply_to: email,
         subject: `[Contact Form] ${subject}`,
         html: `
