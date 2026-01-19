@@ -1,6 +1,6 @@
 export const prerender = false;
 
-export const POST = async ({ request }) => {
+export const POST = async ({ request, locals }) => {
   if (request.method !== 'POST') {
     return new Response(JSON.stringify({ message: 'Method not allowed' }), { status: 405 });
   }
@@ -26,11 +26,11 @@ export const POST = async ({ request }) => {
       return new Response(JSON.stringify({ message: 'Invalid email address' }), { status: 400 });
     }
 
-    const RESEND_API_KEY = import.meta.env.RESEND_API_KEY;
+    // Try to get the key from Cloudflare runtime env (locals) first, then fallback to import.meta.env
+    const RESEND_API_KEY = locals?.runtime?.env?.RESEND_API_KEY || import.meta.env.RESEND_API_KEY;
     
     if (!RESEND_API_KEY) {
-      console.error('RESEND_API_KEY is missing');
-      return new Response(JSON.stringify({ message: 'Server configuration error' }), { status: 500 });
+      return new Response(JSON.stringify({ message: 'Missing RESEND_API_KEY environment variable' }), { status: 500 });
     }
 
     // Send email via Resend API
@@ -59,10 +59,11 @@ export const POST = async ({ request }) => {
     if (res.ok) {
       return new Response(JSON.stringify({ message: 'Message sent successfully!' }), { status: 200 });
     } else {
-      return new Response(JSON.stringify({ message: 'Failed to send message.' }), { status: 500 });
+      const errorData = await res.json();
+      return new Response(JSON.stringify({ message: errorData.message || JSON.stringify(errorData) }), { status: 500 });
     }
   } catch (error) {
     console.error(error);
-    return new Response(JSON.stringify({ message: 'Internal server error' }), { status: 500 });
+    return new Response(JSON.stringify({ message: error.message || 'Internal server error' }), { status: 500 });
   }
 };
