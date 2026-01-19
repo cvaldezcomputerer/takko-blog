@@ -28,13 +28,6 @@ export default defineConfig({
     imageService: "compile",
     platformProxy: {
       enabled: true,
-      d1Database: true,
-      bindings: {
-        DB: {
-          binding: "DB",
-          databaseId: "52a91386-b103-6d03-535f-7cb70057c85d"
-        }
-      }
     },
   }),
 });
