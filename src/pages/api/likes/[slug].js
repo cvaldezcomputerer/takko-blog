@@ -1,9 +1,9 @@
-export const GET = async (context) => {
-  console.log("GET /api/likes/:slug");
+export const GET = async ({ params, locals }) => {
+  const { slug } = params;
+  console.log(`GET /api/likes/${slug}`);
+
   // Access the Cloudflare D1 database
-  const db = context.locals?.runtime?.env?.DB;
-  console.log("DB object:", db ? "Exists" : "Does NOT exist");
-  const { slug } = context.params;
+  const db = locals?.runtime?.env?.DB;
 
   if (!slug) {
     console.error("Slug is missing");
@@ -26,8 +26,7 @@ export const GET = async (context) => {
       .bind(slug)
       .first();
 
-    const count = result ? result.count : 0;
-    console.log(`Successfully fetched count for ${slug}: ${count}`);
+    const count = result?.count ?? 0;
     return new Response(JSON.stringify({ count }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
@@ -38,11 +37,11 @@ export const GET = async (context) => {
   }
 };
 
-export const POST = async (context) => {
-  console.log("POST /api/likes/:slug");
-  const db = context.locals?.runtime?.env?.DB;
-  console.log("DB object:", db ? "Exists" : "Does NOT exist");
-  const { slug } = context.params;
+export const POST = async ({ params, locals }) => {
+  const { slug } = params;
+  console.log(`POST /api/likes/${slug}`);
+
+  const db = locals?.runtime?.env?.DB;
 
   if (!slug) {
     console.error("Slug is missing");
@@ -67,9 +66,10 @@ export const POST = async (context) => {
       `);
 
     const result = await stmt.bind(slug).first();
-    console.log(`Successfully updated count for ${slug}: ${result.count}`);
+    const count = result?.count ?? 0;
+    console.log(`Successfully updated count for ${slug}: ${count}`);
 
-    return new Response(JSON.stringify({ count: result.count }), {
+    return new Response(JSON.stringify({ count }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
