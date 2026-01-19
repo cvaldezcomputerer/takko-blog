@@ -41,8 +41,8 @@ export const POST = async ({ request, locals }) => {
         'Authorization': `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'Takko Blog Contact <onboarding@resend.dev>', // Use onboarding@resend.dev until you verify your domain
-        to: 'cvaldezana@gmail.com',
+        from: 'Takko Blog <contact@contact.bloggydoggy.com>',
+        to: 'blogggydogggy@gmail.com',
         reply_to: email,
         subject: `[Contact Form] ${subject}`,
         html: `
