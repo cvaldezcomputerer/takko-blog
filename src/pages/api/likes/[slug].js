@@ -1,6 +1,5 @@
 export const GET = async (context) => {
   console.log("GET /api/likes/:slug");
-  console.log("Context:", JSON.stringify(context, null, 2));
   // Access the Cloudflare D1 database
   const db = context.locals?.runtime?.env?.DB;
   console.log("DB object:", db ? "Exists" : "Does NOT exist");
@@ -41,7 +40,6 @@ export const GET = async (context) => {
 
 export const POST = async (context) => {
   console.log("POST /api/likes/:slug");
-  console.log("Context:", JSON.stringify(context, null, 2));
   const db = context.locals?.runtime?.env?.DB;
   console.log("DB object:", db ? "Exists" : "Does NOT exist");
   const { slug } = context.params;
