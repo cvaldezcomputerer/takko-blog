@@ -1,0 +1,99 @@
+---
+interface Props {
+	meaning: string;
+}
+
+const { meaning } = Astro.props;
+---
+
+<span class="explain-wrapper">
+	<button class="explain-trigger" type="button" aria-label="Show explanation">
+		<slot />
+	</button>
+	<span class="explain-box" role="tooltip">
+		{meaning}
+	</span>
+</span>
+
+<style>
+	.explain-wrapper {
+		position: relative;
+		display: inline-block;
+	}
+
+	.explain-trigger {
+		background: none;
+		border: none;
+		padding: 0;
+		margin: 0;
+		font: inherit;
+		cursor: pointer;
+		color: inherit;
+		border-bottom: 2px dotted var(--accent); /* Dotted underline to indicate interactivity */
+		transition: all 0.2s ease;
+	}
+
+	.explain-trigger:hover,
+	.explain-trigger:focus,
+	.explain-wrapper:hover .explain-trigger {
+		color: var(--accent);
+		background-color: #ecfdf5; /* Light green highlight */
+		border-bottom-style: solid;
+	}
+
+	.explain-box {
+		visibility: hidden;
+		opacity: 0;
+		position: absolute;
+		bottom: 125%; /* Position above the text */
+		left: 50%;
+		transform: translateX(-50%) translateY(10px);
+		
+		width: max-content;
+		max-width: 250px;
+		min-width: 150px;
+		padding: 0.75rem 1rem;
+		
+		background-color: white;
+		color: rgb(var(--gray-dark));
+		border: 2px solid var(--accent);
+		border-radius: 12px;
+		box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+		
+		font-size: 0.9rem;
+		line-height: 1.4;
+		text-align: center;
+		z-index: 10;
+		
+		transition: all 0.2s ease;
+		pointer-events: none;
+	}
+
+	/* Little triangle arrow pointing down to the text */
+	.explain-box::after {
+		content: '';
+		position: absolute;
+		top: 100%;
+		left: 50%;
+		margin-left: -8px;
+		border-width: 8px;
+		border-style: solid;
+		border-color: var(--accent) transparent transparent transparent;
+	}
+
+	.explain-wrapper:hover .explain-box,
+	.explain-trigger:focus + .explain-box {
+		visibility: visible;
+		opacity: 1;
+		transform: translateX(-50%) translateY(0);
+		pointer-events: auto;
+	}
+
+	/* Mobile adjustments to keep tooltip on screen */
+	@media (max-width: 480px) {
+		.explain-box {
+			min-width: 200px;
+			white-space: normal;
+		}
+	}
+</style>
