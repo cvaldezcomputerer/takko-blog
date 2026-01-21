@@ -320,33 +320,32 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 </style>
 
 <script>
+	// Variable to track the cleanup function for the scroll listener
+	let cleanupScroll;
+
 	function initializeHamburgerMenu() {
 		const hamburgerButton = document.querySelector('.hamburger-menu');
 		const header = document.querySelector('header');
 
 		if (hamburgerButton && header) {
-			// Remove any existing event listeners first
-			hamburgerButton.removeEventListener('click', handleHamburgerClick);
-			// Add the event listener
-			hamburgerButton.addEventListener('click', handleHamburgerClick);
-		}
-	}
-
-	function handleHamburgerClick() {
-		const header = document.querySelector('header');
-		const hamburgerButton = document.querySelector('.hamburger-menu');
-		
-		if (header && hamburgerButton) {
-			const isMenuOpen = header.classList.toggle('is-menu-open');
-			hamburgerButton.setAttribute('aria-expanded', String(isMenuOpen));
+			hamburgerButton.addEventListener('click', () => {
+				const isMenuOpen = header.classList.toggle('is-menu-open');
+				hamburgerButton.setAttribute('aria-expanded', String(isMenuOpen));
+			});
 		}
 	}
 
 	function initializeScrollEffect() {
+		// 1. Clean up the previous listener if it exists (prevents stacking listeners)
+		if (cleanupScroll) {
+			cleanupScroll();
+			cleanupScroll = null;
+		}
+
 		const header = document.querySelector('header');
+		if (!header) return;
 		
 		function handleScroll() {
-			if (!header) return;
 			if (window.scrollY > 20) {
 				header.classList.add('is-scrolled');
 			} else {
@@ -354,15 +353,17 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 			}
 		}
 
-		window.addEventListener('scroll', handleScroll);
+		// 2. Add 'passive: true' for better scroll performance
+		window.addEventListener('scroll', handleScroll, { passive: true });
+		
+		// 3. Store the cleanup function for next time
+		cleanupScroll = () => window.removeEventListener('scroll', handleScroll);
+
+		// Initial check
 		handleScroll();
 	}
 
-	// Initialize on page loa
-	initializeHamburgerMenu();
-	initializeScrollEffect();
-
-	// Re-initialize on Astro page transitions
+	// Initialize on page load (runs on first load and after navigation)
 	document.addEventListener('astro:page-load', () => {
 		initializeHamburgerMenu();
 		initializeScrollEffect();
