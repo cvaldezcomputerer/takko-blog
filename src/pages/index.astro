@@ -4,6 +4,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import T from '../components/T.astro';
 import Furi from '../components/Furi.astro';
+import Explain from '../components/Explain.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 ---
 
@@ -98,7 +99,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 			<p>
 				<T>
-					<span slot="en">I'm building this site to be accessible for English learners, with plans to add Japanese translations and simplified English versions of each post. It's a work in progress!</span>
+					<span slot="en">I'm building this site to be accessible for English learners, with plans to add Japanese translations and simplified English versions of each post. <Explain meaning="It's not finished!">It's a work in progress!</Explain></span>
 					<span slot="ja">このサイトは英語学習者にもアクセスしやすいように作っています。各投稿に日本語訳と簡易英語版を追加する予定です。まだ制作中です！</span>
 					<span slot="en_simple">I am making this site for English learners. I want to add Japanese translations and simple English versions of each post. It is still being made!</span>
 				</T>
