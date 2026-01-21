@@ -1,0 +1,74 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import T from '../components/T.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`404 - ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+		<style>
+			main {
+				width: 720px;
+				max-width: calc(100% - 2em);
+				margin: auto;
+				padding: 5em 1em;
+				text-align: center;
+			}
+			h1 {
+				font-size: 4em;
+				margin: 0;
+				color: var(--accent);
+				line-height: 1;
+			}
+			.emoji {
+				font-size: 6em;
+				margin-bottom: 0.5rem;
+				display: block;
+			}
+			p {
+				font-size: 1.2em;
+				margin-bottom: 2em;
+				color: rgb(var(--gray));
+			}
+			.home-btn {
+				display: inline-block;
+				padding: 0.75em 1.5em;
+				background: var(--accent);
+				color: white;
+				text-decoration: none;
+				border-radius: 8px;
+				font-weight: bold;
+				transition: transform 0.2s;
+			}
+			.home-btn:hover {
+				transform: scale(1.05);
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<span class="emoji">🐕❓</span>
+			<h1>404</h1>
+			<p>
+				<T>
+					<span slot="en">Woof! I dug around, but I couldn't find that page.</span>
+					<span slot="ja">ワン！掘ってみましたが、そのページは見つかりませんでした。</span>
+					<span slot="en_simple">Woof! I can not find that page.</span>
+				</T>
+			</p>
+			<a href="/" class="home-btn">
+				<T>
+					<span slot="en">Go Back Home</span>
+					<span slot="ja">ホームに戻る</span>
+					<span slot="en_simple">Go Home</span>
+				</T>
+			</a>
+		</main>
+		<Footer />
+	</body>
+</html>
