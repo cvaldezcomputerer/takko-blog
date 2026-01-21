@@ -82,7 +82,13 @@
       transition: all 0.3s ease-in-out;
       position: relative;
       overflow: hidden;
-      border: 2px solid transparent;
+      border: 3px solid transparent;
+    }
+
+    .lang-btn.active {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1;
     }
   
     /* English - Blue Theme */
@@ -95,7 +101,7 @@
     .lang-btn[data-lang-btn="en"].active {
       background-color: #0284c7;
       color: white;
-      border-color: #0284c7;
+      border-color: #0369a1; /* Darker border for definition */
     }
 
     /* Ez English - Green Theme */
@@ -108,7 +114,7 @@
     .lang-btn[data-lang-btn="en_simple"].active {
       background-color: #059669;
       color: white;
-      border-color: #059669;
+      border-color: #047857; /* Darker border for definition */
     }
 
     /* Japanese - Pink Theme */
@@ -121,7 +127,7 @@
     .lang-btn[data-lang-btn="ja"].active {
       background-color: #db2777;
       color: white;
-      border-color: #db2777;
+      border-color: #be185d; /* Darker border for definition */
     }
 
     /* Focus states for accessibility */
