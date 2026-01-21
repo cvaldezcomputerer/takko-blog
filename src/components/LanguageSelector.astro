@@ -4,7 +4,7 @@
 
 <div class="language-controls" aria-label="Content language">
     <button data-lang-btn="en" class="lang-btn">English</button>
-    <button data-lang-btn="en_simple" class="lang-btn">Simple English</button>
+    <button data-lang-btn="en_simple" class="lang-btn">Ez English</button>
     <button data-lang-btn="ja" class="lang-btn">日本語</button>
   </div>
   
@@ -76,44 +76,52 @@
       padding: 0.5rem 1rem; 
       border-radius: 8px;
       
-      background-color: #f0f9ff; 
       font-size: 0.95rem;
       font-weight: 600; 
       cursor: pointer;
       transition: all 0.3s ease-in-out;
-      box-shadow: 0 2px 4px rgba(14, 165, 233, 0.1);
       position: relative;
       overflow: hidden;
+      border: 2px solid transparent;
     }
   
-    
-    .lang-btn:hover {
-      background-color: #0ea5e9;
-      border-color: #0284c7; 
-      color: #ffffff; 
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
+    /* English - Blue Theme */
+    .lang-btn[data-lang-btn="en"] {
+      background-color: #e0f2fe;
+      color: #0369a1;
+      border-color: #0369a1;
+    }
+    .lang-btn[data-lang-btn="en"]:hover,
+    .lang-btn[data-lang-btn="en"].active {
+      background-color: #0284c7;
+      color: white;
+      border-color: #0284c7;
     }
 
-    .lang-btn:active {
-      transform: translateY(0);
-      box-shadow: 0 2px 6px rgba(14, 165, 233, 0.2);
-    }
-  
-    .lang-btn.active {
-      background-color: #059669; 
-      border-color: #059669;
-      color: #ffffff; 
-      font-weight: 700; 
-      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
-      transform: translateY(-1px);
-    }
-
-    .lang-btn.active:hover {
-      background-color: #047857; 
+    /* Ez English - Green Theme */
+    .lang-btn[data-lang-btn="en_simple"] {
+      background-color: #d1fae5;
+      color: #047857;
       border-color: #047857;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(5, 150, 105, 0.4);
+    }
+    .lang-btn[data-lang-btn="en_simple"]:hover,
+    .lang-btn[data-lang-btn="en_simple"].active {
+      background-color: #059669;
+      color: white;
+      border-color: #059669;
+    }
+
+    /* Japanese - Pink Theme */
+    .lang-btn[data-lang-btn="ja"] {
+      background-color: #fce7f3;
+      color: #be185d;
+      border-color: #be185d;
+    }
+    .lang-btn[data-lang-btn="ja"]:hover,
+    .lang-btn[data-lang-btn="ja"].active {
+      background-color: #db2777;
+      color: white;
+      border-color: #db2777;
     }
 
     /* Focus states for accessibility */
