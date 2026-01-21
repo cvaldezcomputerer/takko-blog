@@ -7,6 +7,10 @@ import logoImage from '../assets/images/logo.png';
 const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !== '/blog' && Astro.url.pathname !== '/blog/' ? '/blog' : '/';
 ---
 
+<button class="ghost-island" data-target="left" aria-label="Move island left"></button>
+<button class="ghost-island" data-target="center" aria-label="Move island center"></button>
+<button class="ghost-island" data-target="right" aria-label="Move island right"></button>
+
 <div id="floating-island">
 	<a href="/" class="island-logo" aria-label="Home">
 		<Image src={logoImage} alt="" width={56} height={56} />
@@ -21,8 +25,6 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 	#floating-island {
 		position: fixed;
 		top: 1rem;
-		left: 50%;
-		transform: translateX(-50%) scale(0.9); /* Start at the same size the header shrinks to */
 		z-index: 101;
 		width: max-content;
 		max-width: calc(100% - 2rem);
@@ -39,14 +41,130 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 		
 		opacity: 0;
 		pointer-events: none;
-		transition: all 0.3s ease;
+		
+		/* Default Center Position */
+		left: 50%;
+		top: 1rem;
+		transform: translateX(-50%) scale(0.9);
+		
+		transition: 
+			opacity 0.3s ease,
+			transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
+			left 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
+			top 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
+			gap 0.5s ease;
 	}
 
 	#floating-island.visible {
 		opacity: 1;
 		pointer-events: auto;
-		transform: translateX(-50%) scale(1); /* Grow into place */
 		gap: 0.5rem;
+		transform: translateX(-50%) scale(1); /* Default visible state (center) */
+	}
+	
+	/* Position Variants */
+	#floating-island[data-position="left"] {
+		left: 2rem;
+		top: 50%;
+		flex-direction: column;
+		transform: translate(0, -50%) scale(0.9);
+	}
+	#floating-island.visible[data-position="left"] {
+		transform: translate(0, -50%) scale(1);
+	}
+	
+	#floating-island[data-position="right"] {
+		left: 100%;
+		top: 50%;
+		flex-direction: column;
+		transform: translate(calc(-100% - 2rem), -50%) scale(0.9);
+	}
+	#floating-island.visible[data-position="right"] {
+		transform: translate(calc(-100% - 2rem), -50%) scale(1);
+	}
+
+	/* Stack language controls when vertical */
+	#floating-island[data-position="left"] :global(.language-controls),
+	#floating-island[data-position="right"] :global(.language-controls) {
+		flex-direction: column;
+	}
+
+	/* Ghosts */
+	.ghost-island {
+		position: fixed;
+		/* Base appearance: Dashed "Docking Bay" */
+		border-radius: 20px;
+		background: rgba(255, 255, 255, 0.4);
+		border: 2px dashed rgba(0,0,0,0.15);
+		color: rgba(0,0,0,0.3);
+		
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		
+		cursor: pointer;
+		z-index: 100;
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.3s ease, transform 0.2s ease, border-color 0.2s, color 0.2s, background-color 0.2s;
+		animation: ghostPulse 3s infinite ease-in-out;
+	}
+	
+	@keyframes ghostPulse {
+		0% { border-color: rgba(0,0,0,0.15); }
+		50% { border-color: rgba(0,0,0,0.3); background: rgba(255, 255, 255, 0.6); }
+		100% { border-color: rgba(0,0,0,0.15); }
+	}
+
+	.ghost-island:hover {
+		border-color: var(--accent);
+		color: var(--accent);
+		background: rgba(255, 255, 255, 0.9);
+		animation: none; /* Stop pulsing on hover */
+	}
+	
+	.ghost-island::after {
+		content: '+';
+		font-size: 1.5rem;
+		font-weight: 700;
+		padding-bottom: 2px; /* Visual centering */
+	}
+
+	.ghost-island[data-target="left"] { 
+		left: 2rem; 
+		top: 50%;
+		transform: translateY(-50%);
+		width: 40px;
+		height: 80px;
+	}
+	.ghost-island[data-target="left"]:hover { transform: translateY(-50%) scale(1.2); }
+
+	.ghost-island[data-target="center"] { 
+		left: 50%; 
+		top: 2.25rem; 
+		transform: translateX(-50%);
+		width: 80px;
+		height: 40px;
+	}
+	.ghost-island[data-target="center"]:hover { transform: translateX(-50%) scale(1.2); }
+	
+	.ghost-island[data-target="right"] { 
+		right: 2rem; 
+		top: 50%; 
+		transform: translateY(-50%); 
+		width: 40px; 
+		height: 80px; 
+	}
+	.ghost-island[data-target="right"]:hover { transform: translateY(-50%) scale(1.2); }
+
+	/* Show ghosts when island is visible, but only if they are not the active position */
+	.ghost-island.visible {
+		opacity: 1;
+		pointer-events: auto;
+	}
+	.ghost-island.active-pos {
+		opacity: 0;
+		pointer-events: none;
 	}
 
 	.island-logo img {
@@ -93,21 +211,46 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 		#floating-island {
 			display: none !important;
 		}
+		.ghost-island {
+			display: none !important;
+		}
 	}
 </style>
 
 <script>
 	function initializeScrollEffect() {
 		const island = document.getElementById('floating-island');
+		const ghosts = document.querySelectorAll('.ghost-island');
 		if (!island) return;
 		
 		function handleScroll() {
 			if (window.scrollY > 50) {
 				island.classList.add('visible');
+				ghosts.forEach(g => g.classList.add('visible'));
 			} else {
 				island.classList.remove('visible');
+				ghosts.forEach(g => g.classList.remove('visible'));
 			}
 		}
+		
+		// Position Logic
+		function setPosition(pos) {
+			island.setAttribute('data-position', pos);
+			ghosts.forEach(g => {
+				if (g.getAttribute('data-target') === pos) {
+					g.classList.add('active-pos');
+				} else {
+					g.classList.remove('active-pos');
+				}
+			});
+		}
+		
+		ghosts.forEach(g => {
+			g.addEventListener('click', () => setPosition(g.getAttribute('data-target')));
+		});
+		
+		// Set initial state
+		setPosition('center');
 
 		window.addEventListener('scroll', handleScroll, { passive: true });
 		handleScroll(); // Check on load
