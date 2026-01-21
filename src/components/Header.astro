@@ -24,10 +24,9 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 			<span class="site-title-text">{SITE_TITLE}</span>
 		</a>
 
+		<LanguageSelector />
 		
 		<div class="menu-content">
-			<LanguageSelector />
-
 			<div class="internal-links">
 				<HeaderLink href="/">
 					<T>
@@ -88,7 +87,7 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 		align-items: center;
 		gap: 1em;
 		position: relative;
-
+		justify-content: space-between;
 	}
 	.logo-link {
 		display: flex;
