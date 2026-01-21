@@ -64,7 +64,7 @@
       justify-content: center;
       gap: 0.75rem; 
       flex-wrap: wrap;
-      margin-block: 1rem;
+      margin-block: 0;
     }
   
    
@@ -73,7 +73,7 @@
       -moz-appearance: none;
       appearance: none;
       
-      padding: 0.75rem 1.5rem; 
+      padding: 0.5rem 1rem; 
       border-radius: 8px;
       
       background-color: #f0f9ff; 
@@ -124,6 +124,27 @@
 
     .lang-btn.active:focus {
       box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.3);
+    }
+
+    :global(rt) {
+      display: none; /* Hidden by default to keep the page clean */
+      font-size: 0.6em;
+      user-select: none; /* Prevents copying the reading when selecting text */
+    }
+    
+    :global(body.furi-active rt) {
+      display: ruby-text; /* Shows when the toggle is active */
+    }
+    
+    /* Responsive adjustments for smaller screens (tablets/small laptops) */
+    @media (max-width: 1100px) {
+      .lang-btn {
+        padding: 0.35rem 0.6rem;
+        font-size: 0.8rem;
+      }
+      .language-controls {
+        gap: 0.4rem;
+      }
     }
     
     @media (max-width: 480px) {
