@@ -1,0 +1,12 @@
+---
+interface Props {
+	kanji: string;
+	read: string;
+}
+
+const { kanji, read } = Astro.props;
+---
+
+<ruby>
+	{kanji}<rt>{read}</rt>
+</ruby>
