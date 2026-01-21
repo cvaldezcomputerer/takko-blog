@@ -3,7 +3,6 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import T from '../components/T.astro';
-import LanguageSelector from '../components/LanguageSelector.astro';
 import { SITE_TITLE } from '../consts';
 ---
 
@@ -160,13 +159,11 @@ import { SITE_TITLE } from '../consts';
 	<body>
 		<Header />
 		<main>
-			<LanguageSelector />
-			
 			<div class="contact-container">
 				<h1 class="contact-title">
 					<T>
 						<span slot="en">Contact Me</span>
-						<span slot="ja">お問い合わせ</span>
+						<span slot="ja">コンタクト</span>
 						<span slot="en_simple">Contact</span>
 					</T>
 				</h1>

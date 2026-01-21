@@ -2,6 +2,8 @@
 import { Image } from 'astro:assets';
 import HeaderLink from './HeaderLink.astro';
 import { SITE_TITLE } from '../consts';
+import LanguageSelector from './LanguageSelector.astro';
+import T from './T.astro';
 import logoImage from '../assets/images/logo.png';
 ---
 
@@ -20,23 +22,37 @@ import logoImage from '../assets/images/logo.png';
 
 		
 		<div class="menu-content">
-			<div class="internal-links">
-				<HeaderLink href="/">Home</HeaderLink>
-				<HeaderLink href="/blog">Blog</HeaderLink>
-				<HeaderLink href="/about">About</HeaderLink>
-				<HeaderLink href="/contact">Contact</HeaderLink>
-			</div>
+			<LanguageSelector />
 
-			<div class="social-links">
-				<a href="https://www.youtube.com/@takkotaco" target="_blank">
-					<span class="sr-only">my youtube channel</span>
-					<svg viewBox="0 0 16 16" aria-hidden="true" width="32" height="32">
-						<path
-							fill="currentColor"
-							d="M15.75 4.8s-.18-1.28-.73-1.83c-.6-.55-1.25-.55-1.56-.6C11.2 2.3 8 2.3 8 2.3s-3.2 0-5.46.07c-.3.05-.96-.05-1.56-.6C.43 3.52.25 4.8.25 4.8S.07 6.3.07 7.8v.4c0 1.5 0 3 .07 3s.18 1.28.73 1.83c.6.55 1.25-.55 1.56.6C4.8 13.7 8 13.7 8 13.7s3.2 0 5.46-.07c.3-.05.96-.05 1.56-.6.55-.55.73-1.83.73-1.83S15.93 9.7 15.93 8.2v-.4c0-1.5 0-3-.07-3zM6.41 10.3V5.7l4.5 2.3-4.5 2.3z"
-						></path>
-					</svg>
-				</a>
+			<div class="internal-links">
+				<HeaderLink href="/">
+					<T>
+						<span slot="en">Home</span>
+						<span slot="ja">ホーム</span>
+						<span slot="en_simple">🏠 <span class="nav-text">Home</span></span>
+					</T>
+				</HeaderLink>
+				<HeaderLink href="/blog">
+					<T>
+						<span slot="en">Blog</span>
+						<span slot="ja">ブログ</span>
+						<span slot="en_simple">📖 <span class="nav-text">Blog</span></span>
+					</T>
+				</HeaderLink>
+				<HeaderLink href="/about">
+					<T>
+						<span slot="en">About</span>
+						<span slot="ja">プロフィール</span>
+						<span slot="en_simple">👋 <span class="nav-text">About</span></span>
+					</T>
+				</HeaderLink>
+				<HeaderLink href="/contact">
+					<T>
+						<span slot="en">Contact</span>
+						<span slot="ja">コンタクト</span>
+						<span slot="en_simple">📬 <span class="nav-text">Contact</span></span>
+					</T>
+				</HeaderLink>
 			</div>
 		</div>
 		<button class="hamburger-menu" aria-label="Open menu" aria-expanded="false">
@@ -50,17 +66,17 @@ import logoImage from '../assets/images/logo.png';
 	header {
 		margin: 0;
 		padding: 0 1em;
-		background: #f5f1eb; /* Warm beige-brown background */
-		border-top: 4px solid var(--accent); /* Green top accent border */
-		box-shadow: 0 2px 12px rgba(var(--black), 8%); /* Enhanced shadow for better separation */
-		position: relative;
-		z-index: 10;
+		background: #f5f1eb;
+		border-top: 4px solid var(--accent); 
+		box-shadow: 0 2px 12px rgba(var(--black), 8%); 
+		top: 0;
+		z-index: 100;
 	}
 	nav {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
 		gap: 1em;
+		position: relative;
 
 	}
 	.logo-link {
@@ -102,10 +118,17 @@ import logoImage from '../assets/images/logo.png';
 	/* Desktop Styles for Links */
 	.menu-content {
 		display: flex;
+		justify-content: flex-end;
 		align-items: center;
-		gap: 2em; 
-		
-		
+		flex-grow: 1;
+	}
+	/* Only center absolutely on large screens to prevent overlap */
+	@media (min-width: 1400px) {
+		:global(.language-controls) {
+			position: absolute;
+			left: 50%;
+			transform: translateX(-50%);
+		}
 	}
 	.internal-links {
 		display: flex;
@@ -113,6 +136,7 @@ import logoImage from '../assets/images/logo.png';
 		align-items: center;
 		border-left: 1px solid #e5e7eb;
 		padding-left: 1.5em;
+		transition: opacity 0.3s ease, visibility 0.3s ease;
 		
 	}
 	.social-links {
@@ -128,6 +152,18 @@ import logoImage from '../assets/images/logo.png';
 	nav a.active {
 		text-decoration: none;
 		border-bottom-color: var(--accent);
+	}
+
+	/* Hide text label next to emoji on intermediate screens to save space */
+	@media (max-width: 1200px) {
+		.nav-text {
+			display: none;
+		}
+	}
+	@media (max-width: 720px) {
+		.nav-text {
+			display: inline;
+		}
 	}
 
 	/* Mobile Styles */
@@ -201,9 +237,29 @@ import logoImage from '../assets/images/logo.png';
 		}
 	}
 
+	function initializeScrollEffect() {
+		const header = document.querySelector('header');
+		
+		function handleScroll() {
+			if (!header) return;
+			if (window.scrollY > 20) {
+				header.classList.add('is-scrolled');
+			} else {
+				header.classList.remove('is-scrolled');
+			}
+		}
+
+		window.addEventListener('scroll', handleScroll);
+		handleScroll();
+	}
+
 	// Initialize on page loa
 	initializeHamburgerMenu();
+	initializeScrollEffect();
 
 	// Re-initialize on Astro page transitions
-	document.addEventListener('astro:page-load', initializeHamburgerMenu);
+	document.addEventListener('astro:page-load', () => {
+		initializeHamburgerMenu();
+		initializeScrollEffect();
+	});
 </script>

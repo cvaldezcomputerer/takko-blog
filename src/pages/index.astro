@@ -3,7 +3,7 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import T from '../components/T.astro';
-import LanguageSelector from '../components/LanguageSelector.astro';
+import Furi from '../components/Furi.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 ---
 
@@ -79,7 +79,6 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 	<body>
 		<Header />
 		<main>
-			<LanguageSelector />
 			
 			<h1 class="main-title">
 				<T>
@@ -91,9 +90,9 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 			
 			<p>
 				<T>
-					<span slot="en">Hello! I'm Cristian, an English teacher living in the small Japanese town of 田子町 (Takko machi). This blog is where I share my experiences of life in rural Japan.</span>
-					<span slot="ja">こんにちは！クリスチャンです。田子町という小さな町で英語の先生をしています。このブログでは、日本の田舎での生活体験を共有しています。</span>
-					<span slot="en_simple">Hello! I'm Cristian. I am an English teacher. I live in a small town in Japan called 田子町 (Takko machi). This blog is where I write about my life in the countryside of Japan.</span>
+					<span slot="en">Hello! I'm Cristian, an English teacher living in the small Japanese town of <Furi kanji="田子町" read="たっこまち" /> (Takko machi). This blog is where I share my experiences of life in rural Japan.</span>
+					<span slot="ja">こんにちは！クリスチャンです。<Furi kanji="田子町" read="たっこまち" />という小さな町で英語の先生をしています。このブログでは、日本の<Furi kanji="田舎" read="いなか" />での生活体験を共有しています。</span>
+					<span slot="en_simple">Hello! I'm Cristian. I am an English teacher. I live in a small town in Japan called <Furi kanji="田子町" read="たっこまち" /> (Takko machi). This blog is where I write about my life in the countryside of Japan.</span>
 				</T>
 			</p>
 
