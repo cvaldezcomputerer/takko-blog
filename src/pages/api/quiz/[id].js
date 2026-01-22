@@ -36,8 +36,7 @@ export const GET = async ({ params, locals }) => {
       return new Response(JSON.stringify(votes), {
         status: 200,
         headers: { 
-          "Content-Type": "application/json",
-          "Cache-Control": "public, max-age=43200" // Cache for 12 hours
+          "Content-Type": "application/json"
         },
       });
     } catch (e) {
