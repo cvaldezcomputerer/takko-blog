@@ -6,6 +6,7 @@ heroImage: "../../assets/images/blog/fukushima-post/11negisoba1.JPG"
 ---
 
 import T from "~/components/T.astro";
+import Quiz from "../../components/Quiz.astro";
 
 ## <T><span slot="en">Fukushima prefecture</span><span slot="ja">福島県</span><span slot="en_simple">Fukushima</span></T>
 
@@ -202,6 +203,21 @@ import T from "~/components/T.astro";
     The hotel food was good. I ate a lot!
   </span>
 </T>
+
+<Quiz 
+  id="fukushima-buffet-cost"
+  question={{
+    en: "How much do you think this dinner buffet cost per person?",
+    ja: "この夕食ビュッフェは一人いくらだったと思いますか？",
+    en_simple: "How much was dinner?"
+  }}
+  options={[
+    { en: "¥3,000 ($20)", ja: "3,000円" },
+    { en: "¥6,000 ($40)", ja: "6,000円" },
+    { en: "¥10,000 ($65)", ja: "10,000円" },
+    { en: "¥15,000 ($100)", ja: "15,000円" }
+  ]}
+/>
 
 <figure>
   ![Hotel buffet dinner](../../assets/images/blog/fukushima-post/7hotel_food.JPG)

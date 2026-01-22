@@ -1,8 +1,16 @@
 ---
+import T from './T.astro';
+
+interface Translation {
+	en: string;
+	ja?: string;
+	en_simple?: string;
+}
+
 interface Props {
 	id: string;
-	question: string;
-	options: string[];
+	question: Translation;
+	options: Translation[];
 }
 
 const { id, question, options } = Astro.props;
@@ -10,13 +18,25 @@ const { id, question, options } = Astro.props;
 
 <quiz-component data-id={id}>
 	<div class="quiz-card">
-		<h3 class="quiz-question">{question}</h3>
+		<h3 class="quiz-question">
+			<T>
+				<span slot="en">{question.en}</span>
+				<span slot="ja">{question.ja || question.en}</span>
+				<span slot="en_simple">{question.en_simple || question.en}</span>
+			</T>
+		</h3>
 		
 		<div class="quiz-options">
 			{
 				options.map((option, index) => (
 					<button class="quiz-option" data-index={index} type="button">
-						<span class="option-label">{option}</span>
+						<span class="option-label">
+							<T>
+								<span slot="en">{option.en}</span>
+								<span slot="ja">{option.ja || option.en}</span>
+								<span slot="en_simple">{option.en_simple || option.en}</span>
+							</T>
+						</span>
 						<span class="option-percentage"></span>
 						<div class="progress-bar"></div>
 					</button>
@@ -36,6 +56,7 @@ const { id, question, options } = Astro.props;
 		private buttons: NodeListOf<HTMLButtonElement>;
 		private meta: HTMLElement | null;
 		private hasVoted: boolean = false;
+		private currentVotes: Record<string, number> = {};
 
 		constructor() {
 			super();
@@ -94,8 +115,11 @@ const { id, question, options } = Astro.props;
 					localStorage.setItem(`quiz_vote_${this.id}`, String(index));
 					this.hasVoted = true;
 					this.markSelected(index);
-					// Re-fetch to get the updated totals from the server
-					await this.fetchData();
+					
+					// Manually update local state (since API might be cached)
+					const currentCount = this.currentVotes[index] || 0;
+					this.currentVotes[index] = currentCount + 1;
+					this.updateUI(this.currentVotes);
 					this.disableInteraction();
 				}
 			} catch (err) {
@@ -118,6 +142,7 @@ const { id, question, options } = Astro.props;
 
 		updateUI(votesObj: Record<string, number>) {
 			let total = 0;
+			this.currentVotes = votesObj; // Store for local updates
 			const counts: Record<string, number> = {};
 			
 			// Calculate total
