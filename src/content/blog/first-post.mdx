@@ -5,15 +5,7 @@ pubDate: "2025-07-29"
 heroImage: "../../assets/images/hero/F.jpeg"
 ---
 
-import { Image } from "astro:assets";
 import T from "~/components/T.astro";
-
-import frogOnLeafImage from "~/assets/images/blog/frog-post/FrogyOnLeaf.jpeg";
-import centipedeImage from "~/assets/images/blog/frog-post/house-centipede.jpg";
-import frogFaceImage from "~/assets/images/blog/frog-post/frog-face.jpeg";
-import ventImage from "~/assets/images/blog/frog-post/vent.JPG";
-import frogInJarImage from "~/assets/images/blog/frog-post/frog-in-jar.jpeg";
-import catImage from "~/assets/images/blog/frog-post/stray-cat.jpeg";
 
 ## <T><span slot="en">Frogs?</span><span slot="ja">カエル？</span><span slot="en_simple">Frogs?</span></T>
 
@@ -44,7 +36,7 @@ import catImage from "~/assets/images/blog/frog-post/stray-cat.jpeg";
 </T>
 
 <figure>
-  <Image src={centipedeImage} alt="A Japanese house centipede (gejigeji)" />
+  ![A Japanese house centipede (gejigeji)](../../assets/images/blog/frog-post/house-centipede.jpg)
   <figcaption>
     <T>
       <span slot="en">Scary looking, but a friend to the house.</span>
@@ -76,7 +68,7 @@ import catImage from "~/assets/images/blog/frog-post/stray-cat.jpeg";
 </T>
 
 <figure>
-  <Image src={frogFaceImage} alt="A close-up of the small frog's face" />
+  ![A close-up of the small frog's face](../../assets/images/blog/frog-post/frog-face.jpeg)
   <figcaption>
     <T>
       <span slot="en">The culprit</span>
@@ -107,7 +99,7 @@ import catImage from "~/assets/images/blog/frog-post/stray-cat.jpeg";
 </T>
 
 <figure>
-  <Image src={ventImage} alt="An exterior ventilation fan cover" />
+  ![An exterior ventilation fan cover](../../assets/images/blog/frog-post/vent.JPG)
   <figcaption>
     <T>
       <span slot="en">I wonder what else comes in through here.</span>
@@ -138,7 +130,7 @@ import catImage from "~/assets/images/blog/frog-post/stray-cat.jpeg";
 </T>
 
 <figure>
-  <Image src={frogInJarImage} alt="The small frog inside a glass jar" />
+  ![The small frog inside a glass jar](../../assets/images/blog/frog-post/frog-in-jar.jpeg)
   <figcaption>
     <T>
       <span slot="en">Our future together could have been so bright.</span>
@@ -170,7 +162,7 @@ import catImage from "~/assets/images/blog/frog-post/stray-cat.jpeg";
 </T>
 
 <figure>
-  <Image src={catImage} alt="A stray cat looking at the camera" />
+  ![A stray cat looking at the camera](../../assets/images/blog/frog-post/stray-cat.jpeg)
   <figcaption>
     <T>
       <span slot="en">never seen before and never saw again</span>
