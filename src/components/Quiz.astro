@@ -11,12 +11,13 @@ interface Props {
 	id: string;
 	question: Translation;
 	options: Translation[];
+	correctAnswerIndex?: number;
 }
 
-const { id, question, options } = Astro.props;
+const { id, question, options, correctAnswerIndex } = Astro.props;
 ---
 
-<quiz-component data-id={id}>
+<quiz-component data-id={id} data-correct-index={correctAnswerIndex}>
 	<div class="quiz-card">
 		<h3 class="quiz-question">
 			<T>
@@ -57,12 +58,14 @@ const { id, question, options } = Astro.props;
 		private meta: HTMLElement | null;
 		private hasVoted: boolean = false;
 		private currentVotes: Record<string, number> = {};
+		private correctIndex: number = -1;
 
 		constructor() {
 			super();
 			this.id = this.dataset.id || '';
 			this.buttons = this.querySelectorAll('.quiz-option');
 			this.meta = this.querySelector('.total-votes');
+			this.correctIndex = this.dataset.correctIndex !== undefined ? parseInt(this.dataset.correctIndex) : -1;
 		}
 
 		connectedCallback() {
@@ -137,6 +140,20 @@ const { id, question, options } = Astro.props;
 			this.buttons.forEach(btn => {
 				btn.disabled = true;
 				btn.classList.add('show-results');
+
+				// Apply Correct/Wrong styles if a correct answer is defined
+				if (this.correctIndex !== -1 && !isNaN(this.correctIndex)) {
+					const btnIndex = parseInt(btn.dataset.index || '-1');
+					
+					// 1. Always highlight the correct answer green
+					if (btnIndex === this.correctIndex) {
+						btn.classList.add('correct');
+					}
+					// 2. If user picked this button AND it's wrong, make it red
+					else if (btn.classList.contains('selected')) {
+						btn.classList.add('wrong');
+					}
+				}
 			});
 		}
 
@@ -224,6 +241,32 @@ const { id, question, options } = Astro.props;
 	.quiz-option.selected {
 		border-color: var(--accent);
 		font-weight: 600;
+	}
+
+	/* Correct Answer State (Green) */
+	.quiz-option.correct {
+		border-color: #22c55e;
+		background-color: #f0fdf4;
+	}
+	.quiz-option.correct .progress-bar {
+		background-color: rgba(34, 197, 94, 0.2);
+	}
+	.quiz-option.correct .option-percentage {
+		color: #15803d;
+	}
+	/* Optional: Add a checkmark if you want it to be super clear */
+	/* .quiz-option.correct::after { content: '✓'; position: absolute; right: 1rem; color: #15803d; font-weight: bold; } */
+
+	/* Wrong Selection State (Red) */
+	.quiz-option.wrong {
+		border-color: #ef4444;
+		background-color: #fef2f2;
+	}
+	.quiz-option.wrong .progress-bar {
+		background-color: rgba(239, 68, 68, 0.2);
+	}
+	.quiz-option.wrong .option-percentage {
+		color: #b91c1c;
 	}
 
 	/* The Progress Bar Background */
