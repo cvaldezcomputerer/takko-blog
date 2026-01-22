@@ -131,17 +131,6 @@ import Quiz from "../../components/Quiz.astro";
   </figcaption>
 </figure>
 
-<T>
-  <span slot="en">
-    After picking up our rental car, we set off for Ouchi-juku, which is a historical location filled with traditional thatched buildings from the Edo Period. It had just started snowing, so it was hard to get around, but we enjoyed the amazing view.
-  </span>
-  <span slot="ja">
-    レンタカーを借りた後、江戸時代の伝統的な茅葺き屋根の建物が立ち並ぶ歴史的な場所、大内宿へ向かいました。雪が降り始めたばかりで移動は大変でしたが、素晴らしい景色を楽しみました。
-  </span>
-  <span slot="en_simple">
-    We went to Ouchi-juku. It is from the Edo period. The view was nice.
-  </span>
-</T>
 
 ## <T><span slot="en">Our hotel</span><span slot="ja">ホテル</span><span slot="en_simple">Our hotel</span></T>
 
@@ -204,20 +193,7 @@ import Quiz from "../../components/Quiz.astro";
   </span>
 </T>
 
-<Quiz 
-  id="fukushima-buffet-cost"
-  question={{
-    en: "How much do you think this dinner buffet cost per person?",
-    ja: "この夕食ビュッフェは一人いくらだったと思いますか？",
-    en_simple: "How much was dinner?"
-  }}
-  options={[
-    { en: "¥3,000 ($20)", ja: "3,000円" },
-    { en: "¥6,000 ($40)", ja: "6,000円" },
-    { en: "¥10,000 ($65)", ja: "10,000円" },
-    { en: "¥15,000 ($100)", ja: "15,000円" }
-  ]}
-/>
+
 
 <figure>
   ![Hotel buffet dinner](../../assets/images/blog/fukushima-post/7hotel_food.JPG)
@@ -230,6 +206,22 @@ import Quiz from "../../components/Quiz.astro";
   </figcaption>
 </figure>
 
+<Quiz 
+  id="fukushima-buffet-cost"
+  correctAnswerIndex={2}
+  question={{
+    en: "How much do you think this dinner buffet cost per person?",
+    ja: "この夕食ビュッフェは一人いくらだったと思いますか？",
+    en_simple: "How much was dinner? Guess!"
+  }}
+  options={[
+    { en: "¥3,000 ($20)", ja: "3,000円" },
+    { en: "¥6,000 ($40)", ja: "6,000円" },
+    { en: "¥10,000 ($65)", ja: "10,000円" },
+    { en: "¥15,000 ($100)", ja: "15,000円" }
+  ]}
+/>
+
 ## <T><span slot="en">Day 2</span><span slot="ja">2日目</span><span slot="en_simple">Day 2</span></T>
 
 <T>
@@ -240,7 +232,7 @@ import Quiz from "../../components/Quiz.astro";
     翌朝、車が雪で覆われているのを見つけました。私は普段運転をしないので、心の準備ができていませんでした。
   </span>
   <span slot="en_simple">
-    So much snow!
+    So much snow. I was surprised!
   </span>
 </T>
 
@@ -263,7 +255,7 @@ import Quiz from "../../components/Quiz.astro";
     私が温泉でリラックスしている間、友人が一生懸命雪を下ろしてくれました。（冗談です。幸運なことに、ホテルには貸し出し用の道具もありました！）
   </span>
   <span slot="en_simple">
-    She worked hard!
+    She worked hard! Good job!
   </span>
 </T>
 
@@ -273,7 +265,7 @@ import Quiz from "../../components/Quiz.astro";
     <T>
       <span slot="en">Clearing the snow</span>
       <span slot="ja">雪かき</span>
-      <span slot="en_simple">Clearing snow</span>
+      <span slot="en_simple">take off the snow</span>
     </T>
   </figcaption>
 </figure>
@@ -288,7 +280,7 @@ import Quiz from "../../components/Quiz.astro";
     出発する前に、赤べこのお土産を少し見てみました。これを見たことはありましたが、福島のものだとは知りませんでした。
   </span>
   <span slot="en_simple">
-    This is Aka Beko.
+    This is Aka Beko. Its omiyage from fukushima. 
   </span>
 </T>
 
@@ -323,7 +315,7 @@ import Quiz from "../../components/Quiz.astro";
     <T>
       <span slot="en">Negi Soba</span>
       <span slot="ja">ねぎそば</span>
-      <span slot="en_simple">Negi Soba</span>
+      <span slot="en_simple">🧅 Soba</span>
     </T>
   </figcaption>
 </figure>
@@ -336,7 +328,7 @@ import Quiz from "../../components/Quiz.astro";
     思ったほど難しくはなかったです。
   </span>
   <span slot="en_simple">
-    It was not hard to eat!
+    It was not very hard to eat!
   </span>
 </T>
 
@@ -346,7 +338,7 @@ import Quiz from "../../components/Quiz.astro";
     <T>
       <span slot="en">Negi Soba</span>
       <span slot="ja">ねぎそば</span>
-      <span slot="en_simple">Negi Soba</span>
+      <span slot="en_simple">🧅 Soba</span>
     </T>
   </figcaption>
 </figure>
@@ -361,7 +353,7 @@ import Quiz from "../../components/Quiz.astro";
     最後に、家に帰る電車に乗る前に、もう一軒リサイクルショップに寄りました。ここはかなり大きく、今まで行った中で一番大きいかもしれません。
   </span>
   <span slot="en_simple">
-    We went to Hard Off again.
+    We went to Hard Off again. It was very big. 
   </span>
 </T>
 
@@ -371,7 +363,7 @@ import Quiz from "../../components/Quiz.astro";
     <T>
       <span slot="en">Large Hard Off store</span>
       <span slot="ja">大きなハードオフ</span>
-      <span slot="en_simple">Hard Off</span>
+      <span slot="en_simple">Big Hard Off</span>
     </T>
   </figcaption>
 </figure>
@@ -384,7 +376,7 @@ import Quiz from "../../components/Quiz.astro";
     お土産を探すためにこういった店に立ち寄るのは素晴らしいことだと思います。特に海外から来ている場合は、大金を使わずに、持ち帰れる本当に思い出に残るものを見つけることができます。
   </span>
   <span slot="en_simple">
-    Aka Beko is cheaper here!
+    You can find cheap omiayge here. I recommend it!
   </span>
 </T>
 
@@ -394,7 +386,7 @@ import Quiz from "../../components/Quiz.astro";
     <T>
       <span slot="en">Souvenirs at Hard Off</span>
       <span slot="ja">ハードオフのお土産</span>
-      <span slot="en_simple">Aka Beko is cheaper here!</span>
+      <span slot="en_simple">Hard Off omiyage</span>
     </T>
   </figcaption>
 </figure>
@@ -407,7 +399,7 @@ import Quiz from "../../components/Quiz.astro";
     ほぼ全てのリサイクルショップには、古いカメラのコーナーがあります。いつもユニークなものや安いものを見つけられます！
   </span>
   <span slot="en_simple">
-    There are old cameras.
+    There are old cameras. They are cool. 
   </span>
 </T>
 
@@ -434,17 +426,17 @@ import Quiz from "../../components/Quiz.astro";
     この店には、コンピュータのハードウェアの在庫が特にたくさんありました。メルカリのようなオンラインのフリマサイトと比べると、驚くようなお買い得品はあまりありませんが、それでも新品を買うよりは安いです。
   </span>
   <span slot="en_simple">
-    There are computer parts. It's not that cheap.
+    There are many computer parts. It's not that cheap.
   </span>
 </T>
 
 <figure>
-  ![Statue of person walking dog](../../assets/images/blog/fukushima-post/17hard_off_stuff_5.JPG)
+  ![used computer parts](../../assets/images/blog/fukushima-post/17hard_off_stuff_5.JPG)
   <figcaption>
     <T>
-      <span slot="en">Dog walking statue</span>
-      <span slot="ja">犬の散歩の像</span>
-      <span slot="en_simple">Dog statue</span>
+      <span slot="en">computer parts</span>
+      <span slot="ja">パソコンの部品</span>
+      <span slot="en_simple">computer stuff</span>
     </T>
   </figcaption>
 </figure>
@@ -462,12 +454,12 @@ import Quiz from "../../components/Quiz.astro";
 </T>
 
 <figure>
-  ![Bag section](../../assets/images/blog/fukushima-post/18hard_off_stuff2.JPG)
+  ![funny statue](../../assets/images/blog/fukushima-post/18hard_off_stuff2.JPG)
   <figcaption>
     <T>
-      <span slot="en">Bag section</span>
-      <span slot="ja">バッグ売り場</span>
-      <span slot="en_simple">Bags</span>
+      <span slot="en">Dog walking statue</span>
+      <span slot="ja">犬の散歩の像</span>
+      <span slot="en_simple">statue</span>
     </T>
   </figcaption>
 </figure>
@@ -482,7 +474,7 @@ import Quiz from "../../components/Quiz.astro";
     私が色々なアイテムを見ている間、友はずっとバッグ売り場で何かいいものを探していました。状態の良い本物の高級ブランド品が30ドル以下で買えることに、多くの人が驚きます。
   </span>
   <span slot="en_simple">
-    My friend likes bags. The price was good!
+    My friend likes bags. These bags are nice. The price was low. 
   </span>
 </T>
 
@@ -517,7 +509,7 @@ import Quiz from "../../components/Quiz.astro";
   ![Green car train](../../assets/images/blog/fukushima-post/19going_home.JPG)
   <figcaption>
     <T>
-      <span slot="en">Green car train</span>
+      <span slot="en">Fancy green car seats</span>
       <span slot="ja">グリーン車</span>
       <span slot="en_simple">Nice seats</span>
     </T>
