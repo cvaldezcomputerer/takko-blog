@@ -9,11 +9,10 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "takko-blog-likes",
+      "database_name": "takko-blog-db",
       "database_id": "2dbfa341-2ba6-4fda-a9bc-9165a74b275a",
       "migrations_dir": "migrations",
       "preview_database_id": "2dbfa341-2ba6-4fda-a9bc-9165a74b275a"
     }
   ]
 }
-
