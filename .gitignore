@@ -33,4 +33,4 @@ coverage/
 Thumbs.db
 
 
-.gemini/
+#.gemini/
