@@ -11,7 +11,7 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^12.6.8",
+    "@astrojs/cloudflare": "^12.6.12",
     "@astrojs/mdx": "^4.3.13",
     "@astrojs/rss": "^4.0.14",
     "@astrojs/sitemap": "^3.6.0",
@@ -20,6 +20,10 @@
     "astro": "^5.16.7"
   },
   "devDependencies": {
-    "wrangler": "^4.35.0"
+    "wrangler": "^4.60.0"
+  },
+  "overrides": {
+    "undici": "^7.18.2",
+    "wrangler": "^4.60.0"
   }
 }
