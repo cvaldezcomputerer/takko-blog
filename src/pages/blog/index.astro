@@ -99,7 +99,7 @@ const posts = (await getCollection('blog')).sort(
 			<section>
 				<ul>
 					{
-						posts.map((post) => (
+						posts.map((post, index) => (
 							<li>
 								<a href={`/blog/${post.slug}/`}>
 									{post.data.heroImage ? (
@@ -108,6 +108,7 @@ const posts = (await getCollection('blog')).sort(
 											height={360}
 											src={post.data.heroImage}
 											alt={post.data.title}
+											loading={index === 0 ? "eager" : "lazy"}
 										/>
 									) : (
 										<div class="placeholder-image" />
