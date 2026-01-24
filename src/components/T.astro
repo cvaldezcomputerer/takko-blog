@@ -1,9 +1,9 @@
 ---
 // this component makes it so we can choose between different text versions from the mdx file. 
-
+const { fluid = false } = Astro.props;
 ---
 
-<span class="translatable-text">
+<span class:list={["translatable-text", { fluid }]}>
   <span data-lang-content="en" class="lang-en"><slot name="en" /></span>
   <span data-lang-content="ja" class="lang-ja hidden"><slot name="ja" /></span>
   <span data-lang-content="en_simple" class="lang-en_simple hidden"><slot name="en_simple" /></span>
@@ -19,11 +19,15 @@
   .translatable-text {
     display: inline-grid;
   }
+  .translatable-text.fluid {
+    display: inline;
+  }
   .translatable-text > span {
     grid-area: 1 / 1;
   }
   /* Override display: none so hidden elements still reserve space */
-  .translatable-text > .hidden {
+  /* Only apply when NOT in fluid mode */
+  .translatable-text:not(.fluid) > .hidden {
     display: block;
     visibility: hidden;
   }
