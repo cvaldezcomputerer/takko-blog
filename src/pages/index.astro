@@ -36,6 +36,17 @@ const posts = (await getCollection('blog')).sort(
 				overflow-wrap: break-word;
 			}
 			
+			@keyframes fadeIn {
+				from {
+					opacity: 0;
+					transform: translateY(10px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+			
 			/* Fix for Japanese text overflow */
 			main {
 				width: 100%;
@@ -67,6 +78,8 @@ const posts = (await getCollection('blog')).sort(
 				height: auto;
 				flex-shrink: 0;
 				filter: drop-shadow(5px 5px 15px rgba(0,0,0,0.15)); /* Adds a nice depth to the cutout */
+				opacity: 0;
+				animation: fadeIn 1s ease-out 0.1s forwards;
 			}
 			.hero-content {
 				flex: 1;
