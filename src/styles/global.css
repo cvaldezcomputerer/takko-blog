@@ -15,12 +15,30 @@
   --background: #FAFAFA; /* Warm beige background (matches header) */
   --text: #333333; /* Dark charcoal text */
   --link: #059669; /* Forest green links (matches accent) */
-  --secondary: #f0f9ff; /* Light blue sections */
+  --secondary: #f5f1eb; /* Warm beige for header and sections */
   --highlight: #fef3c7; /* Soft yellow for highlights */
 
   --box-shadow: 0 2px 6px rgba(var(--gray), 25%),
     0 8px 24px rgba(var(--gray), 33%), 0 16px 32px rgba(var(--gray), 33%);
 }
+
+.dark {
+  --accent: #059669; /* Dark green */
+  --accent-dark: #047857;
+
+  --black: 245, 245, 245; /* Off-white for headings (RGB) */
+  --gray: 156, 163, 175; /* Lighter gray for UI elements (RGB) */
+  --gray-light: 51, 51, 51; /* Dark gray for code blocks (RGB) */
+  --gray-dark: 229, 229, 229; /* Light gray for body text (RGB) */
+
+  --background: #212121; /* Dark grey background */
+  --text: #e5e5e5; /* Light gray text */
+  --link: #059669; /* Match accent */
+  --secondary: #2d2d2d; /* Darker secondary sections */
+  --highlight: #404040; /* Dark highlight */
+  --box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), 0 8px 24px rgba(0, 0, 0, 0.5), 0 16px 32px rgba(0, 0, 0, 0.5);
+}
+
 @font-face {
   font-family: "Atkinson";
   src: url("/fonts/atkinson-regular.woff") format("woff");
@@ -48,6 +66,7 @@ body {
   color: rgb(var(--gray-dark));
   font-size: 20px;
   line-height: 1.7;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 main {
   width: 720px;
