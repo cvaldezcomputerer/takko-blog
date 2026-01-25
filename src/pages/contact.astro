@@ -63,6 +63,7 @@ import { SITE_TITLE } from '../consts';
 				font-family: inherit;
 				transition: all 0.2s ease;
 				background: white;
+				box-sizing: border-box;
 			}
 			
 			.form-input:focus,
@@ -81,13 +82,16 @@ import { SITE_TITLE } from '../consts';
 				background: var(--accent);
 				color: white;
 				border: none;
-				padding: 1rem 2rem;
+				padding: 0.8rem 2rem;
 				font-size: 1.1rem;
 				font-weight: 600;
 				border-radius: 8px;
 				cursor: pointer;
 				transition: all 0.2s ease;
-				width: 100%;
+				width: fit-content;
+				display: block;
+				margin: 0 auto;
+				
 			}
 			
 			.submit-button:hover {
@@ -161,7 +165,7 @@ import { SITE_TITLE } from '../consts';
 		<main>
 			<div class="contact-container">
 				<h1 class="contact-title">
-					<T>
+					<T fluid>
 						<span slot="en">Contact Me</span>
 						<span slot="ja">コンタクト</span>
 						<span slot="en_simple">Contact</span>
@@ -169,7 +173,7 @@ import { SITE_TITLE } from '../consts';
 				</h1>
 				
 				<p class="contact-intro">
-					<T>
+					<T fluid>
 						<span slot="en">Have a question about life in rural Japan? Want to share your own experiences? I'd love to hear from you!</span>
 						<span slot="ja">日本の田舎での生活について質問がありますか？あなたの体験を共有したいですか？お気軽にお声かけください！</span>
 						<span slot="en_simple">Do you have a question ? Do you want to share something? Tell me!</span>
@@ -254,7 +258,7 @@ import { SITE_TITLE } from '../consts';
 					</div>
 					
 					<button type="submit" class="submit-button" id="submitBtn">
-						<T>
+						<T fluid>
 							<span slot="en">Send Message</span>
 							<span slot="ja">メッセージを送信</span>
 							<span slot="en_simple">SEND</span>
