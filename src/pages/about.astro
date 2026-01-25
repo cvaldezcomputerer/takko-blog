@@ -1,7 +1,9 @@
 ---
 import Layout from '../layouts/BlogPost.astro';
 import aboutHeroImage from '../assets/images/blog/trianMuseum.jpeg';
+import takkoMap from '../assets/images/misc/takko-on-map.png';
 import T from '../components/T.astro';
+import { Image } from 'astro:assets';
 ---
 
 <Layout
@@ -67,6 +69,8 @@ import T from '../components/T.astro';
     <span slot="en_simple">Takko-machi</span>
   </T>
 </h3>
+<Image src={takkoMap} alt="Takko on map" style="display: block; margin: 0 auto;" />
+<p style="font-size: 0.8em; color: #666; text-align: center;">Takko is in northern Japan, in the prefecture of Aomori</p>
 <p>
   <T>
     <span slot="en">
