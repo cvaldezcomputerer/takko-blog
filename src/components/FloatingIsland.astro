@@ -33,7 +33,7 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 		align-items: center;
 		gap: 10rem;
 		
-		background: rgba(245, 241, 235, 0.95);
+		background: var(--secondary);
 		box-shadow: 0 8px 32px rgba(0,0,0,0.15);
 		border: 4px solid var(--accent);
 		border-radius: 100px;
@@ -52,7 +52,13 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 			transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
 			left 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
 			top 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
-			gap 0.5s ease;
+			gap 0.5s ease,
+			background-color 0.3s ease,
+			border-color 0.3s ease;
+	}
+
+	:global(.dark) #floating-island {
+		box-shadow: 0 8px 32px rgba(0,0,0,0.5);
 	}
 
 	#floating-island.visible {
@@ -110,17 +116,23 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 		animation: ghostPulse 3s infinite ease-in-out;
 	}
 	
-	@keyframes ghostPulse {
-		0% { border-color: rgba(0,0,0,0.15); }
-		50% { border-color: rgba(0,0,0,0.3); background: rgba(255, 255, 255, 0.6); }
-		100% { border-color: rgba(0,0,0,0.15); }
+	:global(.dark) .ghost-island {
+		background: rgba(0, 0, 0, 0.4);
+		border-color: rgba(255, 255, 255, 0.15);
+		color: rgba(255, 255, 255, 0.3);
 	}
+	
 
 	.ghost-island:hover {
 		border-color: var(--accent);
 		color: var(--accent);
 		background: rgba(255, 255, 255, 0.9);
 		animation: none; /* Stop pulsing on hover */
+	}
+	:global(.dark) .ghost-island:hover {
+		background: var(--highlight);
+		border-color: var(--text);
+		color: var(--text);
 	}
 	
 	.ghost-island::after {
@@ -174,6 +186,9 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 	}
 	.island-logo:hover img {
 		transform: scale(1.1);
+	}
+	:global(.dark) .island-logo img {
+		filter: invert(1);
 	}
 
 	/* Make buttons bigger in the island */

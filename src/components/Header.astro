@@ -6,6 +6,7 @@ import LanguageSelector from './LanguageSelector.astro';
 import T from './T.astro';
 import logoImage from '../assets/images/logo_svg.svg';
 import FloatingIsland from './FloatingIsland.astro';
+import ThemeToggle from './ThemeToggle.astro';
 ---
 
 <header>
@@ -23,6 +24,7 @@ import FloatingIsland from './FloatingIsland.astro';
 		</a>
 
 		<LanguageSelector />
+		<ThemeToggle />
 		
 		<div class="menu-content">
 			<div class="internal-links">
@@ -68,7 +70,7 @@ import FloatingIsland from './FloatingIsland.astro';
 	header {
 		margin: 0;
 		padding: 0 1em;
-		background: #f5f1eb;
+		background: var(--secondary);
 		border-top: 4px solid var(--accent); 
 		box-shadow: 0 2px 12px rgba(var(--black), 8%); 
 		z-index: 100;
@@ -91,9 +93,9 @@ import FloatingIsland from './FloatingIsland.astro';
 		text-decoration: none;
 		font-size: 1.125em;
 		font-weight: 600;
-		color: var(--black);
+		color: rgb(var(--black));
 		flex-shrink: 0;
-		transition: transform 0.3s ease;
+		transition: transform 0.3s ease, color 0.3s ease;
 	}
 	.logo-link img {
 		height: 2.5em;
@@ -103,6 +105,9 @@ import FloatingIsland from './FloatingIsland.astro';
 	}
 	.logo-link:hover img {
 		transform: scale(1.1);
+	}
+	:global(.dark) .logo-link img {
+		filter: invert(1);
 	}
 	.site-title-text {
 		transition: all 0.3s ease;
@@ -162,7 +167,7 @@ import FloatingIsland from './FloatingIsland.astro';
 	}
 	nav a {
 		padding: 1em 0.5em;
-		color: var(--black);
+		color: rgb(var(--black));
 		border-bottom: 4px solid transparent;
 		text-decoration: none;
 	}
