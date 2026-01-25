@@ -12,7 +12,7 @@
   --gray-light: 240, 249, 255; /* #f0f9ff - light blue sections */
   --gray-dark: 51, 51, 51; /* Matches text color */
 
-  --background: #f5f1eb; /* Warm beige background (matches header) */
+  --background: #FAFAFA; /* Warm beige background (matches header) */
   --text: #333333; /* Dark charcoal text */
   --link: #059669; /* Forest green links (matches accent) */
   --secondary: #f0f9ff; /* Light blue sections */
