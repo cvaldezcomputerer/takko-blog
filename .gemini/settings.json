@@ -12,12 +12,6 @@
         "chrome-devtools-mcp@latest"
       ]
     },*/
-    "deepl": {
-      "command": "npx",
-      "args": ["-y", "deepl-mcp-server"],
-      "env": {
-        "DEEPL_API_KEY": "89343ea1-5bf6-4c64-be7b-5363b2120caa:fx"
-      }},
     "context7": {
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp"]
