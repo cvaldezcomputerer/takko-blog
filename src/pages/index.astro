@@ -29,7 +29,7 @@ const posts = (await getCollection('blog')).sort(
 			}
 			.main-title {
 				font-size: 3.5rem;
-				text-align: center;
+				line-height: 1.1;
 				margin-bottom: 0.5em;
 				text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 				word-wrap: break-word;
@@ -134,6 +134,10 @@ const posts = (await getCollection('blog')).sort(
 				color: rgb(var(--gray));
 			}
 
+			.hero-content h3 {
+				margin-top: 1.5rem;
+			}
+
 			/* Responsive adjustments */
 			@media (max-width: 800px) {
 				
@@ -178,14 +182,22 @@ const posts = (await getCollection('blog')).sort(
 							</T>
 						</h1>
 						
+						
 						<p>
 							<T>
-								<span slot="en">This website is my personal blog, an English learning resource, and my learning project. I’m not very good at writing or photography, but I can only get better. Posts center around my life in Japan, and anything I find interesting enough that I want to make a post about it.</span>
-								<span slot="ja">このウェブサイトは私の個人的なブログであり、英語学習のリソースであり、そして私自身の学習プロジェクトでもあります。文章や写真はあまり得意ではありませんが、これから上達していくつもりです。投稿は日本での生活や、私が記事にしたいと思うほど面白いと感じたことを中心に書いています。</span>
-								<span slot="en_simple">This website is my blog. It is for English learners. It is also for me to learn. I am not good at writing or taking photos yet. But I will try my best! I write about my life in Japan. I write about interesting things.</span>
+								<span slot="en">Hello! This website is my personal blog, an English learning resource, and my learning project. I’m not very good at writing or photography, but I can only get better. Posts center around my life in Japan, and anything I find interesting enough that I want to make a post about it.</span>
+								<span slot="ja">こんにちは！このウェブサイトは私の個人的なブログであり、英語学習のリソースであり、そして私自身の学習プロジェクトでもあります。文章や写真はあまり得意ではありませんが、これから上達していくつもりです。投稿は日本での生活や、私が記事にしたいと思うほど面白いと感じたことを中心に書いています。</span>
+								<span slot="en_simple">HELLO! This website is my blog. It is for English learners. It is also for me to learn. I am not good at writing or taking photos yet. But I will try my best! I write about my life in Japan. I write about interesting things.</span>
 							</T>
 						</p>
 
+						<h3>
+							<T>
+								<span slot="en">Features</span>
+								<span slot="ja">機能</span>
+								<span slot="en_simple">Tools</span>
+							</T>
+						</h3>
 						<p>
 							<T>
 								<span slot="en">I’ve added tools like the built-in language changer for Japanese, and the Ez english button that make it readable by Japanese middle schoolers (I hope). Please try it out, it should work on every blog post, and page of the website! You can also move the buttons to either side of the page when reading a post.</span>
@@ -194,19 +206,20 @@ const posts = (await getCollection('blog')).sort(
 							</T>
 						</p>
 
-						<p>
-							<T>
-								<span slot="en">In order to reduce costs and bloat as much as possible (currently time is my only cost!) I decided to code the website myself rather than using a tool like WordPress. It's been a fun challenge, and I'm always experimenting with new features and changes.</span>
-								<span slot="ja">コストと無駄をできるだけ減らすために（今のところコストは私の時間だけです！）、WordPressのようなツールを使わずに自分でウェブサイトをコーディングすることにしました。これは楽しい挑戦で、常に新しい機能や変更を試しています。</span>
-								<span slot="en_simple">I made this website by myself. I did not use WordPress. It is free, but it takes time. It is fun to make. I am always trying new things.</span>
-							</T>
-						</p>
+	
 
+						<h3>
+							<T>
+								<span slot="en">Let me know!</span>
+								<span slot="ja">お問い合わせ</span>
+								<span slot="en_simple">Let's talk</span>
+							</T>
+						</h3>
 						<p>
 							<T>
 								<span slot="en">If you have suggestions, or notice any bugs or mistakes, please send me a message using my <a href="/contact">contact form</a>. I might forget to check it, but I'll try to reply as soon as I can. Otherwise check out one of the posts below!</span>
 								<span slot="ja">提案や、バグや間違いに気づいた場合は、<a href="/contact">お問い合わせフォーム</a>からメッセージを送ってください。確認を忘れることもあるかもしれませんが、できるだけ早く返信するようにします。それ以外の方は、下の投稿をチェックしてみてください！</span>
-								<span slot="en_simple">Do you have ideas? Did you find a mistake? Please send me a message on the <a href="/contact">contact form</a>. I will try to reply soon. Please read my posts below!</span>
+								<span slot="en_simple">Do you have ideas? Did you find a mistake? Please send me a message on the <a href="/contact">contact form</a>. Please look at my posts below!</span>
 							</T>
 						</p>
 					</div>
