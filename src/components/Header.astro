@@ -156,7 +156,7 @@ import ThemeToggle from './ThemeToggle.astro';
 		display: flex;
 		gap: 1em;
 		align-items: center;
-		border-left: 1px solid #e5e7eb;
+		border-left: 1px solid rgba(var(--gray), 25%);
 		padding-left: 1.5em;
 		transition: all 0.3s ease;
 		
@@ -207,8 +207,8 @@ import ThemeToggle from './ThemeToggle.astro';
 			top: 100%;
 			left: 0;
 			right: 0;
-			background: white;
-			box-shadow: 0 4px 8px rgba(var(--black), 10%);
+			background: var(--secondary);
+			box-shadow: var(--box-shadow);
 			padding: 1rem;
 			margin-inline: 0; /* Reset the auto margin */
 		}
@@ -235,7 +235,7 @@ import ThemeToggle from './ThemeToggle.astro';
     transition: background-color 0.2s;
   }
   .internal-links a:hover {
-    background-color: #f3f4f6; /* Hover feedback */
+    background-color: var(--highlight); /* Hover feedback */
   }
 		.site-title-text {
 			display: none;
