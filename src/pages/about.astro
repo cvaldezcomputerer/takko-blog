@@ -70,7 +70,13 @@ import { Image } from 'astro:assets';
   </T>
 </h3>
 <Image src={takkoMap} alt="Takko on map" style="display: block; margin: 0 auto;" />
-<p style="font-size: 0.8em; color: #666; text-align: center;">Takko is in northern Japan, in the prefecture of Aomori</p>
+<p style="font-size: 0.8em; color: #666; text-align: center;">
+  <T>
+    <span slot="en">Takko is in northern Japan, in the prefecture of Aomori</span>
+    <span slot="ja">田子町は北日本の青森県にあります</span>
+    <span slot="en_simple">Takko is in north Japan. It is in Aomori.</span>
+  </T>
+</p>
 <p>
   <T>
     <span slot="en">
