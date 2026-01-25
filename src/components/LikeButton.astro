@@ -3,7 +3,12 @@ const { slug } = Astro.props;
 ---
 
 <like-button data-slug={slug}>
-  <span class="count">...</span>
+  <div class="balloon-wrapper">
+    <svg class="heart-balloon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path class="heart-path" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+    </svg>
+    <span class="count">...</span>
+  </div>
   <button aria-label="Like this post">
    
     <svg class="cat-icon" width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -44,11 +49,12 @@ const { slug } = Astro.props;
       const slug = this.dataset.slug;
       const btn = this.querySelector('button');
       const countSpan = this.querySelector('.count');
+      const heartPath = this.querySelector('.heart-path');
       const catIcon = this.querySelector('.cat-icon');
 
       // Random pastel background color for the balloon
       const hue = Math.floor(Math.random() * 360);
-      countSpan.style.backgroundColor = `hsl(${hue}, 85%, 90%)`;
+      if (heartPath) heartPath.style.fill = `hsl(${hue}, 85%, 90%)`;
       
       this.hasLiked = false;
       this.balloonClicks = 0;
@@ -156,39 +162,46 @@ const { slug } = Astro.props;
   button:hover .cat-icon {
     filter: brightness(0.95);
   }
+  .balloon-wrapper {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    margin-bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1));
+    pointer-events: none;
+  }
+  .heart-balloon {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .heart-path {
+    stroke: #888;
+    stroke-width: 1px;
+    transition: fill 0.3s ease;
+  }
   .count {
-    font-size: 0.8rem;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.75rem;
     font-weight: bold;
     color: #333;
-    background: #fafafa;
-    border: 2px solid #888;
-    padding: 4px 8px;
-    border-radius: 20px;
-    
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    position: relative;
-    margin-bottom: 8px;
-  }
-  /* The knot of the balloon */
-  .count::before {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border-left: 3px solid transparent;
-    border-right: 3px solid transparent;
-    border-top: 4px solid #888;
+    pointer-events: none;
   }
   /* The string */
-  .count::after {
+  .balloon-wrapper::after {
     content: '';
     position: absolute;
-    top: 100%;
+    top: 80%;
     left: 50%;
     transform: translateX(-50%);
     width: 1px;
-    height: 10px;
+    height: 25px;
     background: #888;
     z-index: -1;
   }
@@ -199,7 +212,10 @@ const { slug } = Astro.props;
     width: 100%;
     height: 100%;
     fill: none;
-    stroke: rgb(var(--gray));
+    color: rgb(var(--gray));
+  }
+  :global(.dark) .cat-icon {
+    color: rgb(var(--black));
   }
 
   /* Eye Interaction */

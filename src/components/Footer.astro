@@ -23,6 +23,11 @@ const today = new Date();
 		background: var(--accent);
 		color: #fff;
 		text-align: center;
+		transition: background-color 0.3s ease, color 0.3s ease;
+	}
+	:global(.dark) footer {
+		background: var(--accent);
+		color: #fff;
 	}
 	.social-links {
 		display: flex;
@@ -33,8 +38,15 @@ const today = new Date();
 	.social-links a {
 		text-decoration: none;
 		color: #fff;
+		transition: color 0.3s ease;
+	}
+	:global(.dark) .social-links a {
+		color: #fff;
 	}
 	.social-links a:hover {
 		color: var(--highlight);
+	}
+	:global(.dark) .social-links a:hover {
+		color: rgba(255, 255, 255, 0.7);
 	}
 </style>

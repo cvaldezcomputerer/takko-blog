@@ -3,11 +3,7 @@ const { size = "150px", class: className, ...props } = Astro.props;
 ---
 
 <span class:list={["logo-container", className]} style={`width: ${size}; height: ${size};`} {...props}>
-  <!-- 
-    Paste your SVG code here. 
-    Ensure your groups have classes: 'eyes-group', 'whiskers-group', 'mouth-group' 
-  -->
-  <svg class="cat-logo" viewBox="120 120 784 784" xmlns="http://www.w3.org/2000/svg">
+  <svg class="cat-logo" viewBox="120 120 784 784" xmlns="http://www.w3.org/2000/svg ">
     <g id="cat-logo">
       
       <g id="head">
@@ -46,6 +42,11 @@ const { size = "150px", class: className, ...props } = Astro.props;
     /* Default colors if not overridden */
     stroke: currentColor;
     fill: none;
+    transition: color 0.3s ease;
+  }
+
+  :global(.dark) .logo-container {
+    color: rgb(var(--black));
   }
 
   .cat-logo {
@@ -53,6 +54,7 @@ const { size = "150px", class: className, ...props } = Astro.props;
     height: 100%;
     display: block;
     fill: inherit; /* Allows the balloon animation to work */
+    color: rgb(var(--black));
   }
 
   /* Eye Interaction */
