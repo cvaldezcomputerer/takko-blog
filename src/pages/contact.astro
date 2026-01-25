@@ -21,7 +21,7 @@ import { SITE_TITLE } from '../consts';
 				font-size: 2.5rem;
 				text-align: center;
 				margin-bottom: 2rem;
-				color: var(--accent-dark);
+				color: rgb(var(--black));
 				text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 			}
 			
@@ -34,10 +34,10 @@ import { SITE_TITLE } from '../consts';
 			}
 			
 			.contact-form {
-				background: white;
+				background-color: var(--secondary);
 				padding: 2.5rem;
 				border-radius: 12px;
-				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+				box-shadow: var(--box-shadow);
 				border: 1px solid var(--secondary);
 			}
 			
@@ -57,12 +57,13 @@ import { SITE_TITLE } from '../consts';
 			.form-textarea {
 				width: 100%;
 				padding: 0.875rem;
-				border: 2px solid #e5e7eb;
+				border: 2px solid rgb(var(--gray));
 				border-radius: 8px;
 				font-size: 1rem;
 				font-family: inherit;
 				transition: all 0.2s ease;
-				background: white;
+				background-color: var(--background);
+				color: var(--text);
 				box-sizing: border-box;
 			}
 			
@@ -91,17 +92,16 @@ import { SITE_TITLE } from '../consts';
 				width: fit-content;
 				display: block;
 				margin: 0 auto;
-				
 			}
 			
 			.submit-button:hover {
 				background: var(--accent-dark);
 				transform: translateY(-2px);
-				box-shadow: 0 6px 20px rgba(5, 150, 105, 0.3);
+				box-shadow: var(--box-shadow);
 			}
 			
 			.submit-button:disabled {
-				background: #9ca3af;
+				background: rgb(var(--gray));
 				cursor: not-allowed;
 				transform: none;
 				box-shadow: none;
@@ -115,22 +115,25 @@ import { SITE_TITLE } from '../consts';
 				font-weight: 500;
 			}
 			
+			/* Success: Green */
 			.form-message.success {
-				background: #d1fae5;
-				color: #065f46;
-				border: 1px solid #a7f3d0;
+				background-color: rgba(5, 150, 105, 0.1);
+				color: var(--accent);
+				border: 1px solid var(--accent);
 			}
 			
+			/* Error: Red */
 			.form-message.error {
-				background: #fee2e2;
-				color: #991b1b;
-				border: 1px solid #fca5a5;
+				background-color: rgba(239, 68, 68, 0.1);
+				color: #ef4444;
+				border: 1px solid #ef4444;
 			}
 			
+			/* Loading: Blue */
 			.form-message.loading {
-				background: #dbeafe;
-				color: #1e40af;
-				border: 1px solid #93c5fd;
+				background-color: rgba(59, 130, 246, 0.1);
+				color: #3b82f6;
+				border: 1px solid #3b82f6;
 			}
 			
 			.sr-only {
