@@ -12,7 +12,7 @@ interface Props {
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
-const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
+const { title, description, image = '/favicon_512.png' } = Astro.props;
 ---
 
 <!-- Global Metadata -->
@@ -67,7 +67,8 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
       "url": Astro.site,
       "name": SITE_TITLE,
       "description": SITE_DESCRIPTION,
-      "inLanguage": "en"
+      "inLanguage": "en",
+      "logo": new URL('/favicon_512.png', Astro.site)
     },
     {
       "@type": "BreadcrumbList",
