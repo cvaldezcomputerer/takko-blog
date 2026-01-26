@@ -3,34 +3,28 @@ const { size = "150px", class: className, ...props } = Astro.props;
 ---
 
 <span class:list={["logo-container", className]} style={`width: ${size}; height: ${size};`} {...props}>
-  <svg class="cat-logo" viewBox="120 120 784 784" xmlns="http://www.w3.org/2000/svg ">
-    <g id="cat-logo">
+  <svg width="764" height="717" viewBox="0 0 764 717" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g id="logo" stroke="black" stroke-linecap="round">
       
-      <g id="head">
-        <path d="M199 468C257.592 409.289 296.829 383.891 378 352M199 468C174.118 374.842 171 252.5 187 231C206 224.5 320.888 290.902 378 352M199 468C136.885 532.312 124 583 143 680C191.5 772 243 783 346 792C399.466 819.505 433 839 502 839C579 836 598.935 822.763 652.5 792C784.385 779.941 838 749 863 648.5C866 571.5 847.902 515.187 795.5 461.5M378 352C408.38 336.495 421.494 325.085 439.5 301C455.5 265.5 465.5 227.5 465.5 191L531 147C522.5 204.5 543.23 277.333 567 312C586.176 332.053 597.464 341.182 620 348M620 348C706.5 271.5 788 231 814 236.5C826 252.5 824.561 374.668 795.5 461.5M620 348C693.486 383.276 731.75 408.424 795.5 461.5" stroke="inherit" stroke-width="17" stroke-linejoin="round" stroke-linecap="round"/>
+      <path id="Face" d="M385.246 700.5C462.246 697.5 482.18 684.263 535.746 653.5C667.631 641.441 724.759 607.142 746.246 510C763.014 434.192 731.148 376.687 678.746 323C707.807 236.168 709.246 114 697.246 98C671.246 92.5 589.746 133 503.246 209.5C480.71 202.682 467.702 191.426 450.246 173.5C404.234 126.249 405.746 66 414.246 8.5L348.746 52.5C348.746 89 348.132 126.389 322.746 162.5C304.802 188.025 291.626 197.995 261.246 213.5C204.134 152.402 89.2458 86 70.2458 92.5C54.2458 114 57.3639 236.342 82.2458 329.5C20.1313 393.812 -5.71105 462.056 26.2458 541.5C60.0354 625.501 126.246 644.5 229.246 653.5C282.712 681.005 316.246 700.5 385.246 700.5Z" stroke-width="17" stroke-linejoin="round"/>
+  
+      <g id="eyes" stroke-width="22">
+          <path id="Right Eye" d="M458.246 385.5H521.246M577.246 385.5H521.246M521.246 385.5V497" />
+          <path id="Left Eye" d="M179.746 385H242.746M298.746 385H242.746M242.746 385V496.5" />
       </g>
   
-      <g class="eyes-group">
-        <g id="right-eye">
-          <path class="eye-lid" d="M575 524H694" stroke="inherit" stroke-width="22" stroke-linecap="round"/>
-          <path class="eye-pupil" d="M638 524V635.5" stroke="inherit" stroke-width="22" stroke-linecap="round"/>
-        </g>
-        <g id="left-eye">
-          <path class="eye-lid" d="M296.5 523.5H415.5" stroke="inherit" stroke-width="22" stroke-linecap="round"/>
-          <path class="eye-pupil" d="M359.5 523.5V635" stroke="inherit" stroke-width="22" stroke-linecap="round"/>
-        </g>
+      <g id="whiskers" stroke-width="20">
+          <path id="Left Whisker" d="M74.2458 449L154.246 462M72.7458 528.5L154.246 513" />
+          <path id="Right Whisker" d="M684.246 449.5L604.246 462.5M685.746 529L604.246 513.5" />
       </g>
   
-      <g id="whiskers" class="whiskers-group">
-        <path id="left-whisker" d="M191 587.5L271 600.5M189.5 667L271 651.5" stroke="inherit" stroke-width="20" stroke-linecap="round"/>
-        <path id="right-whisker" d="M801 588L721 601M802.5 667.5L721 652" stroke="inherit" stroke-width="20" stroke-linecap="round"/>
+      <g id="mouth-nose">
+          <path id="nose" d="M393.246 487.5H368.746L371.246 506.5L381.746 516L391.746 506.5L393.246 487.5Z" fill="black" stroke="none"/>
+          <path id="mouth" d="M334.246 576C353.948 572.353 364.327 564.562 381.746 551.5M381.746 551.5C398.633 565.479 408.9 573.274 428.746 576M381.746 551.5V516M381.746 516L371.246 506.5L368.746 487.5H393.246L391.746 506.5L381.746 516Z" stroke-width="13" stroke-linejoin="round"/>
       </g>
   
-      <g id="mouth-nose" class="mouth-group">
-        <path id="nose" d="M510 626H485.5L488 645L498.5 654.5L508.5 645L510 626Z" fill="currentColor"/>
-        <path id="mouth" d="M451 714.5C470.702 710.853 481.081 703.062 498.5 690M498.5 690C515.387 703.979 525.654 711.774 545.5 714.5M498.5 690V654.5M498.5 654.5L488 645L485.5 626H510L508.5 645L498.5 654.5Z" stroke="inherit" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
-      </g>
-  
+      <path id="ear-lines" d="M83.0002 330.5C148.991 272.924 189.676 248.065 263.5 213.5M501.5 210C577.025 247.347 612.786 271.828 676.5 322.5" stroke-width="15" />
+      
     </g>
   </svg>
 </span>
