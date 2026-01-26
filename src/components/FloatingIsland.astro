@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import LanguageSelector from './LanguageSelector.astro';
-import logoImage from '../assets/images/logo_svg.svg';
+import logoImage from '../assets/images/logo.svg';
 
 // Determine where the "Back" button should go
 const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !== '/blog' && Astro.url.pathname !== '/blog/' ? '/blog' : '/';
@@ -180,7 +180,6 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 	}
 
 	.island-logo img {
-		border-radius: 50%;
 		transition: transform 0.2s;
 		display: block;
 	}

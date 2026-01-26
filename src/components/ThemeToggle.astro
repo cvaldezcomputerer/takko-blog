@@ -21,26 +21,41 @@
 
 <style>
 	button {
-		background: none;
-		border: none;
+		background-color: #bae6fd; /* Sky blue */
+		border: 1px solid #7dd3fc;
 		cursor: pointer;
-		color: rgb(var(--black));
+		color: #ea580c; /* Orange stroke */
 		padding: 0.5rem;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		border-radius: 50%;
-		transition: background-color 0.2s, color 0.2s;
+		transition: all 0.3s ease;
+		box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 	}
 	button:hover {
-		background-color: rgba(var(--gray), 0.2);
+		transform: scale(1.1);
+		box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 	}
-	.sun-icon { display: block; }
+	
+	.sun-icon { 
+		display: block; 
+		fill: #fcd34d; /* Yellow fill */
+	}
 	.moon-icon { display: none; }
 	
 	/* When dark mode is active (applied to html) */
+	:global(.dark) button {
+		background-color: #1e293b; /* Dark slate */
+		border-color: #334155;
+		color: #e2e8f0; /* Light gray stroke */
+	}
+	
 	:global(.dark) .sun-icon { display: none; }
-	:global(.dark) .moon-icon { display: block; }
+	:global(.dark) .moon-icon { 
+		display: block; 
+		fill: #fbbf24; /* Moon yellow fill */
+	}
 </style>
 
 <script>
