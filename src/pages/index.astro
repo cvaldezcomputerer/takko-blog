@@ -62,10 +62,30 @@ const posts = (await getCollection('blog')).sort(
 				width: 100%;
 				background-color: var(--background);
 				padding: 3rem 0;
+				position: relative;
+				overflow: hidden;
+			}
+
+			.hero-wrapper::before {
+				content: "";
+				position: absolute;
+				inset: 0;
+				background-color: var(--accent);
+				mask-image: url('../assets/images/site_backround_pattern.svg');
+				-webkit-mask-image: url('../assets/images/site_backround_pattern.svg');
+				mask-repeat: repeat;
+				-webkit-mask-repeat: repeat;
+				mask-size: 140px;
+				-webkit-mask-size: 140px;
+				opacity: 0.07;
+				z-index: 0;
+				pointer-events: none;
 			}
 
 			/* Hero Section */
 			.hero-section {
+				position: relative;
+				z-index: 1;
 				display: flex;
 				align-items: center;
 				gap: 3rem;
@@ -162,6 +182,11 @@ const posts = (await getCollection('blog')).sort(
 				}
 				.hero-image {
 					display: none;
+				}
+
+				.hero-wrapper::before {
+					mask-size: 80px;
+					-webkit-mask-size: 80px;
 				}
 			}
 		</style>
