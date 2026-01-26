@@ -1,0 +1,50 @@
+<svg width="884" height="960" viewBox="-60 0 884 960" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g id="logo" stroke="black" stroke-linecap="round">
+    
+    <path id="Face" d="
+    M382 701 
+    C459 701 493 681 535 654 
+    C638 645 704 626 738 542 
+    C770 462 744 394 682 330 
+    C707 236 710 114 694 93 
+    C675 86 560 152 503 214 
+    C472 198 459 188 441 163 
+    
+    C404 126 406 66 414 9 
+    L349 53 
+    
+    C349 89 348 126 323 163 
+    C305 188 292 198 261 214 
+    C204 152 89 86 70 93 
+    C54 114 57 236 82 330 
+    C20 394 -6 462 26 542 
+    C60 626 126 645 229 654 
+    C271 681 305 701 382 701 Z" 
+    stroke-width="17" stroke-linejoin="round"/>
+
+    <g id="eyes" stroke-width="22">
+        <path id="Left Eye" d="M180 385 H243 M299 385 H243 M243 385 V497" />
+        <path id="Right Eye" d="M521 385 H584 M521 385 H465 M521 385 V497" />
+    </g>
+
+    <g id="whiskers" stroke-width="20">
+        <path id="Left Whiskers" d="M74 449 L154 462 M73 529 L154 513" />
+        <path id="Right Whiskers" d="M690 449 L610 462 M691 529 L610 513" />
+    </g>
+
+    <g id="mouth-nose">
+        <path id="nose" d="M394 488 H370 L372 507 L382 516 L392 507 L394 488 Z" fill="black" stroke="none"/>
+        <path id="mouth" d="M334 576 C354 572 364 565 382 552 M382 552 C399 565 409 573 429 576 M382 552 V516 M382 516 L372 507 L370 488 H394 L392 507 L382 516 Z" stroke-width="13" stroke-linejoin="round"/>
+    </g>
+
+    <path id="ear-lines" d="M83 331 C149 273 190 248 264 214 M500 214 C574 248 615 273 681 331" stroke-width="15" />
+
+    <g id="limbs" stroke-width="17">
+        <path d="M26 542 L-40 460" />
+        <path d="M738 542 L804 460" />
+        <path d="M320 702 L320 942" />
+        <path d="M444 702 L444 942" />
+    </g>
+    
+  </g>
+</svg>
