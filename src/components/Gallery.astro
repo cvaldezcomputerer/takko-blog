@@ -1,131 +1,195 @@
 ---
+const { images = [] } = Astro.props;
 ---
-<image-gallery>
-    <div class="gallery-wrapper">
-        <slot />
-    </div>
-
-    <dialog class="lightbox-modal">
-        <div class="lightbox-content">
-            <img class="lightbox-img" src="" alt="Enlarged view" />
-            <button class="lightbox-close" aria-label="Close">&times;</button>
+<div class="extras-container">
+  <!-- Title removed as per user request -->
+  <div class="scatter-container">
+    {images.length > 0 ? (
+      images.map((img) => (
+        <div class="photo-card">
+          <img src={img} loading="lazy" alt="" />
         </div>
-    </dialog>
-</image-gallery>
-
-<script>
-    class ImageGallery extends HTMLElement {
-        constructor() {
-            super();
-        }
-
-        connectedCallback() {
-            const dialog = this.querySelector('dialog');
-            const lightboxImg = this.querySelector('.lightbox-img');
-            const closeBtn = this.querySelector('.lightbox-close');
-            
-            if (!dialog || !lightboxImg || !closeBtn) return;
-
-            // Add click listeners to all images in the gallery slot
-            const images = this.querySelectorAll('.gallery-wrapper img');
-            images.forEach(img => {
-                img.style.cursor = 'zoom-in';
-                img.addEventListener('click', (e) => {
-                    e.preventDefault(); // Prevent default if wrapped in link
-                    lightboxImg.src = img.src;
-                    lightboxImg.alt = img.alt;
-                    dialog.showModal();
-                });
-            });
-
-            // Close logic
-            closeBtn.addEventListener('click', () => dialog.close());
-            dialog.addEventListener('click', (e) => {
-                if (e.target === dialog) dialog.close();
-            });
-        }
-    }
-
-    if (!customElements.get('image-gallery')) {
-        customElements.define('image-gallery', ImageGallery);
-    }
-</script>
+      ))
+    ) : (
+      <slot />
+    )}
+  </div>
+</div>
 
 <style>
-    .gallery-wrapper {
-        column-count: 2;
-        column-gap: 1rem;
-        margin: 2rem 0;
-    }
-    
-    @media (max-width: 600px) {
-        .gallery-wrapper {
-            column-count: 1;
-        }
-    }
+  .extras-container { margin: 1rem 0; /* Reduced from 3rem */ }
 
-    /* Target figures inside the slot to ensure they stack correctly */
-    .gallery-wrapper :global(figure) {
-        margin: 0 0 1.5rem 0; /* Space between items vertically */
-        break-inside: avoid; /* Prevent images from being cut in half */
-        display: inline-block; /* Helps with column layout stability */
-        width: 100%;
-    }
+  .scatter-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    
+    padding: 50px 20px;
+    background: transparent; 
+    margin-top: 0; /* Removed top margin */
+    position: relative;
+  }
+  
+  .photo-card,
+  .scatter-container :global(figure) {
+    background: white;
+    /* Polaroid Spacing: Equal top/sides, large bottom */
+    padding: 12px 12px 50px 12px; 
+    box-shadow: 2px 4px 12px rgba(0,0,0,0.2);
+    width: 200px;
+    height: 240px; /* Fixed height to prevent layout shift on hover */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    /* Slower animation */
+    transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), background 0.5s, box-shadow 0.5s;
+    z-index: 1;
+    cursor: pointer;
+    /* Subtle border for the card itself */
+    border: 1px solid rgba(0,0,0,0.05); 
+    position: relative; /* Anchor for absolute hover image */
+  }
+  
+  /* Reset default figure margin */
+  .scatter-container :global(figure) {
+    margin: 0;
+  }
 
-    .gallery-wrapper :global(figcaption) {
-        margin-top: 0.5rem;
-        font-size: 0.9em;
-        color: var(--gray);
-    }
+  .photo-card img,
+  .scatter-container :global(figure img) {
+    width: 100%;
+    /* Square aspect ratio is classic Polaroid */
+    aspect-ratio: 1 / 1; 
+    object-fit: cover;
+    display: block;
+    /* Slight inner shadow or border to define image edge against white */
+    border: 1px solid rgba(0,0,0,0.1); 
+    /* Slower animation */
+    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  
+  /* Caption styling */
+  .scatter-container :global(figcaption) {
+     position: absolute;
+     bottom: 10px;
+     left: 10px;
+     right: 10px;
+     text-align: center;
+     font-family: "Courier New", Courier, monospace;
+     font-size: 0.8em;
+     color: #444;
+     margin-top: 0;
+     line-height: 1.2;
+     max-height: 40px;
+     overflow: hidden;
+     transition: opacity 0.4s;
+  }
 
-    /* Lightbox Styles */
-    .lightbox-modal {
-        padding: 0;
-        border: none;
-        background: transparent;
-        max-width: 95vw;
-        max-height: 95vh;
-        overflow: hidden;
+  /* CSS Tricks for "Randomness" */
+  .photo-card:nth-child(odd),
+  .scatter-container :global(figure:nth-child(odd)) { transform: rotate(-3deg); }
+  
+  .photo-card:nth-child(even),
+  .scatter-container :global(figure:nth-child(even)) { transform: rotate(2deg); margin-top: 20px; }
+  
+  .photo-card:nth-child(3n),
+  .scatter-container :global(figure:nth-child(3n)) { transform: rotate(4deg); margin-top: -10px; }
+  
+  .photo-card:nth-child(5n),
+  .scatter-container :global(figure:nth-child(5n)) { transform: rotate(-5deg); margin-top: 10px; }
+
+  /* Mobile Adjustments */
+  @media (max-width: 600px) {
+    .scatter-container {
+      gap: 0; /* Remove horizontal/vertical gap */
+      padding: 20px 10px; /* Less padding around container */
     }
     
-    .lightbox-modal::backdrop {
-        background: rgba(0, 0, 0, 0.85);
+    .photo-card,
+    .scatter-container :global(figure) {
+      /* Overlap vertically slightly for a "stack" feel */
+      margin-bottom: -120px; 
+      /* Make sure last one doesn't overlap nothing */
     }
     
-    .lightbox-content {
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    .photo-card:last-child,
+    .scatter-container :global(figure:last-child) {
+      margin-bottom: 0;
     }
     
-    .lightbox-img {
-        max-width: 100%;
-        max-height: 90vh;
-        object-fit: contain;
-        border-radius: 4px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-    }
+    /* Reduce random margins on mobile so the stack is straighter/cleaner? 
+       Or keep the chaos? "Stack them up" implies overlap. 
+       Let's keep rotation but reset margin-top offsets so the overlap is consistent.
+    */
+    .photo-card:nth-child(even),
+    .scatter-container :global(figure:nth-child(even)) { margin-top: 0; }
     
-    .lightbox-close {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: rgba(0, 0, 0, 0.5);
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        font-size: 24px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background 0.2s;
-    }
+    .photo-card:nth-child(3n),
+    .scatter-container :global(figure:nth-child(3n)) { margin-top: 0; }
     
-    .lightbox-close:hover {
-        background: rgba(0, 0, 0, 0.8);
+    .photo-card:nth-child(5n),
+    .scatter-container :global(figure:nth-child(5n)) { margin-top: 0; }
+  }
+
+  /* Interaction: "Break off" the frame and show full image */
+  .photo-card:hover,
+  .scatter-container :global(figure:hover) {
+    transform: rotate(0deg); /* Straighten up */
+    z-index: 1000; /* Ensure it's on top of everything */
+    background: transparent; /* Hide polaroid paper */
+    box-shadow: none; /* Remove paper shadow */
+    border-color: transparent;
+    /* On mobile, if we overlap, we need to cancel the negative margin on hover? 
+       Actually, z-index 1000 and absolute positioning of the child img handles the visual.
+       The card itself stays in flow. 
+    */
+  }
+  
+  /* Reset margin on hover for mobile to prevent jumping? 
+     Actually, changing margin on hover causes layout shift. 
+     Better to not change margin on hover. 
+  */
+  @media (max-width: 600px) {
+    .photo-card:hover,
+    .scatter-container :global(figure:hover) {
+       margin-bottom: -120px; /* Keep the overlap */
     }
+  }
+  
+  /* Hide caption on hover */
+  .photo-card:hover :global(figcaption),
+  .scatter-container :global(figure:hover figcaption) {
+    opacity: 0;
+  }
+
+  /* Transform the image */
+  .photo-card:hover img,
+  .scatter-container :global(figure:hover img) {
+    position: absolute;
+    width: auto;
+    height: auto;
+    max-width: 400px; /* Limit size */
+    max-height: 60vh;
+    aspect-ratio: unset; /* Show full shape */
+    object-fit: contain;
+    
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.1); /* Center and slight scale */
+    
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4); /* Strong shadow for the photo itself */
+    border-radius: 4px;
+    border: 2px solid white; /* Optional: Nice photo border */
+    background: white; /* Ensure background behind transparent image parts if any */
+  }
+  
+  /* Mobile hover adjustment: Image shouldn't be too big */
+  @media (max-width: 600px) {
+    .photo-card:hover img,
+    .scatter-container :global(figure:hover img) {
+      max-width: 90vw;
+      max-height: 50vh;
+    }
+  }
 </style>
