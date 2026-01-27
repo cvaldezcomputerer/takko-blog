@@ -28,9 +28,11 @@ const { slug } = Astro.props;
           <path id="left-whisker" d="M191 587.5L271 600.5M189.5 667L271 651.5" stroke="currentColor" stroke-width="20" stroke-linecap="round" fill="none"/>
           <path id="right-whisker" d="M801 588L721 601M802.5 667.5L721 652" stroke="currentColor" stroke-width="20" stroke-linecap="round" fill="none"/>
         </g>
-        <g id="mouth-nose">
-          <path id="nose" d="M510 626H485.5L488 645L498.5 654.5L508.5 645L510 626Z" fill="currentColor"/>
-          <path id="mouth" d="M451 714.5C470.702 710.853 481.081 703.062 498.5 690M498.5 690C515.387 703.979 525.654 711.774 545.5 714.5M498.5 690V654.5M498.5 654.5L488 645L485.5 626H510L508.5 645L498.5 654.5Z" stroke="currentColor" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <g id="mouth-nose">
+                  <path id="nose" class="smile-path" d="M510 626H485.5L488 645L498.5 654.5L508.5 645L510 626Z" fill="currentColor"/>
+                  
+                  <path class="smile-path" id="mouth" d="M451 714.5C470.702 710.853 481.081 703.062 498.5 690M498.5 690C515.387 703.979 525.654 711.774 545.5 714.5M498.5 690V654.5M498.5 654.5L488 645L485.5 626H510L508.5 645L498.5 654.5Z" stroke="currentColor" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <ellipse class="mouth-o" cx="498" cy="710" rx="75" ry="95" stroke="currentColor" stroke-width="22" fill="none" />
         </g>
       </g>
     </svg>
@@ -185,7 +187,7 @@ const { slug } = Astro.props;
   }
   .count {
     position: absolute;
-    top: 40%;
+    top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 0.75rem;
@@ -218,21 +220,31 @@ const { slug } = Astro.props;
     color: rgb(var(--black));
   }
 
-  /* Eye Interaction */
-  .eye-pupil, .eye-lid {
-    transition: transform 0.2s ease-in-out;
+  /* Mouth Interaction */
+  .mouth-o {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
   }
-  .eye-pupil {
-    transform-box: fill-box;
-    transform-origin: center;
+  .smile-path {
+    opacity: 1;
+    transition: opacity 0.2s ease-in-out;
   }
-  .eye-lid {
-    transform-box: view-box;
+  
+  button:hover .mouth-o {
+    opacity: 1;
   }
-  button:hover .eye-pupil {
-    transform: scaleY(0);
+  button:hover .smile-path {
+    opacity: 0;
   }
-  button:hover .eye-lid {
-    transform: translateY(5.5%);
+
+  @media (min-width: 768px) {
+    button {
+      width: 80px;
+      height: 80px;
+    }
+    .balloon-wrapper {
+      width: 60px;
+      height: 60px;
+    }
   }
 </style>
