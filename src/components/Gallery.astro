@@ -7,7 +7,7 @@ const { images = [] } = Astro.props;
     {images.length > 0 ? (
       images.map((img) => (
         <div class="photo-card">
-          <img src={img} loading="lazy" alt="" />
+          <img src={img} loading="lazy" decoding="async" alt="" />
         </div>
       ))
     ) : (
