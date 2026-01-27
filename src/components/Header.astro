@@ -1,10 +1,9 @@
 ---
-import { Image } from 'astro:assets';
 import HeaderLink from './HeaderLink.astro';
 import { SITE_TITLE } from '../consts';
 import LanguageSelector from './LanguageSelector.astro';
 import T from './T.astro';
-import logoImage from '../assets/images/logo.svg';
+import Logo from './Logo.astro';
 import FloatingIsland from './FloatingIsland.astro';
 import ThemeToggle from './ThemeToggle.astro';
 ---
@@ -13,13 +12,7 @@ import ThemeToggle from './ThemeToggle.astro';
 	<nav>
 		
 		<a href="/" class="logo-link">
-			<Image
-				src={logoImage}
-				alt="Takko Blog homepage"
-				width={100}
-				height={100}
-				loading="eager"
-			/>
+			<Logo />
 			<span class="site-title-text">{SITE_TITLE}</span>
 		</a>
 
@@ -97,16 +90,13 @@ import ThemeToggle from './ThemeToggle.astro';
 		flex-shrink: 0;
 		transition: transform 0.3s ease, color 0.3s ease;
 	}
-	.logo-link img {
+	.logo-link :global(.takko-logo) {
 		height: 2.5em;
 		width: auto;
 		transition: all 0.3s ease;
 	}
-	.logo-link:hover img {
+	.logo-link:hover :global(.takko-logo) {
 		transform: scale(1.1);
-	}
-	:global(.dark) .logo-link img {
-		filter: invert(1);
 	}
 	.site-title-text {
 		transition: all 0.3s ease;
