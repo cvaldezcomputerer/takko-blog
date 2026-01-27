@@ -1,7 +1,6 @@
 ---
-import { Image } from 'astro:assets';
 import LanguageSelector from './LanguageSelector.astro';
-import logoImage from '../assets/images/logo.svg';
+import Logo from './Logo.astro';
 
 // Determine where the "Back" button should go
 const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !== '/blog' && Astro.url.pathname !== '/blog/' ? '/blog' : '/';
@@ -13,7 +12,7 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 
 <div id="floating-island">
 	<a href="/" class="island-logo" aria-label="Home">
-		<Image src={logoImage} alt="" width={56} height={56} />
+		<Logo />
 	</a>
 	<LanguageSelector />
 	<a href={backLink} class="island-back-btn" aria-label="Go Back">
@@ -179,15 +178,14 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 		pointer-events: none;
 	}
 
-	.island-logo img {
+	.island-logo :global(.takko-logo) {
 		transition: transform 0.2s;
 		display: block;
+		width: 56px;
+		height: 56px;
 	}
-	.island-logo:hover img {
+	.island-logo:hover :global(.takko-logo) {
 		transform: scale(1.1);
-	}
-	:global(.dark) .island-logo img {
-		filter: invert(1);
 	}
 
 	/* Make buttons bigger in the island */
