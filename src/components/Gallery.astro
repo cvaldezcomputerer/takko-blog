@@ -1,41 +1,100 @@
 ---
 const { images = [] } = Astro.props;
 ---
-<div class="extras-container">
-  <div class="scatter-container">
-    {images.length > 0 ? (
-      images.map((img) => (
-        <div class="photo-card">
-          <img src={img} loading="lazy" decoding="async" alt="" />
-        </div>
-      ))
-    ) : (
-      <slot />
-    )}
-  </div>
+<div class="scrapbook-container">
+  {images.length > 0 ? (
+    images.map((img) => (
+      <div class="photo-card">
+        <img src={img} loading="lazy" decoding="async" alt="" />
+      </div>
+    ))
+  ) : (
+    <slot />
+  )}
 </div>
 
 <style>
-  .extras-container { margin: 1rem 0; }
-
-  .scatter-container {
+  /* 
+   * NEW SCRAPBOOK STYLES 
+   */
+  .scrapbook-container {
+    /* 1. The Paper Color & Grid Background */
+    background-color: var(--secondary);
+    color: #333;
+    
+    /* Creates a grid pattern */
+    background-image: 
+      linear-gradient(#e1e1e1 1px, transparent 1px),
+      linear-gradient(90deg, #e1e1e1 1px, transparent 1px);
+    background-size: 20px 20px; /* Size of the grid squares */
+    
+    /* Structure & Spacing */
+    position: relative; /* Essential for the tape positioning */
+    padding: 40px 20px 60px 20px; /* Reduced side padding to help fit 3 cards */
+    margin: 50px auto;
+    border: 1px solid #ddd;
+    
+    /* Make it look like a stack of paper */
+    box-shadow: 
+      5px 5px 0px #f0f0f0,
+      10px 10px 0px #e0e0e0;
+      
+    max-width: 100%; /* Ensure it doesn't overflow parent */
+    
+    /* Flexbox for Polaroids */
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    
-    padding: 50px 20px;
-    background: transparent;
-    margin-top: 0;
-    position: relative;
+    gap: 20px;
   }
+
+  :global(.dark) .scrapbook-container {
+    background-color: var(--secondary);
+    background-image: 
+      linear-gradient(rgba(var(--gray), 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(var(--gray), 0.1) 1px, transparent 1px);
+    border-color: rgba(var(--gray), 0.2);
+    box-shadow: 
+      5px 5px 0px rgba(var(--gray), 0.1),
+      10px 10px 0px rgba(var(--gray), 0.05);
+    color: var(--text);
+  }
+
+  /* 3. The Tape */
+  .scrapbook-container::before {
+    content: "";
+    position: absolute;
+    top: -15px; /* Pulls tape slightly above the container */
+    left: 50%;
+    transform: translateX(-50%) rotate(-1.5deg); /* Centers and tilts it */
+    
+    width: 140px;
+    height: 35px;
+    
+    /* Tape Styling */
+    background-color: rgba(230, 230, 230, 0.5); /* Semi-transparent */
+    border-left: 2px dashed rgba(0,0,0,0.1);  /* Ragged edges */
+    border-right: 2px dashed rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    backdrop-filter: blur(2px); /* Makes it look like matte tape */
+    z-index: 10; /* Ensure tape is on top */
+  }
+
+  :global(.dark) .scrapbook-container::before {
+    background-color: rgba(240, 230, 140, 0.15);
+  }
+
+  /* 
+   * EXISTING POLAROID STYLES (Adapted)
+   */
   
   .photo-card,
-  .scatter-container :global(figure) {
+  .scrapbook-container :global(figure) {
     background: white;
     /* Polaroid Spacing: Equal top/sides, large bottom */
     padding: 12px 12px 50px 12px; 
     box-shadow: 2px 4px 12px rgba(0,0,0,0.2);
-    width: 200px;
+    width: 180px; /* Reduced width to fit 3 per row more easily */
     height: 240px; /* Fixed height to prevent layout shift on hover */
     display: flex;
     flex-direction: column;
@@ -45,33 +104,34 @@ const { images = [] } = Astro.props;
     z-index: 1;
     cursor: pointer;
     border: 1px solid rgba(0,0,0,0.05);
-    position: relative; /* Anchor for absolute hover image */
+    position: relative; 
 
-    /* Fix for anti-aliasing/jitter on animation end */
     will-change: transform;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    outline: 1px solid transparent; /* Hack to improve anti-aliasing on rotated edges */
+    outline: 1px solid transparent;
+  }
+
+  :global(.dark) .photo-card,
+  :global(.dark) .scrapbook-container :global(figure) {
+    background: var(--text);
   }
   
   /* Reset default figure margin */
-  .scatter-container :global(figure) {
+  .scrapbook-container :global(figure) {
     margin: 0;
   }
 
   .photo-card img,
-  .scatter-container :global(figure img) {
+  .scrapbook-container :global(figure img) {
     width: 100%;
-    /* Square aspect ratio is classic Polaroid */
     aspect-ratio: 1 / 1; 
     object-fit: cover;
     display: block;
     border: 2px solid rgba(255,255,255,0);
-    /* Slower animation - Targeted properties to avoid layout snap */
     transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.5s, border 0.5s;
     border-radius: 0;
 
-    /* Fix for anti-aliasing/jitter on animation end */
     will-change: transform;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
@@ -79,7 +139,7 @@ const { images = [] } = Astro.props;
     transform: translateZ(0);
   }
   
-  .scatter-container :global(figcaption) {
+  .scrapbook-container :global(figcaption) {
      position: absolute;
      bottom: 10px;
      left: 10px;
@@ -95,43 +155,47 @@ const { images = [] } = Astro.props;
      transition: opacity 0.4s;
   }
 
-  /* CSS Tricks for "Randomness" */
+  :global(.dark) .scrapbook-container :global(figcaption) {
+    color: var(--background);
+  }
+
+  /* Randomness */
   .photo-card:nth-child(odd),
-  .scatter-container :global(figure:nth-child(odd)) { transform: rotate(-3deg) translateZ(0); }
+  .scrapbook-container :global(figure:nth-child(odd)) { transform: rotate(-3deg) translateZ(0); }
   
   .photo-card:nth-child(even),
-  .scatter-container :global(figure:nth-child(even)) { transform: rotate(2deg) translateZ(0); margin-top: 20px; }
+  .scrapbook-container :global(figure:nth-child(even)) { transform: rotate(2deg) translateZ(0); margin-top: 20px; }
   
   .photo-card:nth-child(3n),
-  .scatter-container :global(figure:nth-child(3n)) { transform: rotate(4deg) translateZ(0); margin-top: -10px; }
+  .scrapbook-container :global(figure:nth-child(3n)) { transform: rotate(4deg) translateZ(0); margin-top: -10px; }
   
   .photo-card:nth-child(5n),
-  .scatter-container :global(figure:nth-child(5n)) { transform: rotate(-5deg) translateZ(0); margin-top: 10px; }
+  .scrapbook-container :global(figure:nth-child(5n)) { transform: rotate(-5deg) translateZ(0); margin-top: 10px; }
 
   @media (max-width: 600px) {
-    .scatter-container {
+    .scrapbook-container {
       gap: 0;
       padding: 20px 10px;
     }
     
     .photo-card,
-    .scatter-container :global(figure) {
-      /* Overlap vertically slightly for a "stack" feel */
+    .scrapbook-container :global(figure) {
       margin-bottom: -120px; 
+      /* Ensure width resets */
+      width: 200px;
     }
     
     .photo-card:last-child,
-    .scatter-container :global(figure:last-child) {
+    .scrapbook-container :global(figure:last-child) {
       margin-bottom: 0;
     }
     
-    /* Reset the random margin-top offsets for the stacked mobile view */
-    .photo-card:nth-child(n), .scatter-container :global(figure:nth-child(n)) { margin-top: 0; }
+    .photo-card:nth-child(n), .scrapbook-container :global(figure:nth-child(n)) { margin-top: 0; }
   }
 
-  /* Interaction: "Break off" the frame and show full image */
+  /* Hover Effects (Global - defaults to desktop behavior) */
   .photo-card:hover,
-  .scatter-container :global(figure:hover) {
+  .scrapbook-container :global(figure:hover) {
     transform: rotate(0deg) translateZ(0);
     z-index: 1000;
     background: transparent;
@@ -140,12 +204,12 @@ const { images = [] } = Astro.props;
   }
   
   .photo-card:hover :global(figcaption),
-  .scatter-container :global(figure:hover figcaption) {
+  .scrapbook-container :global(figure:hover figcaption) {
     opacity: 0;
   }
 
   .photo-card:hover img,
-  .scatter-container :global(figure:hover img) {
+  .scrapbook-container :global(figure:hover img) {
     position: absolute;
     width: auto;
     height: auto;
@@ -161,21 +225,13 @@ const { images = [] } = Astro.props;
     box-shadow: 0 15px 40px rgba(0,0,0,0.4);
     border-radius: 0;
     border: 2px solid white;
-    background: white; /* Ensure background behind transparent image parts if any */
-  }
-  
-  @media (max-width: 600px) {
-    .photo-card:hover img,
-    .scatter-container :global(figure:hover img) {
-      max-width: 90vw;
-      max-height: 50vh;
-    }
+    background: white; 
   }
 
   /* Mobile Hover/Focus Override: Keep Polaroid look, just zoom and show caption */
   @media (max-width: 600px) {
     .photo-card:hover,
-    .scatter-container :global(figure:hover) {
+    .scrapbook-container :global(figure:hover) {
       background: white;
       box-shadow: 0 10px 25px rgba(0,0,0,0.3);
       transform: scale(1.02) rotate(0deg) translateZ(0);
@@ -188,10 +244,11 @@ const { images = [] } = Astro.props;
       
       /* Half border (6px) top/sides, space for caption bottom */
       padding: 6px 6px 10px 6px;
+      z-index: 1000;
     }
 
     .photo-card:hover img,
-    .scatter-container :global(figure:hover img) {
+    .scrapbook-container :global(figure:hover img) {
       /* Reset "pop-out" styles */
       position: static;
       width: 100%;
@@ -207,7 +264,7 @@ const { images = [] } = Astro.props;
     }
 
     .photo-card:hover :global(figcaption),
-    .scatter-container :global(figure:hover figcaption) {
+    .scrapbook-container :global(figure:hover figcaption) {
       opacity: 1;
       position: static; /* Flow in flex container */
       width: 100%;
