@@ -7,7 +7,7 @@ import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import LikeButton from '../components/LikeButton.astro';
 
-const { title, description, pubDate, updatedDate, heroImage, slug } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, slug, heroImageFit } = Astro.props;
 ---
 
 <html lang="en">
@@ -104,7 +104,8 @@ const { title, description, pubDate, updatedDate, heroImage, slug } = Astro.prop
 					  src={heroImage}
 					   alt=""
 					    format="webp"
-						loading="eager" />
+						loading="eager"
+						style={heroImageFit && `object-fit: ${heroImageFit}; background-color: ${heroImageFit === 'contain' ? 'black' : 'transparent'}`} />
 					</div>
 				}
 				<div class="prose">
