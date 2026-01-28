@@ -54,6 +54,7 @@ const { slug } = Astro.props;
       const countSpan = this.querySelector('.count');
       const heartPath = this.querySelector('.heart-path');
       const catIcon = this.querySelector('.cat-icon');
+      const balloonWrapper = this.querySelector('.balloon-wrapper');
 
       // Random pastel background color for the balloon
       const hue = Math.floor(Math.random() * 360);
@@ -62,6 +63,48 @@ const { slug } = Astro.props;
       this.hasLiked = false;
       this.balloonClicks = 0;
       this.deflateTimer = null;
+      this.isFlying = false;
+      let lastScrollY = window.scrollY;
+
+      // --- Scroll and Animation Logic ---
+      const handleScroll = () => {
+        const currentScrollY = window.scrollY;
+        const isAtTop = currentScrollY < 300;
+        const isScrollingDown = currentScrollY > lastScrollY;
+
+        if (this.isFlying) {
+          // If flying (scrolling up), wait until we hit top or user interrupts
+          if (isAtTop) {
+            this.isFlying = false;
+            this.classList.remove('is-visible');
+          } else if (isScrollingDown) {
+            this.isFlying = false; // User interrupted
+          } else {
+            lastScrollY = currentScrollY;
+            return; // Continue flying
+          }
+        }
+
+        if (isAtTop) {
+          this.classList.remove('is-visible');
+        } else {
+          this.classList.remove('fly-away'); // Reset fly state so it can appear
+          this.classList.add('is-visible');
+        }
+        lastScrollY = currentScrollY;
+      };
+
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      handleScroll(); // Initial check
+
+      if (balloonWrapper) {
+        balloonWrapper.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.isFlying = true;
+          this.classList.add('fly-away');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
 
       // 1. Fetch the current like count on load
       fetch(`/api/likes/${slug}`)
@@ -141,6 +184,25 @@ const { slug } = Astro.props;
     display: flex;
     flex-direction: column;
     align-items: center;
+    
+    /* Initial State (Hidden at top) */
+    opacity: 0;
+    transform: translateY(-250px); /* Hovering higher above */
+    pointer-events: none;
+    transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.2s ease;
+  }
+
+  like-button.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  like-button.fly-away {
+    opacity: 0;
+    transform: translateY(-150vh); /* Fly way up off screen */
+    /* Move up faster (0.8s), start fading out near the end */
+    transition: transform 0.8s ease-in, opacity 0.3s ease-out 0.5s;
   }
   button {
     /* Custom SVG cursor (Open Hand) to bypass driver glitches */
@@ -174,7 +236,8 @@ const { slug } = Astro.props;
     justify-content: center;
     align-items: center;
     filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1));
-    pointer-events: none;
+    pointer-events: auto;
+    cursor: pointer;
   }
   .heart-balloon {
     width: 100%;
