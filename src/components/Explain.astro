@@ -4,13 +4,14 @@ interface Props {
 }
 
 const { meaning } = Astro.props;
+const id = `explain-${Math.random().toString(36).slice(2, 11)}`;
 ---
 
 <span class="explain-wrapper">
-	<button class="explain-trigger" type="button" aria-label="Show explanation">
+	<button class="explain-trigger" type="button" aria-describedby={id}>
 		<slot />
 	</button>
-	<span class="explain-box" role="tooltip">
+	<span id={id} class="explain-box" role="tooltip">
 		{meaning}
 	</span>
 </span>
