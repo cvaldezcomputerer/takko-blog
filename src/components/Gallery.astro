@@ -2,7 +2,6 @@
 const { images = [] } = Astro.props;
 ---
 <div class="extras-container">
-  <!-- Title removed as per user request -->
   <div class="scatter-container">
     {images.length > 0 ? (
       images.map((img) => (
@@ -17,7 +16,7 @@ const { images = [] } = Astro.props;
 </div>
 
 <style>
-  .extras-container { margin: 1rem 0; /* Reduced from 3rem */ }
+  .extras-container { margin: 1rem 0; }
 
   .scatter-container {
     display: flex;
@@ -25,8 +24,8 @@ const { images = [] } = Astro.props;
     justify-content: center;
     
     padding: 50px 20px;
-    background: transparent; 
-    margin-top: 0; /* Removed top margin */
+    background: transparent;
+    margin-top: 0;
     position: relative;
   }
   
@@ -42,13 +41,17 @@ const { images = [] } = Astro.props;
     flex-direction: column;
     align-items: center;
     
-    /* Slower animation */
     transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), background 0.5s, box-shadow 0.5s;
     z-index: 1;
     cursor: pointer;
-    /* Subtle border for the card itself */
-    border: 1px solid rgba(0,0,0,0.05); 
+    border: 1px solid rgba(0,0,0,0.05);
     position: relative; /* Anchor for absolute hover image */
+
+    /* Fix for anti-aliasing/jitter on animation end */
+    will-change: transform;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    outline: 1px solid transparent; /* Hack to improve anti-aliasing on rotated edges */
   }
   
   /* Reset default figure margin */
@@ -63,13 +66,19 @@ const { images = [] } = Astro.props;
     aspect-ratio: 1 / 1; 
     object-fit: cover;
     display: block;
-    /* Slight inner shadow or border to define image edge against white */
-    border: 1px solid rgba(0,0,0,0.1); 
+    border: 2px solid rgba(255,255,255,0);
     /* Slower animation - Targeted properties to avoid layout snap */
     transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.5s, border 0.5s;
+    border-radius: 0;
+
+    /* Fix for anti-aliasing/jitter on animation end */
+    will-change: transform;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
   }
   
-  /* Caption styling */
   .scatter-container :global(figcaption) {
      position: absolute;
      bottom: 10px;
@@ -88,29 +97,27 @@ const { images = [] } = Astro.props;
 
   /* CSS Tricks for "Randomness" */
   .photo-card:nth-child(odd),
-  .scatter-container :global(figure:nth-child(odd)) { transform: rotate(-3deg); }
+  .scatter-container :global(figure:nth-child(odd)) { transform: rotate(-3deg) translateZ(0); }
   
   .photo-card:nth-child(even),
-  .scatter-container :global(figure:nth-child(even)) { transform: rotate(2deg); margin-top: 20px; }
+  .scatter-container :global(figure:nth-child(even)) { transform: rotate(2deg) translateZ(0); margin-top: 20px; }
   
   .photo-card:nth-child(3n),
-  .scatter-container :global(figure:nth-child(3n)) { transform: rotate(4deg); margin-top: -10px; }
+  .scatter-container :global(figure:nth-child(3n)) { transform: rotate(4deg) translateZ(0); margin-top: -10px; }
   
   .photo-card:nth-child(5n),
-  .scatter-container :global(figure:nth-child(5n)) { transform: rotate(-5deg); margin-top: 10px; }
+  .scatter-container :global(figure:nth-child(5n)) { transform: rotate(-5deg) translateZ(0); margin-top: 10px; }
 
-  /* Mobile Adjustments */
   @media (max-width: 600px) {
     .scatter-container {
-      gap: 0; /* Remove horizontal/vertical gap */
-      padding: 20px 10px; /* Less padding around container */
+      gap: 0;
+      padding: 20px 10px;
     }
     
     .photo-card,
     .scatter-container :global(figure) {
       /* Overlap vertically slightly for a "stack" feel */
       margin-bottom: -120px; 
-      /* Make sure last one doesn't overlap nothing */
     }
     
     .photo-card:last-child,
@@ -118,73 +125,45 @@ const { images = [] } = Astro.props;
       margin-bottom: 0;
     }
     
-    /* Reduce random margins on mobile so the stack is straighter/cleaner? 
-       Or keep the chaos? "Stack them up" implies overlap. 
-       Let's keep rotation but reset margin-top offsets so the overlap is consistent.
-    */
-    .photo-card:nth-child(even),
-    .scatter-container :global(figure:nth-child(even)) { margin-top: 0; }
-    
-    .photo-card:nth-child(3n),
-    .scatter-container :global(figure:nth-child(3n)) { margin-top: 0; }
-    
-    .photo-card:nth-child(5n),
-    .scatter-container :global(figure:nth-child(5n)) { margin-top: 0; }
+    /* Reset the random margin-top offsets for the stacked mobile view */
+    .photo-card:nth-child(n), .scatter-container :global(figure:nth-child(n)) { margin-top: 0; }
   }
 
   /* Interaction: "Break off" the frame and show full image */
   .photo-card:hover,
   .scatter-container :global(figure:hover) {
-    transform: rotate(0deg); /* Straighten up */
-    z-index: 1000; /* Ensure it's on top of everything */
-    background: transparent; /* Hide polaroid paper */
-    box-shadow: none; /* Remove paper shadow */
+    transform: rotate(0deg) translateZ(0);
+    z-index: 1000;
+    background: transparent;
+    box-shadow: none;
     border-color: transparent;
-    /* On mobile, if we overlap, we need to cancel the negative margin on hover? 
-       Actually, z-index 1000 and absolute positioning of the child img handles the visual.
-       The card itself stays in flow. 
-    */
   }
   
-  /* Reset margin on hover for mobile to prevent jumping? 
-     Actually, changing margin on hover causes layout shift. 
-     Better to not change margin on hover. 
-  */
-  @media (max-width: 600px) {
-    .photo-card:hover,
-    .scatter-container :global(figure:hover) {
-       margin-bottom: -120px; /* Keep the overlap */
-    }
-  }
-  
-  /* Hide caption on hover */
   .photo-card:hover :global(figcaption),
   .scatter-container :global(figure:hover figcaption) {
     opacity: 0;
   }
 
-  /* Transform the image */
   .photo-card:hover img,
   .scatter-container :global(figure:hover img) {
     position: absolute;
     width: auto;
     height: auto;
-    max-width: 400px; /* Limit size */
+    max-width: 400px;
     max-height: 60vh;
-    aspect-ratio: unset; /* Show full shape */
+    aspect-ratio: unset;
     object-fit: contain;
     
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(1.1); /* Center and slight scale */
+    transform: translate(-50%, -50%) scale(1.1);
     
-    box-shadow: 0 15px 40px rgba(0,0,0,0.4); /* Strong shadow for the photo itself */
-    border-radius: 4px;
-    border: 2px solid white; /* Optional: Nice photo border */
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+    border-radius: 0;
+    border: 2px solid white;
     background: white; /* Ensure background behind transparent image parts if any */
   }
   
-  /* Mobile hover adjustment: Image shouldn't be too big */
   @media (max-width: 600px) {
     .photo-card:hover img,
     .scatter-container :global(figure:hover img) {
@@ -197,16 +176,14 @@ const { images = [] } = Astro.props;
   @media (max-width: 600px) {
     .photo-card:hover,
     .scatter-container :global(figure:hover) {
-      background: white; /* Keep background */
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3); /* Restore shadow */
-      transform: scale(1.02) rotate(0deg); /* Slight zoom, straighten */
-      border: 1px solid rgba(0,0,0,0.05); /* Restore border */
+      background: white;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      transform: scale(1.02) rotate(0deg) translateZ(0);
+      border: 1px solid rgba(0,0,0,0.05);
       
-      /* Expand width to fill screen */
       width: 90vw;
       max-width: none;
       
-      /* Allow height to grow for caption */
       height: auto;
       
       /* Half border (6px) top/sides, space for caption bottom */
@@ -223,7 +200,7 @@ const { images = [] } = Astro.props;
       max-height: none;
       transform: none;
       box-shadow: none;
-      border: 1px solid rgba(0,0,0,0.1); /* Keep inner border */
+      border: 1px solid rgba(0,0,0,0.1);
       top: auto;
       left: auto;
       border-radius: 0;
@@ -231,15 +208,14 @@ const { images = [] } = Astro.props;
 
     .photo-card:hover :global(figcaption),
     .scatter-container :global(figure:hover figcaption) {
-      /* Show and position caption below image */
       opacity: 1;
       position: static; /* Flow in flex container */
       width: 100%;
       margin-top: 10px;
-      max-height: none; /* Show full text */
+      max-height: none;
       overflow: visible;
       white-space: normal;
-      padding: 0 10px; /* Add breathing room for text */
+      padding: 0 10px;
     }
   }
 </style>
