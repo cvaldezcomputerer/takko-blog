@@ -65,8 +65,8 @@ const { images = [] } = Astro.props;
     display: block;
     /* Slight inner shadow or border to define image edge against white */
     border: 1px solid rgba(0,0,0,0.1); 
-    /* Slower animation */
-    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    /* Slower animation - Targeted properties to avoid layout snap */
+    transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.5s, border 0.5s;
   }
   
   /* Caption styling */
@@ -190,6 +190,56 @@ const { images = [] } = Astro.props;
     .scatter-container :global(figure:hover img) {
       max-width: 90vw;
       max-height: 50vh;
+    }
+  }
+
+  /* Mobile Hover/Focus Override: Keep Polaroid look, just zoom and show caption */
+  @media (max-width: 600px) {
+    .photo-card:hover,
+    .scatter-container :global(figure:hover) {
+      background: white; /* Keep background */
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3); /* Restore shadow */
+      transform: scale(1.02) rotate(0deg); /* Slight zoom, straighten */
+      border: 1px solid rgba(0,0,0,0.05); /* Restore border */
+      
+      /* Expand width to fill screen */
+      width: 90vw;
+      max-width: none;
+      
+      /* Allow height to grow for caption */
+      height: auto;
+      
+      /* Half border (6px) top/sides, space for caption bottom */
+      padding: 6px 6px 10px 6px;
+    }
+
+    .photo-card:hover img,
+    .scatter-container :global(figure:hover img) {
+      /* Reset "pop-out" styles */
+      position: static;
+      width: 100%;
+      height: auto;
+      max-width: none;
+      max-height: none;
+      transform: none;
+      box-shadow: none;
+      border: 1px solid rgba(0,0,0,0.1); /* Keep inner border */
+      top: auto;
+      left: auto;
+      border-radius: 0;
+    }
+
+    .photo-card:hover :global(figcaption),
+    .scatter-container :global(figure:hover figcaption) {
+      /* Show and position caption below image */
+      opacity: 1;
+      position: static; /* Flow in flex container */
+      width: 100%;
+      margin-top: 10px;
+      max-height: none; /* Show full text */
+      overflow: visible;
+      white-space: normal;
+      padding: 0 10px; /* Add breathing room for text */
     }
   }
 </style>

@@ -3,11 +3,12 @@ title: "School Lunch in the Japanese Countryside"
 description: "A look into the daily school lunch at a countryside kindergarten in Japan."
 pubDate: "2026-01-28"
 heroImage: "../../assets/images/blog/school-lunch/kinder-lunch-jan26.JPG"
+heroImageFit: "contain"
 ---
 
 import T from "~/components/T.astro";
 import Quiz from "~/components/Quiz.astro";
-import TwoImages from "~/components/TwoImages.astro";
+import Gallery from "~/components/Gallery.astro";
 
 <T>
   <span slot="en">Hey, today I want to show you what a day of school lunch looks like at a Japanese Kindergarten. Actually, the same food is served at the local middle school and elementary school too, so it's a look into the school lunch that kids in the Japanese countryside eat every day!</span>
@@ -19,14 +20,20 @@ import TwoImages from "~/components/TwoImages.astro";
   ![Takko Kindergarten Sign](../../assets/images/blog/school-lunch/kinder-sign-snow.JPG)
   <figcaption>
     <T>
-      <span slot="en">Takko Kindergarten Sign(directions arrow below the snow)</span>
+      <span slot="en">Takko Kindergarten Sign</span>
       <span slot="ja">田子幼稚園の看板</span>
-      <span slot="en_simple">Kindergarten Sign</span>
+      <span slot="en_simple">Sign</span>
     </T>
   </figcaption>
 </figure>
 
 ### <T><span slot="en">About Takko Kindergarten</span><span slot="ja">田子幼稚園について</span><span slot="en_simple">About Takko Kindergarten</span></T>
+
+<T>
+  <span slot="en">This is Takko Kindergarten. It's one of the last few public kindergartens in this region. It was built in the 60s, and many of the townspeople I know went there, including the current mayor! Two of the teachers who work here even attended when they were children.</span>
+  <span slot="ja">ここは田子幼稚園です。この地域に残る数少ない公立幼稚園の一つです。1960年代に建てられ、現在の町長を含め、私が知っている町の人たちの多くがここに通っていました！ここで働いている先生のうち2人も、子供の頃ここに通っていたそうです。</span>
+  <span slot="en_simple">This is Takko Kindergarten. It is an old school. It was built in the 1960s. Many people in this town went to this school. The town mayor went here too! The kindergarten teachers too!</span>
+</T>
 
 <figure>
   ![Takko Kindergarten](../../assets/images/blog/school-lunch/kinder-front-snow.JPG)
@@ -39,18 +46,12 @@ import TwoImages from "~/components/TwoImages.astro";
   </figcaption>
 </figure>
 
-<T>
-  <span slot="en">This is Takko Kindergarten. It's one of the last few public kindergartens in this region. It was built in the 60s, and many of the townspeople I know went there, including the current mayor! Two of the teachers who work here even attended when they were children.</span>
-  <span slot="ja">ここは田子幼稚園です。この地域に残る数少ない公立幼稚園の一つです。1960年代に建てられ、現在の町長を含め、私が知っている町の人たちの多くがここに通っていました！ここで働いている先生のうち2人も、子供の頃ここに通っていたそうです。</span>
-  <span slot="en_simple">This is Takko Kindergarten. It is an old school. It was built in the 1960s. Many people in this town went to this school. The town mayor went here too! The kindergarten teachers too!</span>
-</T>
-
 <Quiz
   id="school-lunch-students"
   correctAnswerIndex={0}
   question={{
     en: "How many students do you think are here?",
-    ja: "生徒は何人いると思いますか？",
+    ja: "園児は何人いると思いますか？",
     en_simple: "How many students?"
   }}
   options={[
@@ -62,8 +63,8 @@ import TwoImages from "~/components/TwoImages.astro";
 />
 
 <T>
-  <span slot="en">That's right, there are only two students! The school used to be full of kids, but like many other rural areas in Japan, the population has been steadily dropping in Takko, and many other schools have already closed. Actually, it's one of three remaining public kindergartens in the area, and the only public kindergarten in Takko Town. Ever since I arrived three years ago, the number of students has decreased. Takko Kindergarten is one of my favorite places in Takko, and I plan to write a blog post about it in the future, but for now...</span>
-  <span slot="ja">正解は、なんとたったの2人です！昔は子供たちで溢れていましたが、日本の他の多くの地方と同様に田子町でも人口が減少し続けており、多くの学校が閉校になっています。実は、この地域に残っている3つの公立幼稚園のうちの1つで、田子町では唯一の公立幼稚園なんです。私が3年前に来てからも、生徒数は減ってしまいました。田子幼稚園は私のお気に入りの場所の一つなので、将来また別の記事で詳しく書きたいと思っていますが、とりあえず今は…</span>
+  <span slot="en">That's right, there are only two students! The school used to be full of kids, but like many other rural areas in Japan, the population has been steadily dropping in Takko, and many other schools have already closed. Actually, it's one of three remaining public kindergartens in the area, and the only public kindergarten in Takko Town. Ever since I arrived three years ago, the number of students has decreased. Takko Kindergarten is one of my favorite places in Takko, and I plan to write a blog post about it in the future, but for now it's...</span>
+  <span slot="ja">正解は、なんとたったの2人です！昔は子供たちで溢れていましたが、日本の他の多くの地方と同様に田子町でも人口が減少し続けており、多くの学校が閉校になっています。実は、この地域に残っている3つの公立幼稚園のうちの1つで、田子町では唯一の公立幼稚園なんです。私が3年前に来てからも、園児数は減ってしまいました。田子幼稚園は私のお気に入りの場所の一つなので、将来また別の記事で詳しく書きたいと思っていますが、とりあえず今は…</span>
   <span slot="en_simple">Wow, only 2 students! Before, there were many children. But now, people are leaving the countryside. Many schools are closing. When I came here 3 years ago, there were more students. I like this school very much.</span>
 </T>
 
@@ -75,19 +76,25 @@ import TwoImages from "~/components/TwoImages.astro";
   <span slot="en_simple">It is lunch time! A lunch truck comes to the school. It brings big metal boxes. The food is inside.</span>
 </T>
 
-<TwoImages>
-  ![Lunch Truck](../../assets/images/blog/school-lunch/lunch-truck.JPG)
+<figure>
   ![Lunch Container](../../assets/images/blog/school-lunch/kinder-lunch-case.JPG)
-</TwoImages>
+  <figcaption>
+    <T>
+      <span slot="en">Lunch Container</span>
+      <span slot="ja">給食の缶</span>
+      <span slot="en_simple">Lunch Container</span>
+    </T>
+  </figcaption>
+</figure>
 
 <T>
   <span slot="en">At the other schools, serving the food is the students’ job. However, at kindergarten, the teachers fill the bowls and the students grab them. The only exception is the soup, because sometimes it's very hot, and the kids can be clumsy!</span>
-  <span slot="ja">他の学校では給食の配膳は生徒の仕事ですが、幼稚園では先生が器によそって、生徒たちがそれを取りに行きます。ただ、スープだけは例外です。とても熱いことがありますし、子供たちがこぼしてしまうかもしれませんからね！</span>
+  <span slot="ja">他の学校では給食の配膳は生徒の仕事ですが、幼稚園では先生が器によそって、園児たちがそれを取りに行きます。ただ、スープだけは例外です。とても熱いことがありますし、子供たちがこぼしてしまうかもしれませんからね！</span>
   <span slot="en_simple">At Elementary school, students serve the food. But at kindergarten, the teachers help. The soup is very hot, so it is dangerous!</span>
 </T>
 
 <figure>
-  ![Serving Lunch](../../assets/images/blog/school-lunch/kinder-serving-lunch.JPG)
+  ![Serving Lunch](../../assets/images/blog/school-lunch/kinder-soup-lunch.JPG)
   <figcaption>
     <T>
       <span slot="en">Serving Lunch</span>
@@ -102,6 +109,7 @@ import TwoImages from "~/components/TwoImages.astro";
   <span slot="ja">今日のメニューは、白米、納豆、サラダ、スープ、そして牛乳の5品です。給食はたいてい、炭水化物、タンパク質、野菜、スープ、牛乳というこの基本的なパターンに沿っています。例外もあり、水曜日は「国際食の日」なのでメニューが大きく変わることもありますが、栄養面では育ち盛りの子供に必要なものが少しずつ全部入っています。</span>
   <span slot="en_simple">Today we have 5 foods: rice, natto, salad, soup, and milk. Usually, we have rice, meat or fish, vegetables, soup, and milk. It is very healthy.</span>
 </T>
+### <T><span slot="en">Let's take a closer look</span><span slot="ja">もう少し見てみよう</span><span slot="en_simple">Let's look at each part!</span></T>
 
 <T>
   <span slot="en">Today's protein source is natto. Even though it's made from beans (and I love beans), it's one of the few Japanese foods that I don’t like very much. Being a fermented food, it's sticky and a bit smelly. It's unlike any food I ever had in America. By now I've gotten used to it, but it's not something I would go out of my way to eat. I find the easiest way to get it down is by making good ol' beans and rice.</span>
@@ -109,10 +117,16 @@ import TwoImages from "~/components/TwoImages.astro";
   <span slot="en_simple">Today we are eating natto. I like beans, but I do not like natto very much. It is sticky and smelly. We do not have natto in America. Now, I can eat it. But I usually mix it with rice.</span>
 </T>
 
-<TwoImages>
+<figure>
   ![Natto](../../assets/images/blog/school-lunch/natto-at-school.JPG)
-  ![Natto on Rice](../../assets/images/blog/school-lunch/school-lunch-natoo.JPG)
-</TwoImages>
+  <figcaption>
+    <T>
+      <span slot="en">Natto</span>
+      <span slot="ja">納豆</span>
+      <span slot="en_simple">Natto</span>
+    </T>
+  </figcaption>
+</figure>
 
 <T>
   <span slot="en">Next is the rice. There is not much to say—it's rice, and Japanese people love rice! It's even grown in my town. On Wednesdays, it is often switched out for bread, but otherwise, it's always there. Many people eat rice for every meal, including breakfast.</span>
@@ -138,7 +152,7 @@ import TwoImages from "~/components/TwoImages.astro";
 </T>
 
 <figure>
-  ![Oden Soup](../../assets/images/blog/school-lunch/kinder-soup-lunch.JPG)
+  ![Oden Soup](../../assets/images/blog/school-lunch/kinder-lunch-oden.JPG)
   <figcaption>
     <T>
       <span slot="en">Oden Soup</span>
@@ -155,10 +169,10 @@ import TwoImages from "~/components/TwoImages.astro";
 </T>
 
 <figure>
-  ![Salad](../../assets/images/blog/school-lunch/thing.JPG)
+  ![Salad](../../assets/images/blog/school-lunch/kinder-lunch-salad.JPG)
   <figcaption>
     <T>
-      <span slot="en">Salad</span>
+      <span slot="en">lots of bean sprouts salad</span>
       <span slot="ja">サラダ</span>
       <span slot="en_simple">Salad</span>
     </T>
@@ -173,8 +187,14 @@ import TwoImages from "~/components/TwoImages.astro";
 
 ### <T><span slot="en">Delicious!</span><span slot="ja">おいしい！</span><span slot="en_simple">Delicious!</span></T>
 
+<T>
+  <span slot="en">Speaking of back home, how does this lunch compare to what you ate in elementary school? Personally, as an adult, I much prefer Japanese school lunch. However, I think if I was a child, I would miss the pizzas and burgers that I remember eating. I also remember bringing my own lunch from home often, which I have never seen here. School lunch is generally very cheap or free here, and students aren’t even allowed to bring their own unless they get special permission for reasons such as allergies.</span>
+  <span slot="ja">私の故郷といえば、皆さんが小学校で食べたランチと比べてどうですか？個人的には、大人としては日本の給食の方が断然好きです。でも、もし子供だったら、昔食べていたピザやハンバーガーが恋しくなるかもしれません。あと、私はよく家からお弁当を持って行っていましたが、ここでは見たことがありません。ここでは給食はたいてい非常に安いか無料で、アレルギーなどの特別な許可がない限り、お弁当を持ってくることは禁止されています。</span>
+  <span slot="en_simple">What was your school lunch like? I like Japanese school lunch. But American lunch has pizza and hamburgers. Kids love that. Also, American kids bring lunch from home. In Japan, everyone eats school lunch. It is cheap and delicious.</span>
+</T>
+
 <figure>
-  ![Full School Lunch](../../assets/images/blog/school-lunch/todays-lunch.JPG)
+  ![Full School Lunch](../../assets/images/blog/school-lunch/Kinder-lunch-jan26.JPG)
   <figcaption>
     <T>
       <span slot="en">Everything together</span>
@@ -183,12 +203,6 @@ import TwoImages from "~/components/TwoImages.astro";
     </T>
   </figcaption>
 </figure>
-
-<T>
-  <span slot="en">Speaking of back home, how does this lunch compare to what you ate in elementary school? Personally, as an adult, I much prefer Japanese school lunch. However, I think if I was a child, I would miss the pizzas and burgers that I remember eating. I also remember bringing my own lunch from home often, which I have never seen here. School lunch is generally very cheap or free here, and students aren’t even allowed to bring their own unless they get special permission for reasons such as allergies.</span>
-  <span slot="ja">私の故郷といえば、皆さんが小学校で食べたランチと比べてどうですか？個人的には、大人としては日本の給食の方が断然好きです。でも、もし子供だったら、昔食べていたピザやハンバーガーが恋しくなるかもしれません。あと、私はよく家からお弁当を持って行っていましたが、ここでは見たことがありません。ここでは給食はたいてい非常に安いか無料で、アレルギーなどの特別な許可がない限り、お弁当を持ってくることは禁止されています。</span>
-  <span slot="en_simple">What was your school lunch like? I like Japanese school lunch. But American lunch has pizza and hamburgers. Kids love that. Also, American kids bring lunch from home. In Japan, everyone eats school lunch. It is cheap and delicious.</span>
-</T>
 
 <Quiz
   id="school-lunch-preference"
@@ -243,3 +257,73 @@ import TwoImages from "~/components/TwoImages.astro";
   <span slot="ja">日本の田舎の給食についての記事、楽しんでいただけましたか？日本国内でも、給食の時間には少しずつ違いがあるようです。私はここの給食が大好きです。納豆の日でもね！</span>
   <span slot="en_simple">Did you enjoy reading about school lunch? There are many different styles in Japan. I love school lunch here. I even like natto day!</span>
 </T>
+
+### <T><span slot="en">Bonus Pictures!</span><span slot="ja">おまけの写真！</span><span slot="en_simple">Pictures!</span></T>
+
+<Gallery>
+  <figure>
+    ![School lunch with eggroll](../../assets/images/blog/school-lunch/lunches-for-gallery/school-lunch-eggroll.webp)
+    <figcaption>
+      <T>
+        <span slot="en">Eggroll Day!</span>
+        <span slot="ja">卵焼きの給食</span>
+        <span slot="en_simple">Eggroll!</span>
+      </T>
+    </figcaption>
+  </figure>
+
+  <figure>
+    ![Halloween special lunch](../../assets/images/blog/school-lunch/lunches-for-gallery/school-lunch-halloween.webp)
+    <figcaption>
+      <T>
+        <span slot="en">Halloween special dessert!</span>
+        <span slot="ja">ハロウィーン特別給食</span>
+        <span slot="en_simple">Halloween!</span>
+      </T>
+    </figcaption>
+  </figure>
+
+  <figure>
+    ![Lunch with Naan](../../assets/images/blog/school-lunch/lunches-for-gallery/school-lunch-nann.webp)
+    <figcaption>
+      <T>
+        <span slot="en">Naan bread</span>
+        <span slot="ja">ナンの給食</span>
+        <span slot="en_simple">Naan</span>
+      </T>
+    </figcaption>
+  </figure>
+
+  <figure>
+    ![Standard school lunch](../../assets/images/blog/school-lunch/lunches-for-gallery/school-lunch-normal.webp)
+    <figcaption>
+      <T>
+        <span slot="en">Grilled fish - very common!</span>
+        <span slot="ja">普通の給食</span>
+        <span slot="en_simple">Fish today!</span>
+      </T>
+    </figcaption>
+  </figure>
+
+  <figure>
+    ![Lunch with seaweed](../../assets/images/blog/school-lunch/lunches-for-gallery/school-lunch-seaweed.webp)
+    <figcaption>
+      <T>
+        <span slot="en">Seaweed Salad</span>
+        <span slot="ja">海藻の給食</span>
+        <span slot="en_simple">Seaweed</span>
+      </T>
+    </figcaption>
+  </figure>
+
+  <figure>
+    ![Special lunch](../../assets/images/blog/school-lunch/lunches-for-gallery/school-lunch-special.webp)
+    <figcaption>
+      <T>
+        <span slot="en">Special lunch today</span>
+        <span slot="ja">特別給食</span>
+        <span slot="en_simple">Special lunch!</span>
+      </T>
+    </figcaption>
+  </figure>
+</Gallery>
