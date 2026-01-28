@@ -5,6 +5,7 @@ const { slug } = Astro.props;
 <like-button data-slug={slug}>
   <div class="balloon-wrapper">
     <svg class="heart-balloon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path class="balloon-string" d="M12 21.35 Q 10 25 12 29 T 12 33" />
       <path class="heart-path" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
     </svg>
     <span class="count">...</span>
@@ -168,7 +169,7 @@ const { slug } = Astro.props;
     position: relative;
     width: 40px;
     height: 40px;
-    margin-bottom: 0;
+    margin-bottom: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -185,6 +186,11 @@ const { slug } = Astro.props;
     stroke-width: 1px;
     transition: fill 0.3s ease;
   }
+  .balloon-string {
+    stroke: #888;
+    stroke-width: 1px;
+    fill: none;
+  }
   .count {
     position: absolute;
     top: 45%;
@@ -194,18 +200,6 @@ const { slug } = Astro.props;
     font-weight: bold;
     color: #333;
     pointer-events: none;
-  }
-  /* The string */
-  .balloon-wrapper::after {
-    content: '';
-    position: absolute;
-    top: 80%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 1px;
-    height: 25px;
-    background: #888;
-    z-index: -1;
   }
   .cat-icon {
     position: absolute;
