@@ -189,7 +189,7 @@ const { slug } = Astro.props;
     opacity: 0;
     transform: translateY(-250px); /* Hovering higher above */
     pointer-events: none;
-    transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.2s ease;
+    transition: transform 2.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 2.4s ease;
   }
 
   like-button.is-visible {
@@ -201,8 +201,8 @@ const { slug } = Astro.props;
   like-button.fly-away {
     opacity: 0;
     transform: translateY(-150vh); /* Fly way up off screen */
-    /* Move up faster (0.8s), start fading out near the end */
-    transition: transform 0.8s ease-in, opacity 0.3s ease-out 0.5s;
+    /* Move up slower (1.6s), start fading out near the end */
+    transition: transform 1.6s ease-in, opacity 0.6s ease-out 1s;
   }
   button {
     /* Custom SVG cursor (Open Hand) to bypass driver glitches */
