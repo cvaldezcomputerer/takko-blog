@@ -94,6 +94,27 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 		flex-direction: column;
 	}
 
+	/* Adjust pill buttons for vertical layout */
+	#floating-island[data-position="left"] :global(.pill-button),
+	#floating-island[data-position="right"] :global(.pill-button) {
+		width: 100%;
+		margin-left: 0;
+		margin-top: -1px; /* Overlap borders vertically */
+		border-radius: 0;
+	}
+
+	/* Top button radius correction */
+	#floating-island[data-position="left"] :global(.pill-button:first-child),
+	#floating-island[data-position="right"] :global(.pill-button:first-child) {
+		border-radius: 9999px 9999px 0 0;
+	}
+
+	/* Bottom button radius correction */
+	#floating-island[data-position="left"] :global(.pill-button:last-child),
+	#floating-island[data-position="right"] :global(.pill-button:last-child) {
+		border-radius: 0 0 9999px 9999px;
+	}
+
 	/* Ghosts */
 	.ghost-island {
 		position: fixed;
