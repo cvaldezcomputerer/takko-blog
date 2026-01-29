@@ -1,6 +1,5 @@
 ---
 import LanguageSelector from './LanguageSelector.astro';
-import Logo from './Logo.astro';
 
 // Determine where the "Back" button should go
 const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !== '/blog' && Astro.url.pathname !== '/blog/' ? '/blog' : '/';
@@ -9,15 +8,14 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 <button class="ghost-island" data-target="left" aria-label="Move island left"></button>
 <button class="ghost-island" data-target="center" aria-label="Move island center"></button>
 <button class="ghost-island" data-target="right" aria-label="Move island right"></button>
+<button class="ghost-island" data-target="bottom" aria-label="Move island bottom"></button>
 
 <div id="floating-island">
-	<a href="/" class="island-logo" aria-label="Home">
-		<Logo />
-	</a>
-	<LanguageSelector />
 	<a href={backLink} class="island-back-btn" aria-label="Go Back">
 		<svg width="24" height="24" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill="#000000" fill-rule="evenodd" d="M4.297105,3.29289 L0.59,7 L4.297105,10.7071 C4.687635,11.0976 5.320795,11.0976 5.711315,10.7071 C6.101845,10.3166 6.101845,9.68342 5.711315,9.29289 L4.418425,8 L11.504215,8 C12.332615,8 13.004215,8.67157 13.004215,9.5 C13.004215,10.3284 12.332615,11 11.504215,11 L10.004215,11 C9.451935,11 9.004215,11.4477 9.004215,12 C9.004215,12.5523 9.451935,13 10.004215,13 L11.504215,13 C13.437215,13 15.004215,11.433 15.004215,9.5 C15.004215,7.567 13.437215,6 11.504215,6 L4.418425,6 L5.711315,4.70711 C6.101845,4.31658 6.101845,3.68342 5.711315,3.29289 C5.320795,2.90237 4.687635,2.90237 4.297105,3.29289 Z"></path> </g></svg>
 	</a>
+	<LanguageSelector />
+	<div class="island-placeholder"></div>
 </div>
 
 <style>
@@ -51,6 +49,7 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 			transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
 			left 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
 			top 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
+			bottom 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
 			gap 0.5s ease,
 			background-color 0.3s ease,
 			border-color 0.3s ease;
@@ -86,6 +85,16 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 	}
 	#floating-island.visible[data-position="right"] {
 		transform: translate(calc(-100% - 2rem), -50%) scale(1);
+	}
+
+	#floating-island[data-position="bottom"] {
+		top: auto;
+		bottom: 2rem;
+		left: 50%;
+		transform: translateX(-50%) scale(0.9);
+	}
+	#floating-island.visible[data-position="bottom"] {
+		transform: translateX(-50%) scale(1);
 	}
 
 	/* Stack language controls when vertical */
@@ -189,6 +198,16 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 	}
 	.ghost-island[data-target="right"]:hover { transform: translateY(-50%) scale(1.2); }
 
+	.ghost-island[data-target="bottom"] {
+		left: 50%;
+		bottom: 2rem;
+		transform: translateX(-50%);
+		width: 80px;
+		height: 40px;
+		display: none; /* Hidden by default (desktop) */
+	}
+	.ghost-island[data-target="bottom"]:hover { transform: translateX(-50%) scale(1.2); }
+
 	/* Show ghosts when island is visible, but only if they are not the active position */
 	.ghost-island.visible {
 		opacity: 1;
@@ -239,13 +258,54 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 		fill: currentColor;
 	}
 
-	/* Hide on mobile if you prefer the standard hamburger menu there */
+	.island-placeholder {
+		width: 44px;
+		height: 44px;
+		margin-left: 0.5rem;
+		flex-shrink: 0;
+	}
+
+	/* Mobile Styles */
 	@media (max-width: 720px) {
-		#floating-island {
-			display: none !important;
+		/* Show bottom ghost on mobile */
+		.ghost-island[data-target="bottom"] {
+			display: flex;
 		}
-		.ghost-island {
-			display: none !important;
+		
+		/* Hide side ghosts on mobile */
+		.ghost-island[data-target="left"],
+		.ghost-island[data-target="right"] {
+			display: none;
+		}
+
+		/* Adjust island for mobile */
+		#floating-island {
+			width: fit-content;
+			max-width: 95%;
+			padding: 0.5rem 1rem;
+			gap: 0.75rem;
+			justify-content: center;
+		}
+
+		/* Hide placeholder on mobile to save space */
+		.island-placeholder {
+			display: none;
+		}
+		
+		/* Ensure text fits */
+		#floating-island :global(.pill-button) {
+			padding: 0.5rem 0.5rem;
+			font-size: 0.8rem;
+		}
+		
+		.island-logo :global(.takko-logo) {
+			width: 40px;
+			height: 40px;
+		}
+		
+		.island-back-btn {
+			width: 32px;
+			height: 32px;
 		}
 	}
 </style>
