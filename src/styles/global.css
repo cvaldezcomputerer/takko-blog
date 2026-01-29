@@ -20,6 +20,17 @@
 
   --box-shadow: 0 2px 6px rgba(var(--gray), 25%),
     0 8px 24px rgba(var(--gray), 33%), 0 16px 32px rgba(var(--gray), 33%);
+
+  /* PILL SPECIFIC COLORS */
+  
+  /* English: A slate-ish Ocean Blue (Matches your --gray tones but saturated) */
+  --pill-en: #0ea5e9; 
+  
+  /* Ez English: Your brand accent (already defined, but aliased here for clarity) */
+  --pill-ez: var(--accent); 
+  
+  /* Japanese: A warm Camellia/Rose (Not neon pink, more organic) */
+  --pill-jp: #f43f5e; 
 }
 
 .dark {
@@ -37,6 +48,10 @@
   --secondary: #2d2d2d; /* Darker secondary sections */
   --highlight: #404040; /* Dark highlight */
   --box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), 0 8px 24px rgba(0, 0, 0, 0.5), 0 16px 32px rgba(0, 0, 0, 0.5);
+
+  --pill-en: #38bdf8;
+  --pill-ez: #10b981; /* A slightly lighter green than your main accent for contrast */
+  --pill-jp: #fb7185;
 }
 
 @font-face {
