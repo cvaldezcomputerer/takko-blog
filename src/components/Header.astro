@@ -224,13 +224,15 @@ import ThemeToggle from './ThemeToggle.astro';
 		}
 	}
 
-	/* Desktop Morphing Effect */
+	/* Scrolled State (Applies to all screens) */
+	header.is-scrolled {
+		opacity: 0;
+		pointer-events: none;
+		transform: translateY(1rem) scale(0.9);
+	}
+
+	/* Desktop Morphing Effect Details */
 	@media (min-width: 721px) {
-		header.is-scrolled {
-			opacity: 0;
-			pointer-events: none;
-			transform: translateY(1rem) scale(0.9); /* Shrink and move down towards island */
-		}
 		header.is-scrolled .logo-link {
 			transform: translateX(3rem);
 		}

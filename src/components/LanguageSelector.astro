@@ -3,9 +3,18 @@
 ---
 
 <div class="language-controls" aria-label="Content language">
-    <button data-lang-btn="en" class="pill-button">English</button>
-    <button data-lang-btn="en_simple" class="pill-button">Ez English</button>
-    <button data-lang-btn="ja" class="pill-button">日本語</button>
+    <button data-lang-btn="en" class="pill-button">
+      <span class="full-text">English</span>
+      <span class="short-text">En</span>
+    </button>
+    <button data-lang-btn="en_simple" class="pill-button">
+      <span class="full-text">Ez English</span>
+      <span class="short-text">Ez</span>
+    </button>
+    <button data-lang-btn="ja" class="pill-button">
+      <span class="full-text">日本語</span>
+      <span class="short-text">日</span>
+    </button>
   </div>
   
   <script>
@@ -58,6 +67,8 @@
   </script>
   
   <style>
+    .short-text { display: none; }
+
     .language-controls {
       display: inline-flex;
       justify-content: center;
@@ -174,36 +185,13 @@
     
     /* Mobile Thumb Zone */
     @media (max-width: 600px) {
-      .language-controls {
-        position: fixed;
-        bottom: 2rem;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 100;
-        
-        /* Stronger glass effect for floating UI */
-        background-color: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(0,0,0,0.1);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        
-        padding: 4px; 
-        gap: 0; /* Connected */
-        width: auto;
-        max-width: 90vw;
-        flex-wrap: nowrap; /* Force single row */
-      }
-
-      :global(.dark) .language-controls {
-        background-color: rgba(30, 30, 30, 0.9);
-        border: 1px solid rgba(255,255,255,0.1);
-      }
-
+      .full-text { display: none; }
+      .short-text { display: inline; }
+      
       .pill-button {
-        padding: 0.6rem 1rem;
-        font-size: 0.9rem;
-        flex: 1; /* Distribute space evenly if needed, or allow auto width */
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+        flex: 0 0 auto; /* Allow shrink */
         white-space: nowrap;
       }
     }
