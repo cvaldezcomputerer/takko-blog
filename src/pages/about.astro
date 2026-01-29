@@ -1,135 +1,281 @@
 ---
-import Layout from '../layouts/BlogPost.astro';
-import aboutHeroImage from '../assets/images/blog/trianMuseum.webp';
-import takkoMap from '../assets/images/misc/takko-on-map.png';
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 import T from '../components/T.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import { Image } from 'astro:assets';
+import profileImage from '../assets/images/me/full-body-selfie-circuit-day.png';
+import takkoMap from '../assets/images/misc/takko-on-map.png';
 ---
 
-<Layout
-	title="About Me"
-	description="Learn more about me and my journey"
-	pubDate={new Date('August 08 2025')}
-	heroImage={aboutHeroImage}
->
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<style>
+			body {
+				display: flex;
+				flex-direction: column;
+				min-height: 100vh;
+				margin: 0;
+			}
+			.main-title {
+				font-size: 3.5rem;
+				line-height: 1.1;
+				margin-bottom: 0.5em;
+				text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+				word-wrap: break-word;
+				overflow-wrap: break-word;
+			}
+			
+			@keyframes fadeIn {
+				from {
+					opacity: 0;
+					transform: translateY(10px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+			
+			/* Fix for Japanese text overflow */
+			main {
+				width: 100%;
+				max-width: 100%;
+				margin: 0;
+				padding: 0;
+				flex: 1;
+				display: flex;
+				flex-direction: column;
+			}
+			
+			.hero-wrapper {
+				width: 100%;
+				background-color: var(--background);
+				padding: 3rem 0;
+				position: relative;
+				overflow: hidden;
+				flex: 1; /* Make it fill the space since we removed posts */
+			}
 
-<h3>
-  <T>
-    <span slot="en">Hi</span>
-    <span slot="ja">こにちゅは！</span>
-    <span slot="en_simple">HELLO</span>
-  </T>
-</h3>
-<p>
-  <T>
-    <span slot="en">
-      Hello! My name is Cristian. I am a U.S. citizen living in Japan and
-      working as an English teacher in the small town of 田子町. As of writing I
-      am 29 years old, and have lived here for almost 3 years.
-    </span>
-    <span slot="ja">
-      こんにちは！クリスチャンです。アメリカ出身で、日本にある田子町という小さな町で英語の先生をしています。これを書いている時点で29歳で、ここに住んで3年近くになります。
-    </span>
-    <span slot="en_simple">
-      Hi, I'm Cristian. I am from the U.S. I live in Japan. I am a teacher. I teach English in a small town called Takko. I am 29 years old. I have lived here for 3 years.
-    </span>
-  </T>
-</p>
+			.hero-wrapper::before {
+				content: "";
+				position: absolute;
+				inset: 0;
+				background-color: var(--accent);
+				mask-image: url('../assets/images/site_backround_pattern.svg');
+				-webkit-mask-image: url('../assets/images/site_backround_pattern.svg');
+				mask-repeat: repeat;
+				-webkit-mask-repeat: repeat;
+				mask-size: 140px;
+				-webkit-mask-size: 140px;
+				opacity: 0.07;
+				z-index: 0;
+				pointer-events: none;
+			}
 
-<h3>
-  <T>
-    <span slot="en">Why This Blog?</span>
-    <span slot="ja">なぜこのブログを？</span>
-    <span slot="en_simple">Why This Blog?</span>
-  </T>
-</h3>
-<p>
-  <T>
-    <span slot="en">
-      I have been able to experience some amazing, and not so amazing things
-      since coming here, and I've always wanted to document them in a way that
-      feels more tangible than an Instagram post. Thus, I decided to make this
-      blog. I have studied web development a bit, but when it comes to writing
-      and taking pictures, I'm a complete amateur! So I hope I can keep it
-      interesting.
-    </span>
-    <span slot="ja">
-      ここに来てから、素晴らしいことも、そうでもないことも、色々なことを経験してきました。そして、インスタグラムの投稿よりももっと形に残る方法で記録したいとずっと思っていました。そこで、このブログを作ることにしました。ウェブ開発は少し勉強したことがありますが、文章を書いたり写真を撮ったりすることに関しては、全くの素人です！なので、楽しんでもらえるような内容を続けられたら嬉しいです。
-    </span>
-    <span slot="en_simple">
-      I live in Japan now. I have seen many things. I want to write about them. I made this blog. I am learning how to write and take photos. I hope you like it.
-    </span>
-  </T>
-</p>
+			/* Hero Section */
+			.hero-section {
+				position: relative;
+				z-index: 1;
+				display: flex;
+				align-items: flex-start; /* Changed from center to flex-start for long content */
+				gap: 3rem;
+				width: 960px;
+				max-width: calc(100% - 2em);
+				margin: 0 auto;
+			}
+			.hero-image {
+				width: 150px;
+				height: auto;
+				flex-shrink: 0;
+				filter: drop-shadow(5px 5px 15px rgba(0,0,0,0.15)); /* Adds a nice depth to the cutout */
+				opacity: 0;
+				animation: fadeIn 1s ease-out 0.1s forwards;
+				position: sticky; /* Keeps the image visible while scrolling the long text */
+				top: 5rem;
+			}
+			.hero-content {
+				flex: 1;
+			}
 
-<h3>
-  <T>
-    <span slot="en">Takko-machi</span>
-    <span slot="ja">田子町</span>
-    <span slot="en_simple">Takko-machi</span>
-  </T>
-</h3>
-<Image src={takkoMap} alt="Takko on map" style="display: block; margin: 0 auto;" />
-<p style="font-size: 0.8em; color: rgb(var(--gray)); text-align: center;">
-  <T>
-    <span slot="en">Takko is in northern Japan, in the prefecture of Aomori</span>
-    <span slot="ja">田子町は北日本の青森県にあります</span>
-    <span slot="en_simple">Takko is in north Japan. It is in Aomori.</span>
-  </T>
-</p>
-<p>
-  <T>
-    <span slot="en">
-      Like many towns in the Japanese countryside, Takko is slowly dwindling in
-      population. Since coming here the population has already dropped by 10%,
-      and 2 of the remaining 3 elementary schools closed down! I might very well
-      be one of the last English teachers to work here, and foreigners to ever
-      live here.
-    </span>
-    <span slot="ja">
-      日本の多くの田舎町と同じように、田子町の人口は少しずつ減っています。僕がここに来てから、人口はすでに10%も減少し、残っていた3つの小学校のうち2つが閉校になりました！僕がここで働く最後の英語教師の一人、そしてここに住む最後の外国人の一人になるかもしれません。
-    </span>
-    <span slot="en_simple">
-      Takko is small. People are leaving. The town is getting smaller. Schools are closing. Maybe I am the last English teacher here.
-    </span>
-  </T>
-</p>
+			.hero-content h3 {
+				margin-top: 2rem;
+				font-size: 1.5rem;
+				margin-bottom: 0.5rem;
+			}
 
-<h3>
-  <T>
-    <span slot="en">My Vision</span>
-    <span slot="ja">僕のビジョン</span>
-    <span slot="en_simple">My Vision</span>
-  </T>
-</h3>
-<p>
-  <T>
-    <span slot="en">
-      Inspired by websites like <a
-        href="https://www.nhk.or.jp/news/easy/"
-        target="_blank"
-        rel="noopener noreferrer">NHK easy</a
-      >, I want to expand this site so that each post has not only a Japanese
-      translation, but a version that is written in very simple English that
-      hopefully even some of my students can read. I also want to make
-      complimentary videos for each post. For now though, I just want to get
-      some posts out there!
-    </span>
-    <span slot="ja">
-      <a
-        href="https://www.nhk.or.jp/news/easy/"
-        target="_blank"
-        rel="noopener noreferrer">NHK easy</a
-      >のようなウェブサイトに影響を受けて、このサイトを拡張して、各記事に日本語訳だけでなく、とても簡単な英語で書かれたバージョンも載せたいと思っています。うまくいけば、僕の生徒たちも読めるような。各記事に合わせたビデオも作りたいです。でも、今のところは、まずは記事をいくつか公開したいです！
-    </span>
-    <span slot="en_simple">
-      I like the website <a
-        href="https://www.nhk.or.jp/news/easy/"
-        target="_blank"
-        rel="noopener noreferrer">NHK easy</a
-      >. I want to make easy English for my students. I want to make videos too. But first, I will write posts.
-    </span>
-  </T>
-</p>
+			/* Responsive adjustments */
+			@media (max-width: 800px) {
+				
+				.hero-section {
+					flex-direction: column;
+					text-align: center;
+					align-items: center;
+					gap: 1.5rem;
+				}
+				.hero-image {
+					position: static; /* Remove sticky on mobile */
+					width: 120px;
+				}
+				.main-title {
+					font-size: 2.5rem;
+				}
+			}
+			
+			@media (max-width: 480px) {
+				
+				.main-title {
+					font-size: 2rem;
+				}
+				.hero-image {
+					display: none; /* Keep hiding it on very small screens if desired, or show it */
+				}
 
-</Layout>
+				.hero-wrapper::before {
+					mask-size: 80px;
+					-webkit-mask-size: 80px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<!-- Hero Section -->
+			<div class="hero-wrapper">
+				<div class="hero-section">
+					<Image src={profileImage} alt="Cristian" class="hero-image" loading="eager" />
+					<div class="hero-content">
+						<h1 class="main-title">
+							<T>
+								<span slot="en">Welcome to Bloggy Doggy!</span>
+								<span slot="ja">ブログ・ドギーへようこそ！</span>
+								<span slot="en_simple">Welcome!</span>
+							</T>
+						</h1>
+						
+						<h3>
+							<T>
+								<span slot="en">Hi</span>
+								<span slot="ja">こにちゅは！</span>
+								<span slot="en_simple">HELLO</span>
+							</T>
+						</h3>
+						<p>
+							<T>
+								<span slot="en">
+									Hello! My name is Cristian. I am a U.S. citizen living in Japan and
+									working as an English teacher in the small town of 田子町. As of writing I
+									am 29 years old, and have lived here for almost 3 years.
+								</span>
+								<span slot="ja">
+									こんにちは！クリスチャンです。アメリカ出身で、日本にある田子町という小さな町で英語の先生をしています。これを書いている時点で29歳で、ここに住んで3年近くになります。
+								</span>
+								<span slot="en_simple">
+									Hi, I'm Cristian. I am from the U.S. I live in Japan. I am a teacher. I teach English in a small town called Takko. I am 29 years old. I have lived here for 3 years.
+								</span>
+							</T>
+						</p>
+
+						<h3>
+							<T>
+								<span slot="en">Why This Blog?</span>
+								<span slot="ja">なぜこのブログを？</span>
+								<span slot="en_simple">Why This Blog?</span>
+							</T>
+						</h3>
+						<p>
+							<T>
+								<span slot="en">
+									I have been able to experience some amazing, and not so amazing things
+									since coming here, and I've always wanted to document them in a way that
+									feels more tangible than an Instagram post. Thus, I decided to make this
+									blog. I have studied web development a bit, but when it comes to writing
+									and taking pictures, I'm a complete amateur! So I hope I can keep it
+									interesting.
+								</span>
+								<span slot="ja">
+									ここに来てから、素晴らしいことも、そうでもないことも、色々なことを経験してきました。そして、インスタグラムの投稿よりももっと形に残る方法で記録したいとずっと思っていました。そこで、このブログを作ることにしました。ウェブ開発は少し勉強したことがありますが、文章を書いたり写真を撮ったりすることに関しては、全くの素人です！なので、楽しんでもらえるような内容を続けられたら嬉しいです。
+								</span>
+								<span slot="en_simple">
+									I live in Japan now. I have seen many things. I want to write about them. I made this blog. I am learning how to write and take photos. I hope you like it.
+								</span>
+							</T>
+						</p>
+
+						<h3>
+							<T>
+								<span slot="en">Takko-machi</span>
+								<span slot="ja">田子町</span>
+								<span slot="en_simple">Takko-machi</span>
+							</T>
+						</h3>
+						<Image src={takkoMap} alt="Takko on map" style="display: block; margin: 0 auto;" />
+						<p style="font-size: 0.8em; color: rgb(var(--gray)); text-align: center;">
+							<T>
+								<span slot="en">Takko is in northern Japan, in the prefecture of Aomori</span>
+								<span slot="ja">田子町は北日本の青森県にあります</span>
+								<span slot="en_simple">Takko is in north Japan. It is in Aomori.</span>
+							</T>
+						</p>
+						<p>
+							<T>
+								<span slot="en">
+									Like many towns in the Japanese countryside, Takko is slowly dwindling in
+									population. Since coming here the population has already dropped by 10%,
+									and 2 of the remaining 3 elementary schools closed down! I might very well
+									be one of the last English teachers to work here, and foreigners to ever
+									live here.
+								</span>
+								<span slot="ja">
+									日本の多くの田舎町と同じように、田子町の人口は少しずつ減っています。僕がここに来てから、人口はすでに10%も減少し、残っていた3つの小学校のうち2つが閉校になりました！僕がここで働く最後の英語教師の一人、そしてここに住む最後の外国人の一人になるかもしれません。
+								</span>
+								<span slot="en_simple">
+									Takko is small. People are leaving. The town is getting smaller. Schools are closing. Maybe I am the last English teacher here.
+								</span>
+							</T>
+						</p>
+
+						<h3>
+							<T>
+								<span slot="en">My Vision</span>
+								<span slot="ja">僕のビジョン</span>
+								<span slot="en_simple">My Vision</span>
+							</T>
+						</h3>
+						<p>
+							<T>
+								<span slot="en">
+									Inspired by websites like <a
+										href="https://www.nhk.or.jp/news/easy/"
+										target="_blank"
+										rel="noopener noreferrer">NHK easy</a>, I want to expand this site so that each post has not only a Japanese
+									translation, but a version that is written in very simple English that
+									hopefully even some of my students can read. I also want to make
+									complimentary videos for each post. For now though, I just want to get
+									some posts out there!
+								</span>
+								<span slot="ja">
+									<a
+										href="https://www.nhk.or.jp/news/easy/"
+										target="_blank"
+										rel="noopener noreferrer">NHK easy</a>のようなウェブサイトに影響を受けて、このサイトを拡張して、各記事に日本語訳だけでなく、とても簡単な英語で書かれたバージョンも載せたいと思っています。うまくいけば、僕の生徒たちも読めるような。各記事に合わせたビデオも作りたいです。でも、今のところは、まずは記事をいくつか公開したいです！
+								</span>
+								<span slot="en_simple">
+									I like the website <a
+										href="https://www.nhk.or.jp/news/easy/"
+										target="_blank"
+										rel="noopener noreferrer">NHK easy</a>. I want to make easy English for my students. I want to make videos too. But first, I will write posts.
+								</span>
+							</T>
+						</p>
+					</div>
+				</div>
+			</div>
+		</main>
+		<Footer />
+	</body>
+</html>
