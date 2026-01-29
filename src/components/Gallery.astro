@@ -14,34 +14,30 @@ const { images = [] } = Astro.props;
 </div>
 
 <style>
-  /* 
-   * NEW SCRAPBOOK STYLES 
-   */
+  /* =========================================
+     1. CONTAINER STYLES
+     ========================================= */
   .scrapbook-container {
-    /* 1. The Paper Color & Grid Background */
     background-color: var(--secondary);
     color: #333;
     
-    /* Creates a grid pattern */
+    /* Grid Pattern */
     background-image: 
       linear-gradient(#e1e1e1 1px, transparent 1px),
       linear-gradient(90deg, #e1e1e1 1px, transparent 1px);
-    background-size: 20px 20px; /* Size of the grid squares */
+    background-size: 20px 20px;
     
-    /* Structure & Spacing */
-    position: relative; /* Essential for the tape positioning */
-    padding: 40px 20px 60px 20px; /* Reduced side padding to help fit 3 cards */
+    /* Layout */
+    position: relative;
+    padding: 40px 20px 60px 20px;
     margin: 50px auto;
     border: 1px solid #ddd;
-    
-    /* Make it look like a stack of paper */
     box-shadow: 
       5px 5px 0px #f0f0f0,
       10px 10px 0px #e0e0e0;
-      
-    max-width: 100%; /* Ensure it doesn't overflow parent */
+    max-width: 100%;
     
-    /* Flexbox for Polaroids */
+    /* Flex Setup */
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -60,42 +56,43 @@ const { images = [] } = Astro.props;
     color: var(--text);
   }
 
-  /* 3. The Tape */
+  /* =========================================
+     2. THE TAPE DECORATION
+     ========================================= */
   .scrapbook-container::before {
     content: "";
     position: absolute;
-    top: -15px; /* Pulls tape slightly above the container */
+    top: -15px;
     left: 50%;
-    transform: translateX(-50%) rotate(-1.5deg); /* Centers and tilts it */
+    transform: translateX(-50%) rotate(-1.5deg);
     
     width: 140px;
     height: 35px;
     
-    /* Tape Styling */
-    background-color: rgba(230, 230, 230, 0.5); /* Semi-transparent */
-    border-left: 2px dashed rgba(0,0,0,0.1);  /* Ragged edges */
+    background-color: rgba(230, 230, 230, 0.5);
+    border-left: 2px dashed rgba(0,0,0,0.1);
     border-right: 2px dashed rgba(0,0,0,0.1);
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    backdrop-filter: blur(2px); /* Makes it look like matte tape */
-    z-index: 10; /* Ensure tape is on top */
+    backdrop-filter: blur(2px);
+    z-index: 10;
   }
 
   :global(.dark) .scrapbook-container::before {
     background-color: rgba(240, 230, 140, 0.15);
   }
 
-  /* 
-   * EXISTING POLAROID STYLES (Adapted)
-   */
-  
+  /* =========================================
+     3. POLAROID CARD BASE
+     ========================================= */
   .photo-card,
   .scrapbook-container :global(figure) {
     background: white;
-    /* Polaroid Spacing: Equal top/sides, large bottom */
-    padding: 12px 12px 50px 12px; 
+    /* Spacing: Equal top/sides, large bottom for caption */
+    padding: 12px 12px 30px 12px; 
     box-shadow: 2px 4px 12px rgba(0,0,0,0.2);
-    width: 180px; /* Reduced width to fit 3 per row more easily */
-    height: 240px; /* Fixed height to prevent layout shift on hover */
+    width: 180px;
+    height: 240px;
+    
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -105,11 +102,12 @@ const { images = [] } = Astro.props;
     cursor: pointer;
     border: 1px solid rgba(0,0,0,0.05);
     position: relative; 
+    outline: 1px solid transparent;
 
+    /* Performance Optimizations */
     will-change: transform;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    outline: 1px solid transparent;
   }
 
   :global(.dark) .photo-card,
@@ -117,11 +115,14 @@ const { images = [] } = Astro.props;
     background: var(--text);
   }
   
-  /* Reset default figure margin */
+  /* Reset default margin for figure */
   .scrapbook-container :global(figure) {
     margin: 0;
   }
 
+  /* =========================================
+     4. IMAGE STYLES
+     ========================================= */
   .photo-card img,
   .scrapbook-container :global(figure img) {
     width: 100%;
@@ -129,71 +130,76 @@ const { images = [] } = Astro.props;
     object-fit: cover;
     display: block;
     border: 2px solid rgba(255,255,255,0);
-    transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.5s, border 0.5s;
     border-radius: 0;
-
+    
+    transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.5s, border 0.5s;
+    
     will-change: transform;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
   }
-  
+
+  /* =========================================
+     5. CAPTION STYLES
+     ========================================= */
   .scrapbook-container :global(figcaption) {
      position: absolute;
      bottom: 10px;
      left: 10px;
      right: 10px;
      text-align: center;
+     
      font-family: "Courier New", Courier, monospace;
      font-size: 0.8em;
      color: #444;
-     margin-top: 0;
      line-height: 1.2;
+     
+     margin-top: 0;
      max-height: 40px;
      overflow: hidden;
      transition: opacity 0.4s;
+  }
+
+  /* Specific override for Japanese text line-height */
+  .scrapbook-container :global(figcaption [data-lang-content="ja"]) {
+    line-height: 1.2;
   }
 
   :global(.dark) .scrapbook-container :global(figcaption) {
     color: var(--background);
   }
 
-  /* Randomness */
+  /* =========================================
+     6. RANDOM ROTATIONS
+     ========================================= */
   .photo-card:nth-child(odd),
-  .scrapbook-container :global(figure:nth-child(odd)) { transform: rotate(-3deg) translateZ(0); }
+  .scrapbook-container :global(figure:nth-child(odd)) { 
+    transform: rotate(-3deg) translateZ(0); 
+  }
   
   .photo-card:nth-child(even),
-  .scrapbook-container :global(figure:nth-child(even)) { transform: rotate(2deg) translateZ(0); margin-top: 20px; }
+  .scrapbook-container :global(figure:nth-child(even)) { 
+    transform: rotate(2deg) translateZ(0); 
+    margin-top: 20px; 
+  }
   
   .photo-card:nth-child(3n),
-  .scrapbook-container :global(figure:nth-child(3n)) { transform: rotate(4deg) translateZ(0); margin-top: -10px; }
+  .scrapbook-container :global(figure:nth-child(3n)) { 
+    transform: rotate(4deg) translateZ(0); 
+    margin-top: -10px; 
+  }
   
   .photo-card:nth-child(5n),
-  .scrapbook-container :global(figure:nth-child(5n)) { transform: rotate(-5deg) translateZ(0); margin-top: 10px; }
-
-  @media (max-width: 600px) {
-    .scrapbook-container {
-      gap: 0;
-      padding: 20px 10px;
-    }
-    
-    .photo-card,
-    .scrapbook-container :global(figure) {
-      margin-bottom: -120px; 
-      /* Ensure width resets */
-      width: 200px;
-    }
-    
-    .photo-card:last-child,
-    .scrapbook-container :global(figure:last-child) {
-      margin-bottom: 0;
-    }
-    
-    .photo-card:nth-child(n), .scrapbook-container :global(figure:nth-child(n)) { margin-top: 0; }
+  .scrapbook-container :global(figure:nth-child(5n)) { 
+    transform: rotate(-5deg) translateZ(0); 
+    margin-top: 10px; 
   }
 
-  /* Hover Effects (Global - defaults to desktop behavior) */
+  /* =========================================
+     7. DESKTOP HOVER EFFECTS
+     ========================================= */
   .photo-card:hover,
   .scrapbook-container :global(figure:hover) {
     transform: rotate(0deg) translateZ(0);
@@ -211,6 +217,10 @@ const { images = [] } = Astro.props;
   .photo-card:hover img,
   .scrapbook-container :global(figure:hover img) {
     position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.1);
+    
     width: auto;
     height: auto;
     max-width: 400px;
@@ -218,18 +228,39 @@ const { images = [] } = Astro.props;
     aspect-ratio: unset;
     object-fit: contain;
     
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(1.1);
-    
     box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-    border-radius: 0;
     border: 2px solid white;
     background: white; 
+    border-radius: 0;
   }
 
-  /* Mobile Hover/Focus Override: Keep Polaroid look, just zoom and show caption */
+  /* =========================================
+     8. RESPONSIVE STYLES (MOBILE)
+     ========================================= */
   @media (max-width: 600px) {
+    .scrapbook-container {
+      gap: 0;
+      padding: 20px 10px;
+    }
+    
+    /* Stack effect for mobile list */
+    .photo-card,
+    .scrapbook-container :global(figure) {
+      margin-bottom: -120px; 
+      width: 200px;
+    }
+    
+    .photo-card:last-child,
+    .scrapbook-container :global(figure:last-child) {
+      margin-bottom: 0;
+    }
+    
+    .photo-card:nth-child(n), 
+    .scrapbook-container :global(figure:nth-child(n)) { 
+      margin-top: 0; 
+    }
+
+    /* Mobile Hover/Focus Override: Keep Polaroid look, just zoom */
     .photo-card:hover,
     .scrapbook-container :global(figure:hover) {
       background: white;
@@ -239,10 +270,8 @@ const { images = [] } = Astro.props;
       
       width: 90vw;
       max-width: none;
-      
       height: auto;
       
-      /* Half border (6px) top/sides, space for caption bottom */
       padding: 6px 6px 10px 6px;
       z-index: 1000;
     }
@@ -251,22 +280,24 @@ const { images = [] } = Astro.props;
     .scrapbook-container :global(figure:hover img) {
       /* Reset "pop-out" styles */
       position: static;
+      top: auto;
+      left: auto;
+      transform: none;
+      
       width: 100%;
       height: auto;
       max-width: none;
       max-height: none;
-      transform: none;
+      
       box-shadow: none;
       border: 1px solid rgba(0,0,0,0.1);
-      top: auto;
-      left: auto;
       border-radius: 0;
     }
 
     .photo-card:hover :global(figcaption),
     .scrapbook-container :global(figure:hover figcaption) {
       opacity: 1;
-      position: static; /* Flow in flex container */
+      position: static;
       width: 100%;
       margin-top: 10px;
       max-height: none;
