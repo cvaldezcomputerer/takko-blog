@@ -18,17 +18,24 @@ const { fluid = false } = Astro.props;
   /* Use inline-grid to stack translations on top of each other */
   .translatable-text {
     display: inline-grid;
+    grid-template-columns: 100%;
+    vertical-align: text-bottom;
+    align-items: baseline;
   }
   .translatable-text.fluid {
     display: inline;
   }
   .translatable-text > span {
     grid-area: 1 / 1;
+    width: 100%;
+    transition: visibility 0s, opacity 0s !important; /* Prevent transition artifacts */
   }
   /* Override display: none so hidden elements still reserve space */
   /* Only apply when NOT in fluid mode */
   .translatable-text:not(.fluid) > .hidden {
     display: block;
     visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
   }
 </style>
