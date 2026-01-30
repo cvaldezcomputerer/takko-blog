@@ -1,11 +1,12 @@
 ---
 const { images = [] } = Astro.props;
+import OptimizedImage from './OptimizedImage.astro';
 ---
 <div class="scrapbook-container">
   {images.length > 0 ? (
     images.map((img) => (
       <div class="photo-card">
-        <img src={img} loading="lazy" decoding="async" alt="" />
+        <OptimizedImage src={img} alt="" sizes="(max-width: 600px) 90vw, 200px" />
       </div>
     ))
   ) : (
@@ -113,6 +114,7 @@ const { images = [] } = Astro.props;
     display: block;
     border: 2px solid rgba(255,255,255,0);
     border-radius: 0;
+    box-shadow: none;
     
     transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.5s, border 0.5s;
     
