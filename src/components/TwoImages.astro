@@ -7,24 +7,22 @@
 <style>
   .diptych {
     display: grid;
-    grid-template-columns: 1fr; /* Default to stacked (mobile/tablet) */
+    grid-template-columns: 1fr; 
     gap: 1.5rem;
     margin: 2rem 0;
     width: 100%;
   }
 
-  /* Target images passed into the slot to ensure they behave well */
   .diptych :global(img),
   .diptych :global(figure) {
     margin: 0;
     width: 100%;
     height: auto;
-    object-fit: cover; /* Ensures images line up nicely if they have slightly different aspect ratios */
-    border-radius: 8px; /* Consistent with global styling */
-    align-self: start; /* Prevents stretching if one is much taller */
+    object-fit: cover; 
+    border-radius: 8px; 
+    align-self: start; 
   }
 
-  /* Optional: if using figures with captions, ensure figcaption looks okay */
   .diptych :global(figcaption) {
     font-size: 0.9em;
     color: var(--gray);
@@ -32,7 +30,6 @@
     text-align: center;
   }
 
-  /* Desktop: Side by side */
   @media (min-width: 768px) {
     .diptych {
       grid-template-columns: 1fr 1fr;

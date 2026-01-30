@@ -7,13 +7,11 @@ const today = new Date();
 
 <footer class="site-footer">
 	<div class="footer-content">
-		<!-- Top: Logo & Title -->
 		<div class="footer-brand">
 			<Logo class="footer-logo" />
 			<span class="site-title">{SITE_TITLE}</span>
 		</div>
 
-		<!-- Middle: Nav & Social (Grouped) -->
 		<div class="footer-middle">
 			<nav class="footer-nav">
 				<a href="/">Home</a>
@@ -40,7 +38,6 @@ const today = new Date();
 			</div>
 		</div>
 
-		<!-- Bottom: Copyright -->
 		<div class="copyright">
 			&copy; {today.getFullYear()} Cristian Valdez. All rights reserved.
 		</div>
@@ -50,12 +47,10 @@ const today = new Date();
 <style>
 	footer {
 		background-color: var(--secondary);
-		/* Ensure text color is dark enough */
 		color: #333333; 
 		margin-top: auto;
 		padding: 3rem 1.5rem;
 		
-		/* Stronger border for visibility */
 		border-top: 1px solid #e5e7eb;
 	}
 	
@@ -73,14 +68,13 @@ const today = new Date();
 		align-items: center;
 		text-align: center;
 		gap: 2rem;
-		width: 100%; /* Ensure it takes full width of parent up to max-width */
+		width: 100%; 
 	}
 
-	/* Top: Brand */
 	.footer-brand {
 		display: flex;
 		align-items: center;
-		justify-content: center; /* Force center */
+		justify-content: center; 
 		gap: 0.75rem;
 		font-weight: bold;
 		font-size: 1.2rem;
@@ -92,7 +86,6 @@ const today = new Date();
 		color: inherit;
 	}
 
-	/* Middle: Row of Nav + Socials */
 	.footer-middle {
 		display: flex;
 		flex-direction: column;
@@ -117,7 +110,7 @@ const today = new Date();
 
 	.footer-nav a {
 		text-decoration: none;
-		color: inherit; /* Use footer color */
+		color: inherit; 
 		font-weight: 500;
 		opacity: 0.8;
 		transition: all 0.2s ease;
@@ -128,7 +121,6 @@ const today = new Date();
 		color: var(--accent);
 	}
 
-	/* Separator */
 	.footer-separator {
 		display: none;
 	}
@@ -150,13 +142,13 @@ const today = new Date();
 	}
 
 	.social-icons a {
-		color: inherit; /* Use footer color */
+		color: inherit; 
 		opacity: 0.7;
 		transition: all 0.2s ease;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 4px; /* Give it some hit area */
+		padding: 4px; 
 	}
 
 	.social-icons a:hover {
@@ -165,7 +157,6 @@ const today = new Date();
 		transform: translateY(-2px);
 	}
 
-	/* Copyright */
 	.copyright {
 		font-size: 0.85rem;
 		opacity: 0.6;
