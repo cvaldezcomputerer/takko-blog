@@ -1,7 +1,6 @@
 ---
 import LanguageSelector from './LanguageSelector.astro';
 
-// Determine where the "Back" button should go
 const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !== '/blog' && Astro.url.pathname !== '/blog/' ? '/blog' : '/';
 ---
 
@@ -39,7 +38,6 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 		opacity: 0;
 		pointer-events: none;
 		
-		/* Default Center Position */
 		left: 50%;
 		top: 1rem;
 		transform: translateX(-50%) scale(0.9);
@@ -63,10 +61,9 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 		opacity: 1;
 		pointer-events: auto;
 		gap: 0.5rem;
-		transform: translateX(-50%) scale(1); /* Default visible state (center) */
+		transform: translateX(-50%) scale(1);
 	}
 	
-	/* Position Variants */
 	#floating-island[data-position="left"] {
 		left: 2rem;
 		top: 50%;
@@ -97,37 +94,31 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 		transform: translateX(-50%) scale(1);
 	}
 
-	/* Stack language controls when vertical */
 	#floating-island[data-position="left"] :global(.language-controls),
 	#floating-island[data-position="right"] :global(.language-controls) {
 		flex-direction: column;
 	}
 
-	/* Adjust pill buttons for vertical layout */
 	#floating-island[data-position="left"] :global(.pill-button),
 	#floating-island[data-position="right"] :global(.pill-button) {
 		width: 100%;
 		margin-left: 0;
-		margin-top: -1px; /* Overlap borders vertically */
+		margin-top: -1px;
 		border-radius: 0;
 	}
 
-	/* Top button radius correction */
 	#floating-island[data-position="left"] :global(.pill-button:first-child),
 	#floating-island[data-position="right"] :global(.pill-button:first-child) {
 		border-radius: 9999px 9999px 0 0;
 	}
 
-	/* Bottom button radius correction */
 	#floating-island[data-position="left"] :global(.pill-button:last-child),
 	#floating-island[data-position="right"] :global(.pill-button:last-child) {
 		border-radius: 0 0 9999px 9999px;
 	}
 
-	/* Ghosts */
 	.ghost-island {
 		position: fixed;
-		/* Base appearance: Dashed "Docking Bay" */
 		border-radius: 20px;
 		background: rgba(255, 255, 255, 0.4);
 		border: 2px dashed rgba(0,0,0,0.15);
@@ -156,7 +147,7 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 		border-color: var(--accent);
 		color: var(--accent);
 		background: rgba(255, 255, 255, 0.9);
-		animation: none; /* Stop pulsing on hover */
+		animation: none;
 	}
 	:global(.dark) .ghost-island:hover {
 		background: var(--highlight);
@@ -168,7 +159,7 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 		content: '+';
 		font-size: 1.5rem;
 		font-weight: 700;
-		padding-bottom: 2px; /* Visual centering */
+		padding-bottom: 2px;
 	}
 
 	.ghost-island[data-target="left"] { 
@@ -204,11 +195,10 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 		transform: translateX(-50%);
 		width: 80px;
 		height: 40px;
-		display: none; /* Hidden by default (desktop) */
+		display: none;
 	}
 	.ghost-island[data-target="bottom"]:hover { transform: translateX(-50%) scale(1.2); }
 
-	/* Show ghosts when island is visible, but only if they are not the active position */
 	.ghost-island.visible {
 		opacity: 1;
 		pointer-events: auto;
@@ -228,7 +218,6 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 		transform: scale(1.1);
 	}
 
-	/* Make buttons bigger in the island */
 	#floating-island :global(.lang-btn) {
 		padding: 1.25rem 1.25rem;
 		font-size: 1.1rem;
@@ -265,20 +254,16 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 		flex-shrink: 0;
 	}
 
-	/* Mobile Styles */
 	@media (max-width: 720px) {
-		/* Show bottom ghost on mobile */
 		.ghost-island[data-target="bottom"] {
 			display: flex;
 		}
 		
-		/* Hide side ghosts on mobile */
 		.ghost-island[data-target="left"],
 		.ghost-island[data-target="right"] {
 			display: none;
 		}
 
-		/* Adjust island for mobile */
 		#floating-island {
 			width: fit-content;
 			max-width: 95%;
@@ -287,12 +272,10 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 			justify-content: center;
 		}
 
-		/* Hide placeholder on mobile to save space */
 		.island-placeholder {
 			display: none;
 		}
 		
-		/* Ensure text fits */
 		#floating-island :global(.pill-button) {
 			padding: 0.5rem 0.5rem;
 			font-size: 0.8rem;
@@ -326,7 +309,6 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 			}
 		}
 		
-		// Position Logic
 		function setPosition(pos) {
 			island.setAttribute('data-position', pos);
 			ghosts.forEach(g => {
@@ -342,11 +324,10 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 			g.addEventListener('click', () => setPosition(g.getAttribute('data-target')));
 		});
 		
-		// Set initial state
 		setPosition('center');
 
 		window.addEventListener('scroll', handleScroll, { passive: true });
-		handleScroll(); // Check on load
+		handleScroll();
 	}
 
 	document.addEventListener('astro:page-load', initializeScrollEffect);

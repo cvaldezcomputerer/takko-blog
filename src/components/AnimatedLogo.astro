@@ -52,7 +52,6 @@ const { size = "150px", class: className, ...props } = Astro.props;
   .logo-container {
     display: inline-block;
     cursor: pointer;
-    /* Default colors if not overridden */
     stroke: currentColor;
     fill: none;
     transition: color 0.3s ease;
@@ -66,11 +65,10 @@ const { size = "150px", class: className, ...props } = Astro.props;
     width: 100%;
     height: 100%;
     display: block;
-    fill: inherit; /* Allows the balloon animation to work */
+    fill: inherit; 
     color: rgb(var(--black));
   }
 
-  /* Eye Interaction */
   .eye-pupil, .eye-lid {
     transition: transform 0.2s ease-in-out;
   }

@@ -30,7 +30,7 @@ const id = `explain-${Math.random().toString(36).slice(2, 11)}`;
 		font: inherit;
 		cursor: pointer;
 		color: inherit;
-		border-bottom: 2px dotted var(--accent); /* Dotted underline to indicate interactivity */
+		border-bottom: 2px dotted var(--accent); 
 		transition: all 0.2s ease;
 	}
 
@@ -38,7 +38,7 @@ const id = `explain-${Math.random().toString(36).slice(2, 11)}`;
 	.explain-trigger:focus,
 	.explain-wrapper:hover .explain-trigger {
 		color: var(--accent);
-		background-color: rgba(var(--accent-dark), 0.1); /* Light green highlight */
+		background-color: rgba(var(--accent-dark), 0.1); 
 		border-bottom-style: solid;
 	}
 
@@ -46,7 +46,7 @@ const id = `explain-${Math.random().toString(36).slice(2, 11)}`;
 		visibility: hidden;
 		opacity: 0;
 		position: absolute;
-		bottom: 125%; /* Position above the text */
+		bottom: 125%; 
 		left: 50%;
 		transform: translateX(-50%) translateY(10px);
 		
@@ -70,7 +70,6 @@ const id = `explain-${Math.random().toString(36).slice(2, 11)}`;
 		pointer-events: none;
 	}
 
-	/* Little triangle arrow pointing down to the text */
 	.explain-box::after {
 		content: '';
 		position: absolute;
@@ -90,7 +89,6 @@ const id = `explain-${Math.random().toString(36).slice(2, 11)}`;
 		pointer-events: auto;
 	}
 
-	/* Mobile adjustments to keep tooltip on screen */
 	@media (max-width: 480px) {
 		.explain-box {
 			min-width: 200px;

@@ -44,7 +44,6 @@ const { class: className, ...props } = Astro.props;
     transform-box: view-box;
   }
 
-  /* Hover effect on the logo itself */
   .takko-logo:hover .eye-pupil {
     transform: scaleY(0);
   }
@@ -52,7 +51,6 @@ const { class: className, ...props } = Astro.props;
     transform: translateY(5.5%);
   }
 
-  /* Hover effect when inside a link that is hovered */
   :global(a:hover) > .takko-logo .eye-pupil {
     transform: scaleY(0);
   }
