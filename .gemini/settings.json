@@ -11,11 +11,11 @@
         "-y",
         "chrome-devtools-mcp@latest"
       ]
-    },*/
+    },
     "context7": {
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp"]
-    },
+    },*/
 "astro": {
   "command": "npx",
   "args": ["-y", "mcp-remote", "https://mcp.docs.astro.build/mcp"]
