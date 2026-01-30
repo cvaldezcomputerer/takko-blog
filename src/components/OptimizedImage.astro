@@ -1,0 +1,75 @@
+---
+/**
+ * OptimizedImage Component
+ * 
+ * This component is designed to replace standard images with high-performance,
+ * responsive, and modern format versions (AVIF/WebP).
+ * 
+ * ⚠️ MAINTENANCE NOTE:
+ * If you change quality/formats/widths here, you likely need to update these files too:
+ * 1. src/layouts/BlogPost.astro (Hero Image)
+ * 2. src/pages/index.astro (Blog Index Thumbnails)
+ * 3. gallery component? 
+ * HOW IT WORKS:
+ * 1. Global Mapping: In `src/pages/blog/[...slug].astro`, we map standard Markdown 
+ *    images (`![alt](path)`) to use this component automatically. You don't need 
+ *    to import it in your MDX files!
+ * 2. <Picture> Component: We use Astro's <Picture> to serve the most efficient 
+ *    format supported by the user's browser (AVIF > WebP > original).
+ * 3. Responsive Sizes: The `widths` and `sizes` props ensure the browser only 
+ *    downloads the image size necessary for the current screen width, saving data
+ *    and improving load times.
+ */
+import { Picture } from 'astro:assets';
+
+// Global Image Optimization Settings for this component
+const IMAGE_QUALITY = 75;
+const IMAGE_FORMATS = ['avif', 'webp'];
+// Superset of common widths used across the site (Content, Hero, Index)
+const IMAGE_WIDTHS = [360, 480, 720, 960, 1080, 1440, 1600];
+
+interface Props {
+  src: ImageMetadata | string;
+  alt: string;
+  className?: string;
+  loading?: "eager" | "lazy";
+  sizes?: string;
+  style?: string;
+}
+
+const { 
+  src, 
+  alt, 
+  className, 
+  style,
+  loading = "lazy",
+  // Default sizes:
+  // - On small screens (mobile): occupy almost full width (minus padding)
+  // - On larger screens: cap at the max prose width (approx 720px)
+  sizes = "(max-width: 720px) 100vw, 720px" 
+} = Astro.props;
+---
+
+<Picture
+  src={src as any} 
+  alt={alt}
+  class={className}
+  style={style}
+  loading={loading}
+  widths={IMAGE_WIDTHS} 
+  sizes={sizes}
+  formats={IMAGE_FORMATS}
+  fallbackFormat="webp"
+  quality={IMAGE_QUALITY}
+/>
+
+<style>
+  /* Target the img tag rendered by Astro's Picture component */
+  :global(picture img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: var(--box-shadow);
+    display: block; 
+  }
+</style>

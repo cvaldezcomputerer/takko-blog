@@ -1,11 +1,12 @@
 ---
-import { Image } from 'astro:assets';
+import { Image, Picture } from 'astro:assets';
 
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import LikeButton from '../components/LikeButton.astro';
+import OptimizedImage from '../components/OptimizedImage.astro';
 import T from '../components/T.astro';
 
 const { title, title_ja, title_en_simple, description, pubDate, updatedDate, heroImage, slug, heroImageFit } = Astro.props;
@@ -22,9 +23,10 @@ const { title, title_ja, title_en_simple, description, pubDate, updatedDate, her
 			}
 			.hero-image {
 				width: 100%;
-				margin-bottom: 2rem;
+				max-width: 1080px;
+				margin: 0 auto 2rem auto;
 			}
-			.hero-image img {
+			.hero-image :global(img) {
 				display: block;
 				margin: 0 auto;
 				border-radius: 12px;
@@ -105,14 +107,12 @@ const { title, title_ja, title_en_simple, description, pubDate, updatedDate, her
 				</div>
 				{heroImage && 
 					<div class="hero-image">
-					<Image
-					 width={1020}
-					 height={510}
+					<OptimizedImage
 					  src={heroImage}
-					   alt=""
-					    format="webp"
-						loading="eager"
-						style={heroImageFit && `object-fit: ${heroImageFit}; background-color: ${heroImageFit === 'contain' ? 'black' : 'transparent'}`} />
+					  sizes="(max-width: 1020px) 100vw, 1020px"
+					  alt=""
+					  loading="eager"
+					  style={heroImageFit && `object-fit: ${heroImageFit}; background-color: ${heroImageFit === 'contain' ? 'black' : 'transparent'}`} />
 					</div>
 				}
 				<div class="prose">
