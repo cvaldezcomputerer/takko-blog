@@ -1,5 +1,4 @@
 ---
-// src/components/LanguageSelector.astro
 ---
 
 <div class="language-controls" aria-label="Content language">
@@ -30,7 +29,6 @@
       const content = document.querySelectorAll("[data-lang-content]");
       const storageKey = "takko-blog-lang";
   
-      // If no buttons are found on the page, do nothing.
       if (buttons.length === 0) return;
   
       function setLanguage(lang: Language) {
@@ -74,30 +72,26 @@
       justify-content: center;
       gap: 0; 
       margin-block: 0;
-      /* Optional: subtle shadow for the group */
       box-shadow: 0 1px 2px rgba(0,0,0,0.05);
       border-radius: 9999px;
       
-      /* Track background for segmented control feel */
       background-color: rgba(0,0,0,0.02);
-      padding: 0; /* Tight fit */
+      padding: 0; 
     }
 
     :global(.dark) .language-controls {
       background-color: rgba(255,255,255,0.05);
     }
   
-    /* 1. Base Button Style (Inactive) */
     .pill-button {
       -webkit-appearance: none;
       appearance: none;
       background-color: transparent;
       color: rgb(var(--gray)); 
       
-      /* Connected Strip Borders */
       border: 1px solid rgba(var(--gray), 0.3); 
-      border-radius: 0; /* Default square */
-      margin-left: -1px; /* Overlap borders */
+      border-radius: 0; 
+      margin-left: -1px; 
       
       font-weight: 600;
       transition: all 0.2s ease;
@@ -108,12 +102,10 @@
       z-index: 1;
     }
 
-    /* Inactive Text Colors */
     .pill-button[data-lang-btn="en"] { color: var(--pill-en); }
     .pill-button[data-lang-btn="en_simple"] { color: var(--pill-ez); }
     .pill-button[data-lang-btn="ja"] { color: var(--pill-jp); }
 
-    /* First and Last Child Radius */
     .pill-button:first-child {
       border-top-left-radius: 9999px;
       border-bottom-left-radius: 9999px;
@@ -124,23 +116,18 @@
       border-bottom-right-radius: 9999px;
     }
 
-    /* 2. Hover Effect (Subtle hint) */
     .pill-button:hover {
       background-color: rgba(0,0,0,0.05);
       color: rgb(var(--black));
-      z-index: 2; /* Bring border to top on hover */
+      z-index: 2; 
     }
 
-    /* ========================================= */
-    /* 3. ACTIVE STATES */
-    /* ========================================= */
 
     .pill-button.active {
-      z-index: 10; /* Ensure active button sits on top of neighbors */
-      border-color: transparent; /* Seamless active state */
+      z-index: 10; 
+      border-color: transparent; 
     }
 
-    /* Active: English */
     .pill-button.active[data-lang-btn="en"] {
       background-color: var(--pill-en);
       color: white;
@@ -148,7 +135,6 @@
       border-color: var(--pill-en); 
     }
 
-    /* Active: Ez English */
     .pill-button.active[data-lang-btn="en_simple"] {
       background-color: var(--pill-ez);
       color: white;
@@ -156,7 +142,6 @@
       border-color: var(--pill-ez);
     }
 
-    /* Active: Japanese */
     .pill-button.active[data-lang-btn="ja"] {
       background-color: var(--pill-jp);
       color: white;
@@ -164,7 +149,6 @@
       border-color: var(--pill-jp);
     }
 
-    /* Global Furigana Toggle Styles */
     :global(rt) {
       display: none;
       font-size: 0.6em;
@@ -175,7 +159,6 @@
       display: ruby-text;
     }
     
-    /* Responsive adjustments */
     @media (max-width: 1100px) {
       .pill-button {
         padding: 0.35rem 1rem;
@@ -183,7 +166,6 @@
       }
     }
     
-    /* Mobile Thumb Zone */
     @media (max-width: 600px) {
       .full-text { display: none; }
       .short-text { display: inline; }
@@ -191,7 +173,7 @@
       .pill-button {
         padding: 0.4rem 0.6rem;
         font-size: 0.8rem;
-        flex: 0 0 auto; /* Allow shrink */
+        flex: 0 0 auto; 
         white-space: nowrap;
       }
     }

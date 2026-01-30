@@ -42,12 +42,9 @@ const { slug } = Astro.props;
 </like-button>
 
 <script>
-  // We define a custom element. This is the "Astro way" to do vanilla JS islands.
-  // It ensures the code runs only when the component is present on the page.
   class LikeButton extends HTMLElement {
     constructor() {
       super();
-      // Wait for children to be parsed to avoid null errors
       setTimeout(() => {
       const slug = this.dataset.slug;
       const btn = this.querySelector('button');
@@ -56,7 +53,6 @@ const { slug } = Astro.props;
       const catIcon = this.querySelector('.cat-icon');
       const balloonWrapper = this.querySelector('.balloon-wrapper');
 
-      // Random pastel background color for the balloon
       const hue = Math.floor(Math.random() * 360);
       if (heartPath) heartPath.style.fill = `hsl(${hue}, 85%, 90%)`;
       
@@ -66,36 +62,34 @@ const { slug } = Astro.props;
       this.isFlying = false;
       let lastScrollY = window.scrollY;
 
-      // --- Scroll and Animation Logic ---
       const handleScroll = () => {
         const currentScrollY = window.scrollY;
         const isAtTop = currentScrollY < 300;
         const isScrollingDown = currentScrollY > lastScrollY;
 
         if (this.isFlying) {
-          // If flying (scrolling up), wait until we hit top or user interrupts
           if (isAtTop) {
             this.isFlying = false;
             this.classList.remove('is-visible');
           } else if (isScrollingDown) {
-            this.isFlying = false; // User interrupted
+            this.isFlying = false; 
           } else {
             lastScrollY = currentScrollY;
-            return; // Continue flying
+            return; 
           }
         }
 
         if (isAtTop) {
           this.classList.remove('is-visible');
         } else {
-          this.classList.remove('fly-away'); // Reset fly state so it can appear
+          this.classList.remove('fly-away'); 
           this.classList.add('is-visible');
         }
         lastScrollY = currentScrollY;
       };
 
       window.addEventListener('scroll', handleScroll, { passive: true });
-      handleScroll(); // Initial check
+      handleScroll(); 
 
       if (balloonWrapper) {
         balloonWrapper.addEventListener('click', (e) => {
@@ -106,7 +100,6 @@ const { slug } = Astro.props;
         });
       }
 
-      // 1. Fetch the current like count on load
       fetch(`/api/likes/${slug}`)
         .then(async res => {
           if (!res.ok) throw new Error(await res.text());
@@ -117,7 +110,6 @@ const { slug } = Astro.props;
         })
         .catch(e => console.error("Failed to fetch likes", e));
 
-      // 2. Handle the click
       btn.addEventListener('click', () => {
         if (this.deflateTimer) clearTimeout(this.deflateTimer);
 
@@ -127,15 +119,12 @@ const { slug } = Astro.props;
           return;
         }
 
-        // Balloon logic
         this.balloonClicks++;
 
         if (this.balloonClicks >= 10) {
-          // Pop!
           this.balloonClicks = 0;
           btn.style.transform = 'scale(1)';
           catIcon.style.fill = 'none';
-          // Simple pop animation
           btn.animate([
             { transform: 'scale(1.5)', opacity: 0.8 },
             { transform: 'scale(1)', opacity: 1 }
@@ -143,11 +132,9 @@ const { slug } = Astro.props;
           
           this.sendLike(slug, countSpan);
         } else {
-          // Inflate
           const scale = 1 + (this.balloonClicks * 0.1);
           btn.style.transform = `scale(${scale})`;
           
-          // Deflate after 1 second of inactivity
           this.deflateTimer = setTimeout(() => {
             this.balloonClicks = 0;
             btn.style.transform = 'scale(1)';
@@ -183,7 +170,6 @@ const { slug } = Astro.props;
     align-items: center;
   }
 
-  /* Mobile Styles (Default) */
   like-button {
     position: relative;
     margin: 4rem auto 2rem;
@@ -192,16 +178,14 @@ const { slug } = Astro.props;
     pointer-events: auto;
   }
 
-  /* Desktop Styles */
   @media (min-width: 768px) {
     like-button {
       position: fixed;
       bottom: 7rem;
       right: 1.5rem;
       
-      /* Initial State (Hidden at top) */
       opacity: 0;
-      transform: translateY(-250px); /* Hovering higher above */
+      transform: translateY(-250px); 
       pointer-events: none;
       transition: transform 2.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 2.4s ease;
     }
@@ -214,14 +198,12 @@ const { slug } = Astro.props;
 
     like-button.fly-away {
       opacity: 0;
-      transform: translateY(-150vh); /* Fly way up off screen */
-      /* Move up slower (1.6s), start fading out near the end */
+      transform: translateY(-150vh); 
       transition: transform 1.6s ease-in, opacity 0.6s ease-out 1s;
     }
   }
 
   button {
-    /* Custom SVG cursor (Open Hand) to bypass driver glitches */
     cursor: url("data:image/svg+xml;utf8,<svg viewBox='-10 -10 50 50' fill='%23ffffff' xmlns='http://www.w3.org/2000/svg' transform='rotate(45)'><g id='SVGRepo_bgCarrier' stroke-width='0'></g><g id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round' stroke='%23df3030' stroke-width='0.048'></g><g id='SVGRepo_iconCarrier'> <path d='M17 11V9.27308C17 8.75533 17.2588 8.27183 17.6896 7.98463L17.7388 7.95181C18.2041 7.64162 18.806 7.62565 19.287 7.91073V7.91073C19.729 8.17263 20 8.64824 20 9.16196L20 13C20 14.6997 19.4699 16.2756 18.5661 17.5714C17.1204 19.6439 14.7186 21 12 21C9.28145 21 6.8796 19.6439 5.43394 17.5714C4.53009 16.2756 4.00001 14.6997 4.00001 13L4.00001 12.2117C4 11.438 4.44632 10.7336 5.14599 10.4032V10.4032C5.6867 10.1479 6.3133 10.1479 6.85401 10.4032V10.4032C7.55368 10.7336 8 11.438 8.00001 12.2117L8.00001 13' stroke='%23323232' stroke-width='2.4' stroke-linecap='round'></path> <path d='M8 12V5.80278C8 5.30125 8.25065 4.8329 8.66795 4.5547V4.5547C9.1718 4.2188 9.8282 4.2188 10.3321 4.5547V4.5547C10.7493 4.8329 11 5.30125 11 5.80278V11' stroke='%23323232' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'></path> <path d='M14 11V5.80278C14 5.30125 14.2507 4.8329 14.6679 4.5547V4.5547C15.1718 4.2188 15.8282 4.2188 16.3321 4.5547V4.5547C16.7493 4.8329 17 5.30125 17 5.80278V9' stroke='%23323232' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'></path> <path d='M11 6V4.80278C11 4.30125 11.2507 3.8329 11.6679 3.5547V3.5547C12.1718 3.2188 12.8282 3.2188 13.3321 3.5547V3.5547C13.7493 3.8329 14 4.30125 14 4.80278V6' stroke='%23323232' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'></path> </g></svg>") 16 16, pointer;
     border: none;
     background: transparent;
@@ -237,7 +219,6 @@ const { slug } = Astro.props;
     filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
   }
   button:active {
-    /* Custom SVG cursor (Grabbing Hand) */
     cursor: url("data:image/svg+xml;utf8,<svg viewBox='-10 -10 50 50' fill='%23ffffff' xmlns='http://www.w3.org/2000/svg' transform='rotate(45)'><g id='SVGRepo_bgCarrier' stroke-width='0'></g><g id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round' stroke='%23df3030' stroke-width='0.048'></g><g id='SVGRepo_iconCarrier'> <path d='M17 11V9.27308C17 8.75533 17.2588 8.27183 17.6896 7.98463L17.7388 7.95181C18.2041 7.64162 18.806 7.62565 19.287 7.91073V7.91073C19.729 8.17263 20 8.64824 20 9.16196L20 13C20 14.6997 19.4699 16.2756 18.5661 17.5714C17.1204 19.6439 14.7186 21 12 21C9.28145 21 6.8796 19.6439 5.43394 17.5714C4.53009 16.2756 4.00001 14.6997 4.00001 13L4.00001 12.2117C4 11.438 4.44632 10.7336 5.14599 10.4032V10.4032C5.6867 10.1479 6.3133 10.1479 6.85401 10.4032V10.4032C7.55368 10.7336 8 11.438 8.00001 12.2117L8.00001 13' stroke='%23323232' stroke-width='2.4' stroke-linecap='round'></path> <path d='M8 12V5.80278C8 5.30125 8.25065 4.8329 8.66795 4.5547V4.5547C9.1718 4.2188 9.8282 4.2188 10.3321 4.5547V4.5547C10.7493 4.8329 11 5.30125 11 5.80278V11' stroke='%23323232' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'></path> <path d='M14 11V5.80278C14 5.30125 14.2507 4.8329 14.6679 4.5547V4.5547C15.1718 4.2188 15.8282 4.2188 16.3321 4.5547V4.5547C16.7493 4.8329 17 5.30125 17 5.80278V9' stroke='%23323232' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'></path> <path d='M11 6V4.80278C11 4.30125 11.2507 3.8329 11.6679 3.5547V3.5547C12.1718 3.2188 12.8282 3.2188 13.3321 3.5547V3.5547C13.7493 3.8329 14 4.30125 14 4.80278V6' stroke='%23323232' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'></path> </g></svg>") 16 16, grabbing;
   }
   button:hover .cat-icon {
@@ -293,7 +274,6 @@ const { slug } = Astro.props;
     color: rgb(var(--black));
   }
 
-  /* Mouth Interaction */
   .mouth-o {
     opacity: 0;
     transition: opacity 0.2s ease-in-out;

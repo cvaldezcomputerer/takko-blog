@@ -99,7 +99,6 @@ import ThemeToggle from './ThemeToggle.astro';
 		white-space: nowrap;
 	}
 
-	/* Hamburger Menu Button */
 	.hamburger-menu {
 		display: none;
 		padding: 0.5rem;
@@ -118,7 +117,6 @@ import ThemeToggle from './ThemeToggle.astro';
 		display: none;
 	}
 
-	/* Desktop nav */
 	.menu-content {
 		display: flex;
 		justify-content: flex-end;
@@ -165,7 +163,6 @@ import ThemeToggle from './ThemeToggle.astro';
 		border-bottom-color: var(--accent);
 	}
 
-	/* Hide text label next to emoji on intermediate screens */
 	@media (max-width: 1200px) {
 		.nav-text {
 			display: none;
@@ -177,12 +174,10 @@ import ThemeToggle from './ThemeToggle.astro';
 		}
 	}
 
-	/* Mobile Styles */
 	@media (max-width: 720px) {
 		.hamburger-menu {
 			display: block;
 		}
-		/* --- CSS FIX: Hide the entire menu content wrapper --- */
 		.menu-content {
 			display: none;
 			position: absolute;
@@ -192,9 +187,8 @@ import ThemeToggle from './ThemeToggle.astro';
 			background: var(--secondary);
 			box-shadow: var(--box-shadow);
 			padding: 1rem;
-			margin-inline: 0; /* Reset the auto margin */
+			margin-inline: 0; 
 		}
-		/* --- CSS FIX: When open, show it as a vertical list --- */
 		.is-menu-open .menu-content {
 			display: flex;
 			flex-direction: column;
@@ -207,31 +201,29 @@ import ThemeToggle from './ThemeToggle.astro';
 			width: 100%;
 		}
 		.social-links {
-    border-left: none; /* Remove separator on mobile */
-    padding-left: 0;
-    margin-top: 0.5rem; /* Add space from nav links */
-  }
-  .internal-links a {
-    padding: 0.75rem 1rem; /* Better touch targets */
-    border-radius: 0.375rem; /* Rounded corners */
-    transition: background-color 0.2s;
-  }
-  .internal-links a:hover {
-    background-color: var(--highlight); /* Hover feedback */
-  }
+            border-left: none; 
+            padding-left: 0;
+            margin-top: 0.5rem; 
+        }
+        .internal-links a {
+            padding: 0.75rem 1rem; 
+            border-radius: 0.375rem; 
+            transition: background-color 0.2s;
+        }
+        .internal-links a:hover {
+            background-color: var(--highlight); 
+        }
 		.site-title-text {
 			display: none;
 		}
 	}
 
-	/* Scrolled State (Applies to all screens) */
 	header.is-scrolled {
 		opacity: 0;
 		pointer-events: none;
 		transform: translateY(1rem) scale(0.9);
 	}
 
-	/* Desktop Morphing Effect Details */
 	@media (min-width: 721px) {
 		header.is-scrolled .logo-link {
 			transform: translateX(3rem);
@@ -255,11 +247,9 @@ import ThemeToggle from './ThemeToggle.astro';
 		}
 	}
 
-	// Variable to track the cleanup function for the scroll listener
 	let cleanupScroll;
 
 	function initializeScrollEffect() {
-		// 1. Clean up the previous listener if it exists
 		if (cleanupScroll) {
 			cleanupScroll();
 			cleanupScroll = null;
@@ -281,7 +271,6 @@ import ThemeToggle from './ThemeToggle.astro';
 		handleScroll();
 	}
 
-	// Initialize on page load (runs on first load and after navigation)
 	document.addEventListener('astro:page-load', () => {
 		initializeHamburgerMenu();
 		initializeScrollEffect();

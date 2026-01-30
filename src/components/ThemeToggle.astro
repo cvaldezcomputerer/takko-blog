@@ -21,10 +21,10 @@
 
 <style>
 	button {
-		background-color: #bae6fd; /* Sky blue */
+		background-color: #bae6fd; 
 		border: 1px solid #7dd3fc;
 		cursor: pointer;
-		color: #ea580c; /* Orange stroke */
+		color: #ea580c; 
 		padding: 0.5rem;
 		display: flex;
 		align-items: center;
@@ -40,21 +40,20 @@
 	
 	.sun-icon { 
 		display: block; 
-		fill: #fcd34d; /* Yellow fill */
+		fill: #fcd34d; 
 	}
 	.moon-icon { display: none; }
 	
-	/* When dark mode is active (applied to html) */
 	:global(.dark) button {
-		background-color: #1e293b; /* Dark slate */
+		background-color: #1e293b; 
 		border-color: #334155;
-		color: #e2e8f0; /* Light gray stroke */
+		color: #e2e8f0; 
 	}
 	
 	:global(.dark) .sun-icon { display: none; }
 	:global(.dark) .moon-icon { 
 		display: block; 
-		fill: #fbbf24; /* Moon yellow fill */
+		fill: #fbbf24; 
 	}
 </style>
 
@@ -78,7 +77,6 @@
 				setTheme(isDark ? 'light' : 'dark');
 			});
 
-            // Sync button state on load (in case the inline script didn't run or we are navigating)
             if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
             }
