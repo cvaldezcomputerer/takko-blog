@@ -14,20 +14,15 @@ const { images = [] } = Astro.props;
 </div>
 
 <style>
-  /* =========================================
-     1. CONTAINER STYLES
-     ========================================= */
   .scrapbook-container {
     background-color: var(--secondary);
     color: #333;
     
-    /* Grid Pattern */
     background-image: 
       linear-gradient(#e1e1e1 1px, transparent 1px),
       linear-gradient(90deg, #e1e1e1 1px, transparent 1px);
     background-size: 20px 20px;
     
-    /* Layout */
     position: relative;
     padding: 40px 20px 60px 20px;
     margin: 50px auto;
@@ -37,7 +32,6 @@ const { images = [] } = Astro.props;
       10px 10px 0px #e0e0e0;
     max-width: 100%;
     
-    /* Flex Setup */
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -56,9 +50,6 @@ const { images = [] } = Astro.props;
     color: var(--text);
   }
 
-  /* =========================================
-     2. THE TAPE DECORATION
-     ========================================= */
   .scrapbook-container::before {
     content: "";
     position: absolute;
@@ -81,13 +72,9 @@ const { images = [] } = Astro.props;
     background-color: rgba(240, 230, 140, 0.15);
   }
 
-  /* =========================================
-     3. POLAROID CARD BASE
-     ========================================= */
   .photo-card,
   .scrapbook-container :global(figure) {
     background: white;
-    /* Spacing: Equal top/sides, large bottom for caption */
     padding: 12px 12px 30px 12px; 
     box-shadow: 2px 4px 12px rgba(0,0,0,0.2);
     width: 180px;
@@ -104,7 +91,6 @@ const { images = [] } = Astro.props;
     position: relative; 
     outline: 1px solid transparent;
 
-    /* Performance Optimizations */
     will-change: transform;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
@@ -115,14 +101,10 @@ const { images = [] } = Astro.props;
     background: var(--text);
   }
   
-  /* Reset default margin for figure */
   .scrapbook-container :global(figure) {
     margin: 0;
   }
 
-  /* =========================================
-     4. IMAGE STYLES
-     ========================================= */
   .photo-card img,
   .scrapbook-container :global(figure img) {
     width: 100%;
@@ -141,9 +123,6 @@ const { images = [] } = Astro.props;
     transform: translateZ(0);
   }
 
-  /* =========================================
-     5. CAPTION STYLES
-     ========================================= */
   .scrapbook-container :global(figcaption) {
      position: absolute;
      bottom: 10px;
@@ -162,7 +141,6 @@ const { images = [] } = Astro.props;
      transition: opacity 0.4s;
   }
 
-  /* Specific override for Japanese text line-height */
   .scrapbook-container :global(figcaption [data-lang-content="ja"]) {
     line-height: 1.2;
   }
@@ -171,9 +149,6 @@ const { images = [] } = Astro.props;
     color: var(--background);
   }
 
-  /* =========================================
-     6. RANDOM ROTATIONS
-     ========================================= */
   .photo-card:nth-child(odd),
   .scrapbook-container :global(figure:nth-child(odd)) { 
     transform: rotate(-3deg) translateZ(0); 
@@ -197,9 +172,6 @@ const { images = [] } = Astro.props;
     margin-top: 10px; 
   }
 
-  /* =========================================
-     7. DESKTOP HOVER EFFECTS
-     ========================================= */
   .photo-card:hover,
   .scrapbook-container :global(figure:hover) {
     transform: rotate(0deg) translateZ(0);
@@ -234,16 +206,12 @@ const { images = [] } = Astro.props;
     border-radius: 0;
   }
 
-  /* =========================================
-     8. RESPONSIVE STYLES (MOBILE)
-     ========================================= */
   @media (max-width: 600px) {
     .scrapbook-container {
       gap: 0;
       padding: 20px 10px;
     }
     
-    /* Stack effect for mobile list */
     .photo-card,
     .scrapbook-container :global(figure) {
       margin-bottom: -120px; 
@@ -260,7 +228,6 @@ const { images = [] } = Astro.props;
       margin-top: 0; 
     }
 
-    /* Mobile Hover/Focus Override: Keep Polaroid look, just zoom */
     .photo-card:hover,
     .scrapbook-container :global(figure:hover) {
       background: white;
@@ -278,7 +245,6 @@ const { images = [] } = Astro.props;
 
     .photo-card:hover img,
     .scrapbook-container :global(figure:hover img) {
-      /* Reset "pop-out" styles */
       position: static;
       top: auto;
       left: auto;

@@ -69,7 +69,6 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 		}
 
 		connectedCallback() {
-			// 1. Check if user voted previously
 			const storedVote = localStorage.getItem(`quiz_vote_${this.id}`);
 			if (storedVote) {
 				this.hasVoted = true;
@@ -77,10 +76,8 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 				this.disableInteraction();
 			}
 
-			// 2. Fetch current stats
 			this.fetchData();
 
-			// 3. Add click listeners
 			if (!this.hasVoted) {
 				this.buttons.forEach((btn) => {
 					btn.addEventListener('click', (e) => this.handleVote(e));
@@ -104,7 +101,6 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 			const btn = e.currentTarget as HTMLButtonElement;
 			const index = parseInt(btn.dataset.index || '0');
 
-			// Optimistic update: disable immediately to prevent double clicks
 			this.buttons.forEach(b => b.disabled = true);
 
 			try {
@@ -119,7 +115,6 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 					this.hasVoted = true;
 					this.markSelected(index);
 					
-					// Manually update local state (since API might be cached)
 					const currentCount = this.currentVotes[index] || 0;
 					this.currentVotes[index] = currentCount + 1;
 					this.updateUI(this.currentVotes);
@@ -127,7 +122,7 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 				}
 			} catch (err) {
 				console.error('Vote failed', err);
-				this.buttons.forEach(b => b.disabled = false); // Re-enable on error
+				this.buttons.forEach(b => b.disabled = false); 
 			}
 		}
 
@@ -141,15 +136,12 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 				btn.disabled = true;
 				btn.classList.add('show-results');
 
-				// Apply Correct/Wrong styles if a correct answer is defined
 				if (this.correctIndex !== -1 && !isNaN(this.correctIndex)) {
 					const btnIndex = parseInt(btn.dataset.index || '-1');
 					
-					// 1. Always highlight the correct answer green
 					if (btnIndex === this.correctIndex) {
 						btn.classList.add('correct');
 					}
-					// 2. If user picked this button AND it's wrong, make it red
 					else if (btn.classList.contains('selected')) {
 						btn.classList.add('wrong');
 					}
@@ -159,10 +151,9 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 
 		updateUI(votesObj: Record<string, number>) {
 			let total = 0;
-			this.currentVotes = votesObj; // Store for local updates
+			this.currentVotes = votesObj; 
 			const counts: Record<string, number> = {};
 			
-			// Calculate total
 			this.buttons.forEach(btn => {
 				const idx = btn.dataset.index || '0';
 				const count = votesObj[idx] || 0;
@@ -172,14 +163,12 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 
 			if (this.meta) this.meta.textContent = `${total} votes`;
 
-			// Update bars
 			this.buttons.forEach(btn => {
 				const idx = btn.dataset.index || '0';
 				const count = counts[idx];
 				const percent = total === 0 ? 0 : Math.round((count / total) * 100);
 				
 				const bar = btn.querySelector('.progress-bar') as HTMLElement;
-				// Only show bar width if user has voted
 				if(bar) bar.style.width = this.hasVoted ? `${percent}%` : '0%';
 
 				const text = btn.querySelector('.option-percentage');
@@ -234,7 +223,7 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 		font-family: inherit;
 		font-size: 1rem;
 		color: #333;
-		overflow: hidden; /* Keeps progress bar inside */
+		overflow: hidden; 
 		transition: all 0.2s ease;
 		z-index: 1;
 	}
@@ -244,7 +233,6 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 		border-color: transparent;
 	}
 	
-	/* Hover state (only if not voted) */
 	.quiz-option:not(:disabled):hover {
 		background: #f3f4f6;
 		border-color: #d1d5db;
@@ -254,7 +242,6 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 		border-color: var(--gray);
 	}
 	
-	/* Focus state - Remove default blue ring */
 	.quiz-option:focus {
 		outline: none;
 	}
@@ -264,13 +251,11 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 		box-shadow: 0 0 0 2px rgba(var(--gray), 0.2);
 	}
 
-	/* Selected state */
 	.quiz-option.selected {
 		border-color: var(--accent);
 		font-weight: 600;
 	}
 
-	/* Correct Answer State (Green) */
 	.quiz-option.correct {
 		border-color: #22c55e;
 		background-color: #f0fdf4;
@@ -286,10 +271,7 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 	.quiz-option.correct .option-percentage {
 		color: #15803d;
 	}
-	/* Optional: Add a checkmark if you want it to be super clear */
-	/* .quiz-option.correct::after { content: '✓'; position: absolute; right: 1rem; color: #15803d; font-weight: bold; } */
 
-	/* Wrong Selection State (Red) */
 	.quiz-option.wrong {
 		border-color: #ef4444;
 		background-color: #fef2f2;
@@ -306,7 +288,6 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 		color: #b91c1c;
 	}
 
-	/* The Progress Bar Background */
 	.progress-bar {
 		position: absolute;
 		top: 0;
@@ -319,7 +300,6 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 		transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 	}
 	
-	/* If you have an accent color variable, use it here */
 	.quiz-option.selected .progress-bar {
 		opacity: 0.25;
 	}
