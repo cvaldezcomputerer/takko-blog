@@ -113,6 +113,7 @@ const { title, title_ja, title_en_simple, description, pubDate, updatedDate, her
 					  alt=""
 					  loading="eager"
 					  fetchpriority="high"
+					  transition:name={`image-${slug}`}
 					  style={heroImageFit && `object-fit: ${heroImageFit}; background-color: ${heroImageFit === 'contain' ? 'black' : 'transparent'}`} />
 					</div>
 				}
