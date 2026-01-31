@@ -54,7 +54,15 @@
         button.addEventListener("click", () => {
           const langAttr = button.getAttribute("data-lang-btn");
           if (isLanguage(langAttr)) {
-            setLanguage(langAttr);
+            // @ts-ignore
+            if (document.startViewTransition) {
+                // @ts-ignore
+                document.startViewTransition(() => {
+                    setLanguage(langAttr);
+                });
+            } else {
+                setLanguage(langAttr);
+            }
           }
         });
       });
