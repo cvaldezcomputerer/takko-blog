@@ -111,6 +111,7 @@ const posts = (await getCollection('blog')).sort(
 											sizes={index === 0 ? "(max-width: 960px) 100vw, 960px" : "(max-width: 720px) 100vw, 480px"}
 											alt={post.data.title}
 											loading={index === 0 ? "eager" : "lazy"}
+											fetchpriority={index === 0 ? "high" : "auto"}
 										/>
 									) : (
 										<div class="placeholder-image" />
