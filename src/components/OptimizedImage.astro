@@ -36,6 +36,7 @@ interface Props {
   fetchpriority?: "high" | "low" | "auto";
   sizes?: string;
   style?: string;
+  [key: string]: any; // Allow arbitrary props like transition:name
 }
 
 const { 
@@ -48,7 +49,8 @@ const {
   // Default sizes:
   // - On small screens (mobile): occupy almost full width (minus padding)
   // - On larger screens: cap at the max prose width (approx 720px)
-  sizes = "(max-width: 720px) 100vw, 720px" 
+  sizes = "(max-width: 720px) 100vw, 720px",
+  ...rest // Capture other props
 } = Astro.props;
 ---
 
@@ -64,6 +66,7 @@ const {
   formats={IMAGE_FORMATS}
   fallbackFormat="webp"
   quality={IMAGE_QUALITY}
+  {...rest}
 />
 
 <style>
