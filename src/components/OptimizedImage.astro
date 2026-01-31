@@ -33,6 +33,7 @@ interface Props {
   alt: string;
   className?: string;
   loading?: "eager" | "lazy";
+  fetchpriority?: "high" | "low" | "auto";
   sizes?: string;
   style?: string;
 }
@@ -43,6 +44,7 @@ const {
   className, 
   style,
   loading = "lazy",
+  fetchpriority,
   // Default sizes:
   // - On small screens (mobile): occupy almost full width (minus padding)
   // - On larger screens: cap at the max prose width (approx 720px)
@@ -56,6 +58,7 @@ const {
   class={className}
   style={style}
   loading={loading}
+  fetchpriority={fetchpriority}
   widths={IMAGE_WIDTHS} 
   sizes={sizes}
   formats={IMAGE_FORMATS}
