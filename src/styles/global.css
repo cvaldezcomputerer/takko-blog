@@ -130,6 +130,17 @@ p {
 .prose p {
   margin-bottom: 2em;
 }
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
 textarea {
   width: 100%;
   font-size: 16px;
@@ -206,3 +217,4 @@ hr {
     line-height: 1.7;
   }
 }
+
