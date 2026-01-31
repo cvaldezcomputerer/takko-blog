@@ -10,28 +10,6 @@ const { fluid = false } = Astro.props;
 
 <style is:global>
   .hidden {
-    display: none;
-  }
-
-  .translatable-text {
-    display: inline-grid;
-    grid-template-columns: 100%;
-    vertical-align: text-bottom;
-    align-items: baseline;
-  }
-  .translatable-text.fluid {
-    display: inline;
-  }
-  .translatable-text > span {
-    grid-area: 1 / 1;
-    width: 100%;
-    transition: visibility 0s, opacity 0s !important; 
-  }
-  
-  .translatable-text:not(.fluid) > .hidden {
-    display: block;
-    visibility: hidden;
-    opacity: 0;
-    pointer-events: none;
+    display: none !important;
   }
 </style>
