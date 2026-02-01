@@ -23,10 +23,10 @@
 import { Picture } from 'astro:assets';
 
 // Global Image Optimization Settings for this component
-const IMAGE_QUALITY = 75;
+const IMAGE_QUALITY = 70;
 const IMAGE_FORMATS = ['avif', 'webp'];
 // Superset of common widths used across the site (Content, Hero, Index)
-const IMAGE_WIDTHS = [360, 480, 720, 960, 1080, 1440, 1600];
+const IMAGE_WIDTHS = [360, 480, 640, 720, 840, 960, 1080, 1440, 1600];
 
 interface Props {
   src: ImageMetadata | string;
