@@ -42,6 +42,11 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 		top: 1rem;
 		transform: translateX(-50%) scale(0.9);
 		
+		/* GPU acceleration - prevent jitter on mobile */
+		will-change: transform, opacity;
+		backface-visibility: hidden;
+		-webkit-backface-visibility: hidden;
+		
 		transition: 
 			opacity 0.3s ease,
 			transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
