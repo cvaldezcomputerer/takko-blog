@@ -9,7 +9,33 @@ const { fluid = false } = Astro.props;
 </span>
 
 <style is:global>
-  .hidden {
-    display: none !important;
+  /* Grid stacking: all 3 languages occupy same cell, container = tallest */
+  .translatable-text {
+    display: inline-grid;
+    /* All children stack in same cell */
+  }
+  
+  .translatable-text > [data-lang-content] {
+    grid-row: 1;
+    grid-column: 1;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.15s ease-out;
+  }
+  
+  /* Hidden: still in grid (takes up space), but invisible */
+  .translatable-text > [data-lang-content].hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  
+  /* Fluid mode: for inline items like nav where we DON'T want gaps */
+  .translatable-text.fluid {
+    display: inline;
+  }
+  
+  .translatable-text.fluid > [data-lang-content].hidden {
+    display: none;
   }
 </style>
