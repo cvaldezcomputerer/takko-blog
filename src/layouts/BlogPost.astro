@@ -109,9 +109,11 @@ const { title, title_ja, title_en_simple, description, pubDate, updatedDate, her
 					<div class="hero-image">
 					<OptimizedImage
 					  src={heroImage}
-					  sizes="(max-width: 1020px) 100vw, 1020px"
+				  sizes="(max-width: 960px) 100vw, 960px"
 					  alt=""
 					  loading="eager"
+					  fetchpriority="high"
+					  transition:name={`image-${slug}`}
 					  style={heroImageFit && `object-fit: ${heroImageFit}; background-color: ${heroImageFit === 'contain' ? 'black' : 'transparent'}`} />
 					</div>
 				}
