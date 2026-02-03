@@ -23,18 +23,20 @@
 import { Picture } from 'astro:assets';
 
 // Global Image Optimization Settings for this component
-const IMAGE_QUALITY = 75;
+const IMAGE_QUALITY = 70;
 const IMAGE_FORMATS = ['avif', 'webp'];
 // Superset of common widths used across the site (Content, Hero, Index)
-const IMAGE_WIDTHS = [360, 480, 720, 960, 1080, 1440, 1600];
+const IMAGE_WIDTHS = [480, 720, 960, 1440];
 
 interface Props {
   src: ImageMetadata | string;
   alt: string;
   className?: string;
   loading?: "eager" | "lazy";
+  fetchpriority?: "high" | "low" | "auto";
   sizes?: string;
   style?: string;
+  [key: string]: any; // Allow arbitrary props like transition:name
 }
 
 const { 
@@ -43,10 +45,12 @@ const {
   className, 
   style,
   loading = "lazy",
+  fetchpriority,
   // Default sizes:
   // - On small screens (mobile): occupy almost full width (minus padding)
   // - On larger screens: cap at the max prose width (approx 720px)
-  sizes = "(max-width: 720px) 100vw, 720px" 
+  sizes = "(max-width: 720px) 100vw, 720px",
+  ...rest // Capture other props
 } = Astro.props;
 ---
 
@@ -56,11 +60,13 @@ const {
   class={className}
   style={style}
   loading={loading}
+  fetchpriority={fetchpriority}
   widths={IMAGE_WIDTHS} 
   sizes={sizes}
   formats={IMAGE_FORMATS}
   fallbackFormat="webp"
   quality={IMAGE_QUALITY}
+  {...rest}
 />
 
 <style>
