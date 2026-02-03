@@ -20,6 +20,8 @@ const posts = (await getCollection('blog')).sort(
 		<style>
 			main {
 				width: 960px;
+				max-width: calc(100% - 2em);
+				margin: 0 auto;
 			}
 			ul {
 				display: flex;
@@ -108,9 +110,11 @@ const posts = (await getCollection('blog')).sort(
 									{post.data.heroImage ? (
 										<OptimizedImage
 											src={post.data.heroImage}
-											sizes={index === 0 ? "(max-width: 960px) 100vw, 960px" : "(max-width: 720px) 100vw, 480px"}
+											sizes={index === 0 ? "(max-width: 960px) 100vw, 960px" : "(max-width: 720px) 100vw, (max-width: 960px) 50vw, 480px"}
 											alt={post.data.title}
 											loading={index === 0 ? "eager" : "lazy"}
+											fetchpriority={index === 0 ? "high" : "auto"}
+											transition:name={`image-${post.slug}`}
 										/>
 									) : (
 										<div class="placeholder-image" />

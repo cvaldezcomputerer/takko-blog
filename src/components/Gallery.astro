@@ -6,7 +6,7 @@ import OptimizedImage from './OptimizedImage.astro';
   {images.length > 0 ? (
     images.map((img) => (
       <div class="photo-card">
-        <OptimizedImage src={img} alt="" sizes="(max-width: 600px) 90vw, 200px" />
+        <OptimizedImage src={img} alt="" loading="lazy" sizes="(max-width: 600px) 90vw, 200px" />
       </div>
     ))
   ) : (
