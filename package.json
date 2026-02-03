@@ -20,6 +20,7 @@
     "astro": "^5.16.7"
   },
   "devDependencies": {
+    "sharp": "^0.34.5",
     "wrangler": "^4.60.0"
   },
   "overrides": {
