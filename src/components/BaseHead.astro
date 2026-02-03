@@ -10,7 +10,18 @@ interface Props {
 	image?: string;
 }
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+// Normalize canonical URL: ensure directory-style pages have a trailing slash
+const rawPath = new URL(Astro.url.pathname, Astro.site).pathname;
+const segments = rawPath.split('/').filter(Boolean);
+const lastSegment = segments.length ? segments[segments.length - 1] : '';
+const hasExtension = lastSegment.includes('.');
+let normalizedPath = rawPath;
+if (rawPath !== '/') {
+  if (!rawPath.endsWith('/') && !hasExtension) {
+    normalizedPath = rawPath + '/';
+  }
+}
+const canonicalURL = new URL(normalizedPath, Astro.site);
 
 const { title, description, image = '/favicon_512.png' } = Astro.props;
 ---
