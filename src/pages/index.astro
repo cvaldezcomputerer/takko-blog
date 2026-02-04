@@ -112,7 +112,7 @@ const posts = (await getCollection('blog')).sort(
 											alt={post.data.title}
 											loading={index === 0 ? "eager" : "lazy"}
 											fetchpriority={index === 0 ? "high" : "auto"}
-											transition:name={`image-${post.slug}`}
+
 										/>
 									) : (
 										<div class="placeholder-image" />
