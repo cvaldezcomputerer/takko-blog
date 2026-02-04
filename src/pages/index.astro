@@ -66,9 +66,7 @@ const posts = (await getCollection('blog')).sort(
 			}
 			.title {
 				margin: 0;
-				color: rgb(var(--black));
-				line-height: 1;
-			}
+				color: rgb(var(--black));			}
 			.date {
 				margin: 0;
 				color: rgb(var(--gray));
@@ -120,7 +118,7 @@ const posts = (await getCollection('blog')).sort(
 										<div class="placeholder-image" />
 									)}
 									<h4 class="title">
-										<T>
+										<T fluid>
 											<span slot="en">{post.data.title}</span>
 											<span slot="ja">{post.data.title_ja || post.data.title}</span>
 											<span slot="en_simple">{post.data.title_en_simple || post.data.title}</span>
