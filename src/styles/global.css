@@ -187,6 +187,11 @@ hr {
   }
 }
 
+/* Fix floating island visibility during view transitions */
+::view-transition-group(floating-island) {
+  z-index: 214;
+}
+
 .sr-only {
   border: 0;
   padding: 0;
@@ -216,9 +221,4 @@ hr {
     font-size: 0.95em;
     line-height: 1.7;
   }
-}
-
-/* Fix floating island visibility during view transitions */
-::view-transition-group(floating-island) {
-  z-index: 214;
 }
