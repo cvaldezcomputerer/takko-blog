@@ -218,3 +218,7 @@ hr {
   }
 }
 
+/* Fix floating island visibility during view transitions */
+::view-transition-group(floating-island) {
+  z-index: 214;
+}
