@@ -47,17 +47,10 @@ const today = new Date();
 <style>
 	footer {
 		background-color: var(--secondary);
-		color: #333333; 
+		color: var(--text);
 		margin-top: auto;
 		padding: 3rem 1.5rem;
-		
-		border-top: 1px solid #e5e7eb;
-	}
-	
-	:global(.dark) footer {
-		background-color: #2d2d2d;
-		color: #e5e5e5;
-		border-top: 1px solid #404040;
+		border-top: 1px solid rgb(var(--gray-light));
 	}
 
 	.footer-content {
