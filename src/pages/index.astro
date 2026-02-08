@@ -94,20 +94,10 @@ const posts = (await getCollection('blog')).sort(
 			}
 
 			.title {
-				margin: 0 0 0.75rem 0;
+				margin: 0;
 				color: rgb(var(--black));
-				line-height: 1.3;
-				font-weight: 700;
-				letter-spacing: -0.01em;
-				font-size: 1.6rem;
+				line-height: 1;
 			}
-
-			ul li:first-child .title {
-				font-size: 3rem;
-				line-height: 1.15;
-				margin-bottom: 1.25rem;
-			}
-
 			.date {
 				margin: 0;
 				color: rgb(var(--gray));
@@ -162,22 +152,21 @@ const posts = (await getCollection('blog')).sort(
 											alt={post.data.title}
 											loading={index === 0 ? "eager" : "lazy"}
 											fetchpriority={index === 0 ? "high" : "auto"}
+											transition:name={`image-${post.slug}`}
 										/>
 									) : (
 										<div class="placeholder-image" />
 									)}
-									<div class="post-content">
-										<h4 class="title">
-											<T>
-												<span slot="en">{post.data.title}</span>
-												<span slot="ja">{post.data.title_ja || post.data.title}</span>
-												<span slot="en_simple">{post.data.title_en_simple || post.data.title}</span>
-											</T>
-										</h4>
-										<p class="date">
-											<FormattedDate date={post.data.pubDate} />
-										</p>
-									</div>
+									<h4 class="title">
+										<T>
+											<span slot="en">{post.data.title}</span>
+											<span slot="ja">{post.data.title_ja || post.data.title}</span>
+											<span slot="en_simple">{post.data.title_en_simple || post.data.title}</span>
+										</T>
+									</h4>
+									<p class="date">
+										<FormattedDate date={post.data.pubDate} />
+									</p>
 								</a>
 							</li>
 						))
