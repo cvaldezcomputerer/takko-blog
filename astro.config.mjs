@@ -13,7 +13,7 @@ import cloudflare from "@astrojs/cloudflare";
 // https://astro.build/config
 export default defineConfig({
   site: "https://bloggydoggy.com",
-  output: "server",
+  output: "hybrid",
   adapter: cloudflare({
     imageService: "compile",
     platformProxy: {
