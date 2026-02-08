@@ -57,29 +57,41 @@ const { title, description, image = '/favicon_512.png' } = Astro.props;
 <meta property="og:description" content={description} />
 <meta property="og:image" content={new URL(image, Astro.url)} />
 
+<meta name="theme-color" content="#FAFAFA" />
+
 <script is:inline>
-	const getTheme = () => {
-		if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-			return localStorage.getItem('theme');
-		}
-		if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-			return 'dark';
-		}
-		return 'light';
-	};
+	function applyTheme() {
+		// Prevent transition animations during theme application
+		const css = document.createElement('style');
+		css.appendChild(document.createTextNode('* { transition: none !important; }'));
+		document.head.appendChild(css);
 
-	const setTheme = (theme) => {
-		if (theme === 'dark') {
-			document.documentElement.classList.add('dark');
-		} else {
-			document.documentElement.classList.remove('dark');
+		const theme = typeof localStorage !== 'undefined' && localStorage.getItem('theme') 
+			? localStorage.getItem('theme') 
+			: (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+		
+		const isDark = theme === 'dark';
+		document.documentElement.classList.toggle('dark', isDark);
+		
+		const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+		if (metaThemeColor) {
+			metaThemeColor.setAttribute('content', isDark ? '#212121' : '#FAFAFA');
 		}
-		window.localStorage.setItem('theme', theme);
-	};
 
-	setTheme(getTheme());
+		// Force a reflow/repaint before re-enabling transitions
+		window.getComputedStyle(document.documentElement).opacity;
 
-	document.addEventListener('astro:after-swap', () => setTheme(getTheme()));
+		// Re-enable transitions after a short delay to ensure paint is complete
+		setTimeout(() => {
+			document.head.removeChild(css);
+		}, 0);
+	}
+
+	// Apply immediately on load
+	applyTheme();
+
+	// Apply on view transitions
+	document.addEventListener('astro:after-swap', applyTheme);
 </script>
 
 <script type="application/ld+json" set:html={JSON.stringify({
