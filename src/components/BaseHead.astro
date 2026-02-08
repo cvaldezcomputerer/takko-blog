@@ -57,7 +57,30 @@ const { title, description, image = '/favicon_512.png' } = Astro.props;
 <meta property="og:description" content={description} />
 <meta property="og:image" content={new URL(image, Astro.url)} />
 
+<script is:inline>
+	const getTheme = () => {
+		if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+			return localStorage.getItem('theme');
+		}
+		if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+			return 'dark';
+		}
+		return 'light';
+	};
 
+	const setTheme = (theme) => {
+		if (theme === 'dark') {
+			document.documentElement.classList.add('dark');
+		} else {
+			document.documentElement.classList.remove('dark');
+		}
+		window.localStorage.setItem('theme', theme);
+	};
+
+	setTheme(getTheme());
+
+	document.addEventListener('astro:after-swap', () => setTheme(getTheme()));
+</script>
 
 <script type="application/ld+json" set:html={JSON.stringify({
   "@context": "https://schema.org",
