@@ -53,27 +53,9 @@ import takkoMap from '../assets/images/misc/takko-on-map.png';
 			
 			.hero-wrapper {
 				width: 100%;
-				background-color: var(--background);
 				padding: 3rem 0;
-				position: relative;
-				overflow: hidden;
 				flex: 1; /* Make it fill the space since we removed posts */
-			}
-
-			.hero-wrapper::before {
-				content: "";
-				position: absolute;
-				inset: 0;
-				background-color: var(--accent);
-				mask-image: url('../assets/images/site_backround_pattern.svg');
-				-webkit-mask-image: url('../assets/images/site_backround_pattern.svg');
-				mask-repeat: repeat;
-				-webkit-mask-repeat: repeat;
-				mask-size: 140px;
-				-webkit-mask-size: 140px;
-				opacity: 0.07;
-				z-index: 0;
-				pointer-events: none;
+				/* Pattern is handled by .pattern-bg class */
 			}
 
 			/* Hero Section */
@@ -133,11 +115,6 @@ import takkoMap from '../assets/images/misc/takko-on-map.png';
 				.hero-image {
 					display: none; /* Keep hiding it on very small screens if desired, or show it */
 				}
-
-				.hero-wrapper::before {
-					mask-size: 80px;
-					-webkit-mask-size: 80px;
-				}
 			}
 		</style>
 	</head>
@@ -145,7 +122,7 @@ import takkoMap from '../assets/images/misc/takko-on-map.png';
 		<Header />
 		<main>
 			<!-- Hero Section -->
-			<div class="hero-wrapper">
+			<div class="hero-wrapper pattern-bg">
 				<div class="hero-section">
 					<Image src={profileImage} alt="Cristian" class="hero-image" loading="eager" />
 					<div class="hero-content">
