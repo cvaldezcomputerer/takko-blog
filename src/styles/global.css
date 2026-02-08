@@ -212,3 +212,32 @@ hr {
     line-height: 1.7;
   }
 }
+
+/* Background Pattern Utility */
+.pattern-bg {
+  position: relative;
+  background-color: var(--background);
+}
+
+.pattern-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--accent);
+  mask-image: url('../assets/images/site_backround_pattern.svg');
+  -webkit-mask-image: url('../assets/images/site_backround_pattern.svg');
+  mask-repeat: repeat;
+  -webkit-mask-repeat: repeat;
+  mask-size: 560px;
+  -webkit-mask-size: 560px;
+  opacity: 0.05;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 480px) {
+  .pattern-bg::before {
+    mask-size: 80px;
+    -webkit-mask-size: 80px;
+  }
+}

@@ -18,12 +18,36 @@ const posts = (await getCollection('blog')).sort(
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
 		<style>
-			html body main {
+			body {
+				display: flex;
+				flex-direction: column;
+				min-height: 100vh;
+				margin: 0;
+			}
+			main {
+				width: 100%;
+				max-width: 100%;
+				margin: 0;
+				padding: 0;
+				flex: 1;
+				display: flex;
+				flex-direction: column;
+			}
+			.background-pattern {
+				width: 100%;
+				flex: 1;
+				padding: 3rem 0;
+				/* Pattern is handled by .pattern-bg class */
+			}
+
+			.content-wrapper {
 				width: 1200px;
 				max-width: calc(100% - 4rem);
 				margin: 0 auto;
-				padding-top: 1.5rem;
+				position: relative;
+				z-index: 1;
 			}
+
 			ul {
 				display: grid;
 				grid-template-columns: repeat(2, 1fr);
@@ -129,9 +153,11 @@ const posts = (await getCollection('blog')).sort(
 			}
 
 			@media (max-width: 1024px) {
-				html body main {
+				.content-wrapper {
 					width: 100%;
-					padding-top: 3rem;
+				}
+				.background-pattern {
+					padding: 2rem 0;
 				}
 				ul {
 					gap: 4rem 2rem;
@@ -149,41 +175,43 @@ const posts = (await getCollection('blog')).sort(
 	<body>
 		<Header />
 		<main>
-			<section>
-				<ul>
-					{
-						posts.map((post, index) => (
-							<li>
-								<a href={`/blog/${post.slug}/`}>
-									{post.data.heroImage ? (
-										<OptimizedImage
-											src={post.data.heroImage}
-											sizes={index === 0 ? "(max-width: 960px) 100vw, 960px" : "(max-width: 720px) 100vw, (max-width: 960px) 50vw, 480px"}
-											alt={post.data.title}
-											loading={index === 0 ? "eager" : "lazy"}
-											fetchpriority={index === 0 ? "high" : "auto"}
-										/>
-									) : (
-										<div class="placeholder-image" />
-									)}
-									<div class="post-content">
-										<h4 class="title">
-											<T>
-												<span slot="en">{post.data.title}</span>
-												<span slot="ja">{post.data.title_ja || post.data.title}</span>
-												<span slot="en_simple">{post.data.title_en_simple || post.data.title}</span>
-											</T>
-										</h4>
-										<p class="date">
-											<FormattedDate date={post.data.pubDate} />
-										</p>
-									</div>
-								</a>
-							</li>
-						))
-					}
-				</ul>
-			</section>
+			<div class="background-pattern pattern-bg">
+				<section class="content-wrapper">
+					<ul>
+						{
+							posts.map((post, index) => (
+								<li>
+									<a href={`/blog/${post.slug}/`}>
+										{post.data.heroImage ? (
+											<OptimizedImage
+												src={post.data.heroImage}
+												sizes={index === 0 ? "(max-width: 960px) 100vw, 960px" : "(max-width: 720px) 100vw, (max-width: 960px) 50vw, 480px"}
+												alt={post.data.title}
+												loading={index === 0 ? "eager" : "lazy"}
+												fetchpriority={index === 0 ? "high" : "auto"}
+											/>
+										) : (
+											<div class="placeholder-image" />
+										)}
+										<div class="post-content">
+											<h4 class="title">
+												<T>
+													<span slot="en">{post.data.title}</span>
+													<span slot="ja">{post.data.title_ja || post.data.title}</span>
+													<span slot="en_simple">{post.data.title_en_simple || post.data.title}</span>
+												</T>
+											</h4>
+											<p class="date">
+												<FormattedDate date={post.data.pubDate} />
+											</p>
+										</div>
+									</a>
+								</li>
+							))
+						}
+					</ul>
+				</section>
+			</div>
 		</main>
 		<Footer />
 	</body>
