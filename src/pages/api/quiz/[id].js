@@ -1,3 +1,5 @@
+export const prerender = false;
+
 export const GET = async ({ params, locals }) => {
     try {
       const { id } = params;
