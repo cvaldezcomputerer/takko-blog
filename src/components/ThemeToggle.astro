@@ -76,10 +76,6 @@
 				const isDark = document.documentElement.classList.contains('dark');
 				setTheme(isDark ? 'light' : 'dark');
 			});
-
-            if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-            }
 		}
 	}
 	customElements.define('theme-toggle', ThemeToggle);
