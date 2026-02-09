@@ -80,23 +80,23 @@ const posts = (await getCollection('blog')).sort(
 				text-align: left;
 			}
 			
-			ul li:first-child :global(img),
-			ul li:first-child .placeholder-image {
-				width: 100%;
-				aspect-ratio: 16 / 9;
-				margin-bottom: 0;
-			}
-
 			ul li :global(img),
 			ul li .placeholder-image {
-				margin-bottom: 1.75rem;
+				margin: 0 auto 1.75rem auto;
 				border-radius: 12px;
 				aspect-ratio: 16 / 10;
 				background-color: var(--secondary);
 				display: block;
 				object-fit: cover;
-				width: 100%;
+				width: 92%;
 				transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), outline 0.3s ease;
+			}
+
+			ul li:first-child :global(img),
+			ul li:first-child .placeholder-image {
+				width: 100%;
+				aspect-ratio: 16 / 9;
+				margin: 0;
 			}
 
 			ul li a {
@@ -115,6 +115,13 @@ const posts = (await getCollection('blog')).sort(
 			.post-content {
 				display: flex;
 				flex-direction: column;
+				width: 92%;
+				margin: 0 auto;
+			}
+
+			ul li:first-child .post-content {
+				width: 100%;
+				margin: 0;
 			}
 
 			.title {
