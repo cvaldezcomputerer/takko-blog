@@ -1,38 +1,140 @@
 ---
+import OptimizedImage from './OptimizedImage.astro';
+import Logo from './Logo.astro';
+
+interface Props {
+  src1: string | ImageMetadata;
+  alt1?: string;
+  src2: string | ImageMetadata;
+  alt2?: string;
+}
+
+const { src1, alt1, src2, alt2 } = Astro.props;
 ---
-<div class="diptych">
-  <slot />
+
+<div class="two-images-container">
+  <div class="photo-card left">
+    <OptimizedImage src={src1} alt={alt1 || ""} sizes="(max-width: 720px) 45vw, 350px" />
+  </div>
+
+  <div class="logo-divider">
+    <div class="logo-circle">
+      <Logo />
+    </div>
+  </div>
+
+  <div class="photo-card right">
+    <OptimizedImage src={src2} alt={alt2 || ""} sizes="(max-width: 720px) 45vw, 350px" />
+  </div>
 </div>
 
 <style>
-  .diptych {
-    display: grid;
-    grid-template-columns: 1fr; 
-    gap: 1.5rem;
-    margin: 2rem 0;
+  .two-images-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 3rem 0;
+    position: relative;
     width: 100%;
+    /* Ensure it fits in the space of one large image */
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
-  .diptych :global(img),
-  .diptych :global(figure) {
-    margin: 0;
+  .photo-card {
+    flex: 1;
+    background: white;
+    padding: 10px 10px 25px 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border: 1px solid rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, z-index 0s;
+    z-index: 1;
+    min-width: 0;
+  }
+
+  :global(.dark) .photo-card {
+    background: #e5e5e5; /* Light gray for the card in dark mode too, to keep the photo feel */
+    border-color: rgba(0,0,0,0.1);
+  }
+
+  /* Target the img inside OptimizedImage */
+  .photo-card :global(picture img) {
     width: 100%;
-    height: auto;
-    object-fit: cover; 
-    border-radius: 8px; 
-    align-self: start; 
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 0 !important; /* Sharp photo edges */
+    display: block;
   }
 
-  .diptych :global(figcaption) {
-    font-size: 0.9em;
-    color: var(--gray);
-    margin-top: 0.5rem;
-    text-align: center;
+  .photo-card.left {
+    transform: rotate(-3deg) translateX(5%);
   }
 
-  @media (min-width: 768px) {
-    .diptych {
-      grid-template-columns: 1fr 1fr;
+  .photo-card.right {
+    transform: rotate(3deg) translateX(-5%);
+  }
+
+  .photo-card:hover {
+    transform: rotate(0deg) scale(1.05);
+    z-index: 20;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  }
+
+  .logo-divider {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 15;
+    pointer-events: none;
+  }
+
+  .logo-circle {
+    background-color: var(--background);
+    color: var(--accent);
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    border: 3px solid var(--secondary);
+    padding: 8px;
+    pointer-events: auto; /* Allow hover on the logo itself */
+  }
+
+  :global(.dark) .logo-circle {
+    background-color: var(--background);
+    border-color: var(--secondary);
+  }
+
+  @media (max-width: 600px) {
+    .two-images-container {
+      gap: 0.25rem;
+      margin: 2rem 0;
+    }
+    
+    .photo-card {
+      padding: 6px 6px 18px 6px;
+    }
+
+    .logo-circle {
+      width: 42px;
+      height: 42px;
+      padding: 6px;
+      border-width: 2px;
+    }
+
+    .photo-card.left {
+      transform: rotate(-2deg) translateX(2%);
+    }
+
+    .photo-card.right {
+      transform: rotate(2deg) translateX(-2%);
     }
   }
 </style>
