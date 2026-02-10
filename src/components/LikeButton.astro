@@ -53,8 +53,6 @@ const { slug } = Astro.props;
       const catIcon = this.querySelector('.cat-icon');
       const balloonWrapper = this.querySelector('.balloon-wrapper');
 
-      const hue = Math.floor(Math.random() * 360);
-      if (heartPath) heartPath.style.fill = `hsl(${hue}, 85%, 90%)`;
       
       this.hasLiked = false;
       this.balloonClicks = 0;
@@ -245,6 +243,7 @@ const { slug } = Astro.props;
     stroke: #888;
     stroke-width: 1px;
     transition: fill 0.3s ease;
+    fill: hsl(var(--theme-hue, 0), 85%, 90%);
   }
   .balloon-string {
     stroke: #888;

@@ -15,6 +15,10 @@ const { title, title_ja, title_en_simple, description, pubDate, updatedDate, her
 <html lang="en">
 	<head>
 		<BaseHead title={title} description={description} />
+		<script is:inline>
+			const hue = Math.floor(Math.random() * 360);
+			document.documentElement.style.setProperty('--theme-hue', hue.toString());
+		</script>
 		<style>
 			main {
 				width: calc(100% - 2em);
