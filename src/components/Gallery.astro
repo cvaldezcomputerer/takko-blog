@@ -61,7 +61,7 @@ import OptimizedImage from './OptimizedImage.astro';
     width: 140px;
     height: 35px;
     
-    background-color: rgba(230, 230, 230, 0.5);
+    background-color: hsla(var(--theme-hue, 45), 85%, 90%, 0.8);
     border-left: 2px dashed rgba(0,0,0,0.1);
     border-right: 2px dashed rgba(0,0,0,0.1);
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -70,7 +70,7 @@ import OptimizedImage from './OptimizedImage.astro';
   }
 
   :global(.dark) .scrapbook-container::before {
-    background-color: rgba(240, 230, 140, 0.15);
+    background-color: hsla(var(--theme-hue, 45), 85%, 90%, 0.3);
   }
 
   .photo-card,
