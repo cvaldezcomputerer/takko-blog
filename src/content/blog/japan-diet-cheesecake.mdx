@@ -4,7 +4,7 @@ title_ja: "日本のダイエットチーズケーキ"
 title_en_simple: "Easy Japan Cake"
 description: "A low-calorie cheesecake hack that went viral."
 pubDate: "2026-02-10"
-heroImage: "../../assets/images/blog/japan-diet-cheesecake/cheesecake-ingredients.webp"
+heroImage: "../../assets/images/blog/japan-diet-cheesecake/cheesecake-showcase-2.webp"
 ---
 
 import T from "../../components/T.astro";
@@ -13,6 +13,7 @@ import Explain from "../../components/Explain.astro";
 import Gallery from "../../components/Gallery.astro";
 import imgAmerican1 from "../../assets/images/blog/japan-diet-cheesecake/sweet-version1.png";
 import imgAmerican2 from "../../assets/images/blog/japan-diet-cheesecake/sweet-version2.png";
+import Quiz from "../../components/Quiz.astro";
 
 <T>
   <span slot="en">Today I want to tell you about a low-calorie cheesecake <Explain meaning="a clever tip or technique">hack</Explain> that apparently originated in Japan. I’m not sure how popular it actually was in Japan, but it spread to the West and became a <Explain meaning="shared very quickly on the internet">viral trend</Explain> recently.</span>
@@ -40,6 +41,20 @@ import imgAmerican2 from "../../assets/images/blog/japan-diet-cheesecake/sweet-v
     </T>
   </figcaption>
 </figure>
+
+<Quiz
+  id="cheesecake-quiz-1"
+  question={{
+    en: "Which flavor would you try?",
+    ja: "どのフレーバーを試してみたいですか？",
+    en_simple: "Which one do you like?"
+  }}
+      options={[
+      { en: "original", ja: "オリジナル", en_simple: "White" },
+      { en: "triple nuts", ja: "トリプルナッツ", en_simple: "Brown" },
+      { en: "honey butter", ja: "ハニーバター", en_simple: "Blue" },
+      { en: "baske cheesecake", ja: "バスクチーズケーキ", en_simple: "Yellow" }
+    ]}/>
 
 <figure>
   ![Cheesecake ingredients](../../assets/images/blog/japan-diet-cheesecake/cheesecake-ingredients.webp)
