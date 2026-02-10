@@ -201,14 +201,12 @@ hr {
 }
 
 /* Japanese Typography Improvements */
-[data-lang-content="ja"] {
+article p:lang(ja) {
   line-height: 1.8;
-  font-size: 1em;
 }
 
 @media (max-width: 800px) {
-  [data-lang-content="ja"] {
-    font-size: 0.95em;
+  article p:lang(ja) {
     line-height: 1.7;
   }
 }
