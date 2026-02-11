@@ -92,9 +92,9 @@ const { title, title_ja, title_en_simple, description, pubDate, updatedDate, her
 					<div class="title">
 						<h1>
 							<T>
-								<span slot="en">{title}</span>
-								<span slot="ja">{title_ja || title}</span>
-								<span slot="en_simple">{title_en_simple || title}</span>
+								<span slot="en" lang="en">{title}</span>
+								<span slot="ja" lang="ja" set:html={title_ja || title}></span>
+								<span slot="en_simple" lang="en">{title_en_simple || title}</span>
 							</T>
 						</h1>
 						<div class="date">
