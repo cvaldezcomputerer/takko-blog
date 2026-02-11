@@ -139,6 +139,15 @@ const posts = (await getCollection('blog')).sort(
 				margin-bottom: 1.25rem;
 			}
 
+			/* Better line-height for Japanese titles */
+			.title:has([lang="ja"]) {
+				line-height: 1.4;
+			}
+
+			ul li:first-child .title:has([lang="ja"]) {
+				line-height: 1.35;
+			}
+
 			.date {
 				margin: 0;
 				color: rgb(var(--gray));
@@ -203,9 +212,9 @@ const posts = (await getCollection('blog')).sort(
 										<div class="post-content">
 											<h4 class="title">
 												<T>
-													<span slot="en">{post.data.title}</span>
-													<span slot="ja">{post.data.title_ja || post.data.title}</span>
-													<span slot="en_simple">{post.data.title_en_simple || post.data.title}</span>
+												<span slot="en" lang="en">{post.data.title}</span>
+												<span slot="ja" lang="ja" set:html={post.data.title_ja || post.data.title}></span>
+												<span slot="en_simple" lang="en">{post.data.title_en_simple || post.data.title}</span>
 												</T>
 											</h4>
 											<p class="date">
