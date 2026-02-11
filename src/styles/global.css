@@ -211,6 +211,29 @@ article p:lang(ja) {
   }
 }
 
+/* Japanese Title Line Breaking */
+[lang="ja"] {
+  /* Prevents awkward breaks in Japanese text */
+  word-break: normal;
+  /* Stricter line breaking rules for CJK languages */
+  line-break: strict;
+  /* Allow wrapping of long words if needed */
+  overflow-wrap: break-word;
+}
+
+h1[lang="ja"],
+h2[lang="ja"],
+h3[lang="ja"],
+h4[lang="ja"] {
+  /* Better line height for multi-line Japanese titles */
+  line-height: 1.4;
+}
+
+/* Allow manual break hints with wbr tags */
+wbr {
+  display: inline;
+}
+
 /* Background Pattern Utility */
 .pattern-bg {
   position: relative;
