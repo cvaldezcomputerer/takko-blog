@@ -53,6 +53,8 @@ const { title, description, image = '/favicon_512.png' } = Astro.props;
 
 <meta property="og:type" content="website" />
 <meta property="og:url" content={Astro.url} />
+<meta property="og:locale" content="en_US" />
+<meta property="og:locale:alternate" content="ja_JP" />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={new URL(image, Astro.url)} />
@@ -102,7 +104,7 @@ const { title, description, image = '/favicon_512.png' } = Astro.props;
       "url": Astro.site,
       "name": SITE_TITLE,
       "description": SITE_DESCRIPTION,
-      "inLanguage": "en",
+			"inLanguage": ["en", "ja"],
       "logo": new URL('/favicon_512.png', Astro.site)
     },
     {
