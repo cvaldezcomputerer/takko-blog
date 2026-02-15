@@ -30,8 +30,8 @@ const { class: className, ...props } = Astro.props;
 <style>
   .takko-logo {
     display: block;
-    width: 1em;
-    height: 1em;
+    width: var(--logo-size, 1em);
+    height: var(--logo-size, 1em);
   }
 
   .eye-open,
