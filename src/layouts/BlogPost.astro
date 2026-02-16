@@ -79,6 +79,57 @@ const { title, title_ja, title_en_simple, description, pubDate, updatedDate, her
 				font-weight: 700 ;
 				line-height: 1.5;
 			}
+			.prose[data-blog-content] :global(img:not([data-lightbox="off"])) {
+				cursor: zoom-in;
+			}
+			.lightbox-dialog {
+				border: 0;
+				padding: 0;
+				margin: auto;
+				max-width: min(88vw, 1000px);
+				max-height: 88vh;
+				background: transparent;
+			}
+			.lightbox-dialog::backdrop {
+				background: rgba(0, 0, 0, 0.75);
+				backdrop-filter: blur(2px);
+			}
+			.lightbox-content {
+				position: relative;
+				background: rgb(var(--gray-dark));
+				border-radius: 12px;
+				padding: 1rem;
+			}
+			.lightbox-dialog img {
+				display: block;
+				max-width: min(80vw, 900px);
+				max-height: 68vh;
+				width: auto;
+				height: auto;
+				border-radius: 8px;
+				box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+			}
+			.lightbox-close {
+				position: absolute;
+				top: 0.5rem;
+				right: 0.5rem;
+				width: 2.25rem;
+				height: 2.25rem;
+				border: 1px solid rgba(0, 0, 0, 0.1);
+				border-radius: 999px;
+				background: rgba(255, 255, 255, 0.96);
+				color: #222;
+				font-size: 1.15rem;
+				line-height: 2.2rem;
+				text-align: center;
+				cursor: pointer;
+				box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+				transition: background-color 120ms ease, transform 120ms ease;
+			}
+			.lightbox-close:hover {
+				background: #fff;
+				transform: scale(1.04);
+			}
 		</style>
 	</head>
 
@@ -121,12 +172,54 @@ const { title, title_ja, title_en_simple, description, pubDate, updatedDate, her
 					  style={heroImageFit && `object-fit: ${heroImageFit}; background-color: ${heroImageFit === 'contain' ? 'black' : 'transparent'}`} />
 					</div>
 				}
-				<div class="prose">
+				<div class="prose" data-blog-content>
 					<slot />
 				</div>
 			</article>
 			{slug && <LikeButton slug={slug} />}
 		</main>
+		<dialog class="lightbox-dialog" id="post-image-lightbox" aria-label="Expanded image">
+			<div class="lightbox-content">
+				<button class="lightbox-close" type="button" aria-label="Close image viewer">&times;</button>
+				<img alt="" />
+			</div>
+		</dialog>
 		<Footer />
+		<script is:inline>
+			const content = document.querySelector('.prose[data-blog-content]');
+			const dialog = document.getElementById('post-image-lightbox');
+			const dialogImg = dialog?.querySelector('img');
+			const dialogCloseBtn = dialog?.querySelector('.lightbox-close');
+
+			if (content && dialog && dialogImg) {
+				const excludedSelector = [
+					'a',
+					'[data-no-lightbox]',
+					'[data-lightbox="off"]',
+					'.no-lightbox',
+					'.scrapbook-container',
+				].join(',');
+
+				content.addEventListener('click', (event) => {
+					const target = event.target;
+					if (!(target instanceof HTMLImageElement)) return;
+					if (target.closest(excludedSelector)) return;
+
+					dialogImg.src = target.currentSrc || target.src;
+					dialogImg.alt = target.alt || '';
+					dialog.showModal();
+				});
+
+				dialog.addEventListener('click', (event) => {
+					if (event.target === dialog) {
+						dialog.close();
+					}
+				});
+
+				dialogCloseBtn?.addEventListener('click', () => {
+					dialog.close();
+				});
+			}
+		</script>
 	</body>
 </html>
