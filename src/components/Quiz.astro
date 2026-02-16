@@ -1,5 +1,6 @@
 ---
 import T from './T.astro';
+import Loader from './Loader.astro';
 
 interface Translation {
 	en: string;
@@ -50,7 +51,10 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 		</div>
 		
 		<div class="quiz-footer">
-			<span class="total-votes">Loading...</span>
+			<span class="quiz-loading" data-loading-indicator>
+				<Loader size={14} stepMs={420} />
+			</span>
+			<span class="total-votes" hidden>Loading...</span>
 		</div>
 	</div>
 </quiz-component>
@@ -60,6 +64,7 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 		private id: string;
 		private buttons: NodeListOf<HTMLButtonElement>;
 		private meta: HTMLElement | null;
+		private loadingIndicator: HTMLElement | null;
 		private hasVoted: boolean = false;
 		private currentVotes: Record<string, number> = {};
 		private correctIndex: number = -1;
@@ -69,6 +74,7 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 			this.id = this.dataset.id || '';
 			this.buttons = this.querySelectorAll('.quiz-option');
 			this.meta = this.querySelector('.total-votes');
+			this.loadingIndicator = this.querySelector('[data-loading-indicator]');
 			this.correctIndex = this.dataset.correctIndex !== undefined ? parseInt(this.dataset.correctIndex) : -1;
 		}
 
@@ -89,13 +95,22 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 			}
 		}
 
+		setLoading(loading: boolean) {
+			if (this.loadingIndicator) this.loadingIndicator.hidden = !loading;
+			if (this.meta) this.meta.hidden = loading;
+		}
+
 		async fetchData() {
+			this.setLoading(true);
 			try {
 				const res = await fetch(`/api/quiz/${this.id}`);
 				const data = await res.json();
 				this.updateUI(data);
 			} catch (e) {
 				console.error('Failed to load quiz data', e);
+				if (this.meta) this.meta.textContent = 'Failed to load';
+			} finally {
+				this.setLoading(false);
 			}
 		}
 
@@ -106,6 +121,7 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 			const index = parseInt(btn.dataset.index || '0');
 
 			this.buttons.forEach(b => b.disabled = true);
+			this.setLoading(true);
 
 			try {
 				const res = await fetch(`/api/quiz/${this.id}`, {
@@ -127,6 +143,8 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 			} catch (err) {
 				console.error('Vote failed', err);
 				this.buttons.forEach(b => b.disabled = false); 
+			} finally {
+				this.setLoading(false);
 			}
 		}
 
@@ -404,9 +422,29 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 		margin-top: 1.5rem;
 		font-size: 0.85rem;
 		color: rgb(var(--gray));
-		text-align: right;
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+		gap: 0.45rem;
 		font-family: "Courier New", Courier, monospace;
 		border-top: 1px dashed #ccc;
 		padding-top: 0.5rem;
+		min-height: 1.6rem;
+	}
+
+	.quiz-loading {
+		display: inline-flex;
+	}
+
+	.quiz-loading[hidden] {
+		display: none;
+	}
+
+	.total-votes[hidden] {
+		display: none;
+	}
+
+	.quiz-loading :global(.garlic-loader) {
+		color: rgb(var(--gray));
 	}
 </style>
