@@ -1,0 +1,171 @@
+---
+import Logo from './Logo.astro';
+
+const {
+  size = 26,
+  stepMs = 340,
+  class: className
+} = Astro.props;
+
+const unitTypes = ['garlic', 'garlic', 'logo', 'garlic', 'garlic'];
+const garlicSymbolId = `garlic-shape-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<div
+  class:list={['garlic-loader', className]}
+  style={`--loader-size: ${size}px;`}
+  data-step-ms={stepMs}
+  role="status"
+  aria-label="Loading"
+>
+  <span class="sr-only">Loading</span>
+  <svg class="garlic-symbol-defs" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id={garlicSymbolId} viewBox="0 0 732 658">
+        <path d="M659.312 382.651C630.719 310.177 571.625 275.516 518.25 245.581C461.062 212.495 413.406 184.135 403.875 116.388C403.875 110.086 401.969 103.784 401.969 97.4818C403.875 95.9062 403.875 94.3307 403.875 92.7552C403.875 83.3021 396.25 77 384.812 77H346.687C335.25 77 327.625 83.3021 327.625 92.7552C327.625 94.3307 327.625 94.3307 327.625 95.9063C327.625 102.208 327.625 108.51 327.625 114.813C320 184.135 270.437 212.495 213.25 245.581C159.875 275.516 100.781 310.177 72.1874 382.651C43.5936 455.125 79.8124 511.844 123.656 541.779C150.344 559.109 182.75 568.563 215.156 568.563C236.125 568.563 257.094 563.836 278.062 555.958C304.75 571.714 333.344 581.167 365.75 581.167C398.156 581.167 426.75 571.714 453.437 555.958C472.5 563.836 493.469 568.563 516.344 568.563C548.75 568.563 581.156 559.109 607.844 541.779C651.687 513.419 687.906 456.701 659.312 382.651ZM148.437 516.57C114.125 494.513 85.5311 450.398 108.406 392.104C133.187 330.659 182.75 300.724 234.219 270.789C247.562 262.911 260.906 255.034 274.25 245.581C266.625 256.609 259 269.214 251.375 280.242C228.5 314.904 207.531 344.839 203.719 374.773C192.281 437.794 207.531 492.938 247.562 532.326C215.156 541.779 177.031 535.477 148.437 516.57ZM449.625 513.419C447.719 516.57 443.906 518.146 442 521.297C438.187 522.872 436.281 524.448 434.375 527.599C413.406 541.779 390.531 549.656 365.75 549.656C340.969 549.656 318.094 541.779 297.125 529.175C295.219 526.023 291.406 524.448 289.5 522.872C285.687 521.297 283.781 518.146 281.875 514.995C247.562 483.484 234.219 433.068 243.75 379.5C247.562 355.867 266.625 327.508 287.594 295.997C318.094 250.307 354.312 195.164 363.844 128.992V127.417C363.844 124.266 365.75 119.539 365.75 114.813C365.75 116.388 365.75 119.539 365.75 121.115C365.75 124.266 365.75 127.417 367.656 130.568C379.094 195.164 413.406 250.307 443.906 294.422C464.875 327.508 483.937 354.292 487.75 377.924C497.281 433.068 483.937 481.909 449.625 513.419ZM583.062 516.57C552.562 535.477 516.344 541.779 482.031 532.326C520.156 492.938 535.406 437.794 525.875 374.773C520.156 346.414 501.094 314.904 478.219 280.242C470.594 269.214 462.969 258.185 457.25 247.156C470.594 255.034 483.937 262.911 497.281 270.789C550.656 300.724 600.219 329.083 623.094 392.104C645.969 450.398 617.375 494.513 583.062 516.57Z" />
+      </symbol>
+    </defs>
+  </svg>
+  {unitTypes.map((unitType) => (
+    <div class="unit" data-unit>
+      <span class="shape garlic" aria-hidden="true">
+        {
+          unitType === 'logo' ? (
+            <Logo class="loader-logo" style="--logo-size: var(--loader-size);" />
+          ) : (
+            <svg class="loader-garlic" viewBox="0 0 732 658" xmlns="http://www.w3.org/2000/svg">
+              <use href={`#${garlicSymbolId}`}></use>
+            </svg>
+          )
+        }
+      </span>
+      <span class="shape dot" aria-hidden="true"></span>
+    </div>
+  ))}
+</div>
+
+<script is:inline>
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!prefersReducedMotion) {
+    document.querySelectorAll('.garlic-loader[data-step-ms]').forEach((loader) => {
+      if (loader.dataset.loaderInit === 'true') return;
+      loader.dataset.loaderInit = 'true';
+
+      const units = Array.from(loader.querySelectorAll('[data-unit]'));
+      const stepMs = Number(loader.dataset.stepMs) || 340;
+      let phase = 'toDots';
+      let index = 0;
+
+      const tick = () => {
+        const target = units[index];
+        if (!target) return;
+
+        target.classList.toggle('is-dot', phase === 'toDots');
+
+        if (phase === 'toDots') {
+          index += 1;
+          if (index >= units.length) {
+            phase = 'toGarlic';
+            index = units.length - 1;
+          }
+          return;
+        }
+
+        index -= 1;
+        if (index < 0) {
+          phase = 'toDots';
+          index = 0;
+        }
+      };
+
+      const timer = window.setInterval(tick, stepMs);
+      loader.addEventListener('astro:unmount', () => window.clearInterval(timer), { once: true });
+    });
+  }
+</script>
+
+<style>
+  .garlic-loader {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--loader-size) * 0.22);
+    color: var(--text);
+  }
+
+  .garlic-symbol-defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .unit {
+    position: relative;
+    width: var(--loader-size);
+    height: var(--loader-size);
+  }
+
+  .shape {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    transition: opacity 180ms ease, transform 220ms ease;
+    transform-origin: center;
+  }
+
+  .garlic {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .dot {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transform: scale(0.4);
+  }
+
+  .dot::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(var(--loader-size) * 0.42);
+    height: calc(var(--loader-size) * 0.42);
+    border-radius: 999px;
+    background: currentColor;
+  }
+
+  .unit.is-dot .garlic {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+
+  .unit.is-dot .dot {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .loader-garlic {
+    display: block;
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+  }
+
+  .loader-logo {
+    display: block;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .shape {
+      transition: none;
+    }
+  }
+</style>
