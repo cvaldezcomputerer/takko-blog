@@ -3,6 +3,7 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import T from '../components/T.astro';
+import Loader from '../components/Loader.astro';
 import { SITE_TITLE } from '../consts';
 ---
 
@@ -90,8 +91,23 @@ import { SITE_TITLE } from '../consts';
 				cursor: pointer;
 				transition: all 0.2s ease;
 				width: fit-content;
-				display: block;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				gap: 0.45rem;
 				margin: 0 auto;
+			}
+
+			.submit-label {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.submit-loader {
+				display: none;
+				align-items: center;
+				justify-content: center;
 			}
 			
 			.submit-button:hover {
@@ -105,6 +121,18 @@ import { SITE_TITLE } from '../consts';
 				cursor: not-allowed;
 				transform: none;
 				box-shadow: none;
+			}
+
+			.submit-button.is-loading .submit-loader {
+				display: inline-flex;
+			}
+
+			.submit-button.is-loading .submit-label {
+				opacity: 0.92;
+			}
+
+			.submit-loader :global(.garlic-loader) {
+				color: white;
 			}
 			
 			.form-message {
@@ -261,11 +289,16 @@ import { SITE_TITLE } from '../consts';
 					</div>
 					
 					<button type="submit" class="submit-button" id="submitBtn">
-						<T fluid>
-							<span slot="en">Send Message</span>
-							<span slot="ja">メッセージを送信</span>
-							<span slot="en_simple">SEND</span>
-						</T>
+						<span class="submit-label">
+							<T fluid>
+								<span slot="en">Send Message</span>
+								<span slot="ja">メッセージを送信</span>
+								<span slot="en_simple">SEND</span>
+							</T>
+						</span>
+						<span class="submit-loader" aria-hidden="true">
+							<Loader size={12} stepMs={420} />
+						</span>
 					</button>
 				</form>
 			</div>
@@ -369,6 +402,7 @@ import { SITE_TITLE } from '../consts';
 					
 					submitBtn.disabled = loading;
 					submitBtn.setAttribute('aria-busy', String(loading));
+					submitBtn.classList.toggle('is-loading', loading);
 				}
 				
 				function isValidEmail(email) {
