@@ -15,6 +15,9 @@
   - Scroll behavior that hides header
 - `src/components/FloatingIsland.astro`
   - Appears after scroll, includes language controls and settings cog
+- `src/components/LanguageSelector.astro`
+  - Handles language switching + persisted language preference
+  - Emits `takko:language-changed` for UI that mirrors language-specific labels
 - `src/components/SettingsCog.astro`
   - Settings UI + toggle wiring (no panel orchestration ownership)
 - `src/components/ThemeToggle.astro`
@@ -27,6 +30,7 @@
 - `public/scripts/settings-panel-controller.js`
   - Centralized open/close lifecycle for shared settings sheet/backdrop
   - Listens to `takko:settings-open` and `takko:settings-close`
+  - Ignores clicks inside `.language-controls` so settings can stay open while switching language
 
 ## Content / Pages
 - Blog listing: `src/pages/blog/index.astro`
@@ -46,6 +50,8 @@
   - `showDefinitionHighlights` controls `Explain.astro` visuals/tooltip behavior
 - Island setting:
   - `islandVisibility` controls root `html.island-hidden` class
+- Text size setting:
+  - `textSize` controls root classes `html.text-size-sm|md|lg` and global font size vars
 
 ## Notes For Edits
 - Changes to global preferences usually touch:
