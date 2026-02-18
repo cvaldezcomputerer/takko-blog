@@ -8,7 +8,7 @@ import FormattedDate from '../components/content/FormattedDate.astro';
 import OptimizedImage from '../components/media/OptimizedImage.astro';
 import T from '../components/i18n/T.astro';
 
-const posts = (await getCollection('blog')).sort(
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 ---
