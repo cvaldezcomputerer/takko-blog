@@ -272,8 +272,8 @@ import SettingsCog from '../settings/SettingsCog.astro';
 		}
 	}
 
-	let cleanupScroll;
-	let cleanupIdleSleep;
+	let cleanupScroll: (() => void) | null = null;
+	let cleanupIdleSleep: (() => void) | null = null;
 
 	function initializeScrollEffect() {
 		if (cleanupScroll) {
@@ -281,7 +281,7 @@ import SettingsCog from '../settings/SettingsCog.astro';
 			cleanupScroll = null;
 		}
 
-		const header = document.querySelector('header');
+		const header = document.querySelector<HTMLElement>('header');
 		if (!header) return;
 		
 		function handleScroll() {
@@ -305,8 +305,8 @@ import SettingsCog from '../settings/SettingsCog.astro';
 			cleanupIdleSleep = null;
 		}
 
-		const header = document.querySelector('header');
-		const logoLink = document.querySelector('.logo-link');
+		const header = document.querySelector<HTMLElement>('header');
+		const logoLink = document.querySelector<HTMLElement>('.logo-link');
 		if (!logoLink || !header) return;
 
 		const isLikelyMobile = window.matchMedia('(hover: none), (pointer: coarse)').matches;
@@ -315,8 +315,8 @@ import SettingsCog from '../settings/SettingsCog.astro';
 		const idleDelayMs = 30000;
 		const blinkDurationMs = 520;
 		const minPointerMoveResetMs = 250;
-		let sleepTimer;
-		let blinkTimer;
+		let sleepTimer: number | undefined;
+		let blinkTimer: number | undefined;
 		let lastPointerMoveResetAt = 0;
 		let isPausedForScroll = false;
 		const interactionEvents = ['pointermove', 'pointerdown', 'keydown', 'wheel', 'touchstart', 'scroll'];
@@ -339,7 +339,7 @@ import SettingsCog from '../settings/SettingsCog.astro';
 			}, blinkDurationMs);
 		}
 
-		function wakeAndResetTimer(event) {
+		function wakeAndResetTimer(event?: Event) {
 			if (header.classList.contains('is-scrolled')) {
 				pauseSleepEffect();
 				return;
