@@ -13,12 +13,12 @@ Use this folder as quick onboarding context for new Codex sessions.
 
 ## Core Docs In This Folder
 - `./PROJECT_MAP.md`: architecture, key files, where features live
-- `./SETTINGS_ARCHITECTURE.md`: settings state model, storage keys, and browser-only caveats
+- `./SETTINGS_ARCHITECTURE.md`: settings state model, storage keys, panel-controller events, and browser-only caveats
 
 ## Current Product Context
 - Site focus: blog content for English learners (English/Japanese/Simple English via `T.astro`)
 - UI has two nav states:
   - header at top
   - floating island on scroll
-- Settings UI lives in `SettingsCog.astro` and is rendered in both header and island contexts
-
+- Settings UI trigger lives in `SettingsCog.astro` and is rendered in both header and island contexts
+- Shared panel lifecycle is managed centrally by `public/scripts/settings-panel-controller.js`

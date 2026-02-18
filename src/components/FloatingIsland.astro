@@ -331,6 +331,12 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 			} else {
 				island.classList.remove('visible');
 				ghosts.forEach(g => g.classList.remove('visible'));
+
+				// If settings was opened from the island, close it when the island auto-hides.
+				const islandSettingsWrapper = island.querySelector('.settings-cog-wrapper.is-open');
+				if (islandSettingsWrapper) {
+					document.dispatchEvent(new CustomEvent('takko:settings-close'));
+				}
 			}
 		}
 		
