@@ -65,24 +65,17 @@ const { title, description, image = '/favicon_512.png' } = Astro.props;
 
 <meta name="theme-color" content="#FAFAFA" />
 
+<script is:inline src="/scripts/settings-state.js"></script>
 <script is:inline>
 	function applyTheme() {
+		const settings = window.TakkoSettings;
+		if (!settings) return;
+
 		// Prevent transition animations during theme application
 		const css = document.createElement('style');
 		css.appendChild(document.createTextNode('* { transition: none !important; }'));
 		document.head.appendChild(css);
-
-		const theme = typeof localStorage !== 'undefined' && localStorage.getItem('theme') 
-			? localStorage.getItem('theme') 
-			: (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-		
-		const isDark = theme === 'dark';
-		document.documentElement.classList.toggle('dark', isDark);
-		
-		const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-		if (metaThemeColor) {
-			metaThemeColor.setAttribute('content', isDark ? '#212121' : '#FAFAFA');
-		}
+		settings.applyAll();
 
 		// Force a reflow/repaint before re-enabling transitions
 		window.getComputedStyle(document.documentElement).opacity;
