@@ -23,10 +23,6 @@ const { class: className, size = '44px' } = Astro.props;
             <span class="setting-switch" aria-hidden="true"><span class="setting-switch-knob"></span></span>
           </span>
         </button>
-        <button type="button" class="setting-item">
-          <span class="setting-label">Hide Images</span>
-          <span class="setting-value">Off</span>
-        </button>
         <button type="button" class="setting-item" data-setting-toggle="show-definition-highlights">
           <span class="setting-label">Show Definition Highlights</span>
           <span class="setting-control">
@@ -85,7 +81,7 @@ const { class: className, size = '44px' } = Astro.props;
     border-color: var(--accent);
   }
 
-  .settings-cog-wrapper[open] .settings-cog {
+  .settings-cog-wrapper.is-open .settings-cog {
     transform: rotate(20deg);
   }
 
@@ -100,19 +96,41 @@ const { class: className, size = '44px' } = Astro.props;
   }
 
   .settings-panel {
-    position: absolute;
-    right: 0;
-    top: calc(100% + 0.5rem);
-    width: clamp(380px, 46vw, 560px);
-    max-width: calc(100vw - 1rem);
+    display: none;
+  }
+
+  .settings-panel.settings-sheet {
+    position: fixed;
+    left: 50%;
+    top: 52%;
+    transform: translate(-50%, -50%);
+    width: min(92vw, 560px);
+    max-height: 80vh;
+    overflow: auto;
     background: var(--secondary);
     border: 2px solid var(--accent);
     border-radius: 14px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 16px 50px rgba(0, 0, 0, 0.25);
     padding: 0.75rem;
-    display: grid;
     gap: 0.75rem;
-    z-index: 25;
+    z-index: 350;
+  }
+
+  .settings-panel.settings-sheet.is-open {
+    display: grid;
+  }
+
+  .settings-sheet-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.22);
+    backdrop-filter: blur(1px);
+    z-index: 340;
+    display: none;
+  }
+
+  .settings-sheet-backdrop.is-open {
+    display: block;
   }
 
   .settings-title {
@@ -220,8 +238,8 @@ const { class: className, size = '44px' } = Astro.props;
   }
 
   @media (max-width: 720px) {
-    .settings-panel {
-      width: min(92vw, 320px);
+    .settings-panel.settings-sheet {
+      width: min(92vw, 340px);
     }
 
     .settings-groups {
@@ -288,59 +306,10 @@ const { class: className, size = '44px' } = Astro.props;
     applyToggleVisual('island-visibility', isVisible);
   }
 
-  function fitSettingsPanelToViewport(wrapper) {
-    const panel = wrapper.querySelector('.settings-panel');
-    if (!panel) return;
-
-    panel.style.transform = '';
-    const viewportPadding = 8;
-    const rect = panel.getBoundingClientRect();
-    const minLeft = viewportPadding;
-    const maxRight = window.innerWidth - viewportPadding;
-
-    if (rect.left < minLeft) {
-      panel.style.transform = `translateX(${minLeft - rect.left}px)`;
-      return;
-    }
-
-    if (rect.right > maxRight) {
-      panel.style.transform = `translateX(-${rect.right - maxRight}px)`;
-    }
-  }
-
-  function closeAllSettingsPanels() {
-    const wrappers = document.querySelectorAll('.settings-cog-wrapper[open]');
-    for (const wrapper of wrappers) {
-      wrapper.open = false;
-      const panel = wrapper.querySelector('.settings-panel');
-      if (panel) panel.style.transform = '';
-    }
-  }
-
   function initializeSettingsCogPanels() {
     applyShowDefinitionHighlightsSetting();
     applyThemeSetting();
     applyIslandVisibilitySetting();
-
-    const wrappers = document.querySelectorAll('.settings-cog-wrapper');
-    for (const wrapper of wrappers) {
-      if (!wrapper.dataset.panelBound) {
-        wrapper.dataset.panelBound = 'true';
-      } else {
-        continue;
-      }
-
-      wrapper.addEventListener('toggle', () => {
-        const panel = wrapper.querySelector('.settings-panel');
-        if (!panel) return;
-
-        if (wrapper.open) {
-          requestAnimationFrame(() => fitSettingsPanelToViewport(wrapper));
-        } else {
-          panel.style.transform = '';
-        }
-      });
-    }
 
     const toggleButtons = document.querySelectorAll('[data-setting-toggle="show-definition-highlights"]');
     for (const button of toggleButtons) {
@@ -379,22 +348,13 @@ const { class: className, size = '44px' } = Astro.props;
         applyIslandVisibilitySetting();
 
         if (!nextVisibility && toggledFromIsland) {
-          const headerPanel = document.querySelector('header .settings-cog-wrapper');
-          if (headerPanel) {
-            closeAllSettingsPanels();
-            headerPanel.open = true;
-            requestAnimationFrame(() => fitSettingsPanelToViewport(headerPanel));
-          }
-        }
-      });
-    }
-
-    if (!window.__settingsCogResizeBound) {
-      window.__settingsCogResizeBound = true;
-      window.addEventListener('resize', () => {
-        const openWrappers = document.querySelectorAll('.settings-cog-wrapper[open]');
-        for (const wrapper of openWrappers) {
-          fitSettingsPanelToViewport(wrapper);
+          const headerWrapper = document.querySelector('header .settings-cog-wrapper');
+          if (!headerWrapper) return;
+          document.dispatchEvent(
+            new CustomEvent('takko:settings-open', {
+              detail: { wrapper: headerWrapper },
+            }),
+          );
         }
       });
     }
@@ -402,38 +362,8 @@ const { class: className, size = '44px' } = Astro.props;
     if (!window.__settingsCogAfterSwapBound) {
       window.__settingsCogAfterSwapBound = true;
       document.addEventListener('astro:after-swap', () => {
-        applyShowDefinitionHighlightsSetting();
-        applyThemeSetting();
-        applyIslandVisibilitySetting();
+        initializeSettingsCogPanels();
       });
-    }
-
-    if (!window.__settingsCogHeaderTransitionCloseBound) {
-      window.__settingsCogHeaderTransitionCloseBound = true;
-      let lastHeaderScrolledState = null;
-
-      const syncHeaderTransitionClose = () => {
-        const header = document.querySelector('header');
-        if (!header) return;
-
-        const isScrolled = header.classList.contains('is-scrolled');
-        if (lastHeaderScrolledState === null) {
-          lastHeaderScrolledState = isScrolled;
-          return;
-        }
-
-        if (isScrolled !== lastHeaderScrolledState) {
-          closeAllSettingsPanels();
-          lastHeaderScrolledState = isScrolled;
-        }
-      };
-
-      window.addEventListener('scroll', syncHeaderTransitionClose, { passive: true });
-      document.addEventListener('astro:after-swap', () => {
-        lastHeaderScrolledState = null;
-        syncHeaderTransitionClose();
-      });
-      syncHeaderTransitionClose();
     }
   }
 

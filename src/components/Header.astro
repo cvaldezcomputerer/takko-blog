@@ -285,12 +285,6 @@ import SettingsCog from './SettingsCog.astro';
 		if (!header) return;
 		
 		function handleScroll() {
-			const islandVisible = window.TakkoSettings ? window.TakkoSettings.getIslandVisibility() : true;
-			if (!islandVisible) {
-				header.classList.remove('is-scrolled');
-				return;
-			}
-
 			if (window.scrollY > 50) {
 				header.classList.add('is-scrolled');
 			} else {
@@ -299,10 +293,8 @@ import SettingsCog from './SettingsCog.astro';
 		}
 
 		window.addEventListener('scroll', handleScroll, { passive: true });
-		document.addEventListener('takko:settings-change', handleScroll);
 		cleanupScroll = () => {
 			window.removeEventListener('scroll', handleScroll);
-			document.removeEventListener('takko:settings-change', handleScroll);
 		};
 		handleScroll();
 	}
