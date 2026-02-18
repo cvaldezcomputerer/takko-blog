@@ -31,6 +31,9 @@
   
   /* Japanese: A warm Camellia/Rose (Not neon pink, more organic) */
   --pill-jp: #f43f5e; 
+
+  --base-font-size-desktop: 20px;
+  --base-font-size-mobile: 18px;
 }
 
 .dark {
@@ -71,6 +74,22 @@
 html {
   background-color: var(--background);
 }
+
+html.text-size-sm {
+  --base-font-size-desktop: 18px;
+  --base-font-size-mobile: 16px;
+}
+
+html.text-size-md {
+  --base-font-size-desktop: 20px;
+  --base-font-size-mobile: 18px;
+}
+
+html.text-size-lg {
+  --base-font-size-desktop: 22px;
+  --base-font-size-mobile: 20px;
+}
+
 body {
   font-family: "Atkinson", sans-serif;
   margin: 0;
@@ -79,7 +98,7 @@ body {
   word-wrap: break-word;
   overflow-wrap: break-word;
   color: rgb(var(--gray-dark));
-  font-size: 20px;
+  font-size: var(--base-font-size-desktop);
   line-height: 1.7;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -180,7 +199,7 @@ hr {
 }
 @media (max-width: 720px) {
   body {
-    font-size: 18px;
+    font-size: var(--base-font-size-mobile);
   }
   main {
     padding: 1em;
