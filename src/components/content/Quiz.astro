@@ -1,6 +1,6 @@
 ---
-import T from './T.astro';
-import Loader from './Loader.astro';
+import T from '../i18n/T.astro';
+import Loader from '../ui/Loader.astro';
 
 interface Translation {
 	en: string;
@@ -205,6 +205,11 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 </script>
 
 <style>
+	quiz-component {
+		display: block;
+		overflow-x: hidden;
+	}
+
 	.quiz-card {
 		background-color: var(--secondary);
 		color: var(--text);
