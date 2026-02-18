@@ -309,8 +309,11 @@ const { class: className, size = '44px' } = Astro.props;
 </style>
 
 <script>
+  type ThemeMode = 'light' | 'dark';
+  type TextSize = 'sm' | 'md' | 'lg';
+
   function getSettingsState() {
-    return window.TakkoSettings;
+    return window.TakkoSettings ?? null;
   }
 
   function getCurrentLanguage() {
@@ -318,28 +321,28 @@ const { class: className, size = '44px' } = Astro.props;
     return lang === 'ja' || lang === 'en_simple' ? lang : 'en';
   }
 
-  function getToggleValueLabel(isOn) {
+  function getToggleValueLabel(isOn: boolean) {
     const lang = getCurrentLanguage();
     if (lang === 'ja') return isOn ? 'オン' : 'オフ';
     return isOn ? 'On' : 'Off';
   }
 
-  function getThemeValueLabel(theme) {
+  function getThemeValueLabel(theme: ThemeMode) {
     const lang = getCurrentLanguage();
     if (lang === 'ja') return theme === 'dark' ? 'ダーク' : 'ライト';
     if (lang === 'en_simple') return theme === 'dark' ? 'Black' : 'White';
     return theme === 'dark' ? 'Dark' : 'Light';
   }
 
-  function getTextSizeValueLabel(size) {
+  function getTextSizeValueLabel(size: TextSize) {
     const lang = getCurrentLanguage();
     if (lang === 'ja') return size === 'sm' ? '小' : size === 'lg' ? '大' : '中';
     if (lang === 'en_simple') return size === 'sm' ? 'S' : size === 'lg' ? 'L' : 'M';
     return size === 'sm' ? 'Small' : size === 'lg' ? 'Large' : 'Medium';
   }
 
-  function applyToggleVisual(toggleKey, isOn) {
-    const toggleButtons = document.querySelectorAll(`[data-setting-toggle="${toggleKey}"]`);
+  function applyToggleVisual(toggleKey: string, isOn: boolean) {
+    const toggleButtons = document.querySelectorAll<HTMLElement>(`[data-setting-toggle="${toggleKey}"]`);
     for (const button of toggleButtons) {
       button.dataset.on = isOn ? 'true' : 'false';
       button.setAttribute('aria-pressed', isOn ? 'true' : 'false');
@@ -352,7 +355,7 @@ const { class: className, size = '44px' } = Astro.props;
     const isEnabled = settings.getShowDefinitionHighlights();
     settings.applyDefinitionHighlightsSetting(isEnabled);
 
-    const valueEls = document.querySelectorAll('[data-setting-value="show-definition-highlights"]');
+    const valueEls = document.querySelectorAll<HTMLElement>('[data-setting-value="show-definition-highlights"]');
     for (const el of valueEls) {
       el.textContent = getToggleValueLabel(isEnabled);
     }
@@ -364,7 +367,7 @@ const { class: className, size = '44px' } = Astro.props;
     if (!settings) return;
     const theme = settings.getTheme();
 
-    const valueEls = document.querySelectorAll('[data-setting-value="theme"]');
+    const valueEls = document.querySelectorAll<HTMLElement>('[data-setting-value="theme"]');
     for (const el of valueEls) {
       el.textContent = getThemeValueLabel(theme);
     }
@@ -377,7 +380,7 @@ const { class: className, size = '44px' } = Astro.props;
     const isVisible = settings.getIslandVisibility();
     settings.applyIslandVisibilitySetting(isVisible);
 
-    const valueEls = document.querySelectorAll('[data-setting-value="island-visibility"]');
+    const valueEls = document.querySelectorAll<HTMLElement>('[data-setting-value="island-visibility"]');
     for (const el of valueEls) {
       el.textContent = getToggleValueLabel(isVisible);
     }
@@ -391,7 +394,7 @@ const { class: className, size = '44px' } = Astro.props;
     settings.applyTextSizeSetting(size);
 
     const label = getTextSizeValueLabel(size);
-    const valueEls = document.querySelectorAll('[data-setting-value="text-size"]');
+    const valueEls = document.querySelectorAll<HTMLElement>('[data-setting-value="text-size"]');
     for (const el of valueEls) {
       el.textContent = label;
     }
@@ -403,7 +406,7 @@ const { class: className, size = '44px' } = Astro.props;
     applyIslandVisibilitySetting();
     applyTextSizeSetting();
 
-    const toggleButtons = document.querySelectorAll('[data-setting-toggle="show-definition-highlights"]');
+    const toggleButtons = document.querySelectorAll<HTMLElement>('[data-setting-toggle="show-definition-highlights"]');
     for (const button of toggleButtons) {
       if (button.dataset.settingBound) continue;
       button.dataset.settingBound = 'true';
@@ -415,7 +418,7 @@ const { class: className, size = '44px' } = Astro.props;
       });
     }
 
-    const themeButtons = document.querySelectorAll('[data-setting-toggle="theme"]');
+    const themeButtons = document.querySelectorAll<HTMLElement>('[data-setting-toggle="theme"]');
     for (const button of themeButtons) {
       if (button.dataset.settingBound) continue;
       button.dataset.settingBound = 'true';
@@ -427,7 +430,7 @@ const { class: className, size = '44px' } = Astro.props;
       });
     }
 
-    const islandVisibilityButtons = document.querySelectorAll('[data-setting-toggle="island-visibility"]');
+    const islandVisibilityButtons = document.querySelectorAll<HTMLElement>('[data-setting-toggle="island-visibility"]');
     for (const button of islandVisibilityButtons) {
       if (button.dataset.settingBound) continue;
       button.dataset.settingBound = 'true';
@@ -440,7 +443,7 @@ const { class: className, size = '44px' } = Astro.props;
         applyIslandVisibilitySetting();
 
         if (!nextVisibility && toggledFromIsland) {
-          const headerWrapper = document.querySelector('header .settings-cog-wrapper');
+          const headerWrapper = document.querySelector<HTMLElement>('header .settings-cog-wrapper');
           if (!headerWrapper) return;
           document.dispatchEvent(
             new CustomEvent('takko:settings-open', {
@@ -451,7 +454,7 @@ const { class: className, size = '44px' } = Astro.props;
       });
     }
 
-    const textSizeButtons = document.querySelectorAll('[data-setting-toggle="text-size"]');
+    const textSizeButtons = document.querySelectorAll<HTMLElement>('[data-setting-toggle="text-size"]');
     for (const button of textSizeButtons) {
       if (button.dataset.settingBound) continue;
       button.dataset.settingBound = 'true';

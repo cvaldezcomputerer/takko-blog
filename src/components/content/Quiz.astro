@@ -61,7 +61,7 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 
 <script>
 	class QuizComponent extends HTMLElement {
-		private id: string;
+		private quizId: string;
 		private buttons: NodeListOf<HTMLButtonElement>;
 		private meta: HTMLElement | null;
 		private loadingIndicator: HTMLElement | null;
@@ -71,7 +71,7 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 
 		constructor() {
 			super();
-			this.id = this.dataset.id || '';
+			this.quizId = this.dataset.id || '';
 			this.buttons = this.querySelectorAll('.quiz-option');
 			this.meta = this.querySelector('.total-votes');
 			this.loadingIndicator = this.querySelector('[data-loading-indicator]');
@@ -79,7 +79,7 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 		}
 
 		connectedCallback() {
-			const storedVote = localStorage.getItem(`quiz_vote_${this.id}`);
+			const storedVote = localStorage.getItem(`quiz_vote_${this.quizId}`);
 			if (storedVote) {
 				this.hasVoted = true;
 				this.markSelected(parseInt(storedVote));
@@ -103,7 +103,7 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 		async fetchData() {
 			this.setLoading(true);
 			try {
-				const res = await fetch(`/api/quiz/${this.id}`);
+				const res = await fetch(`/api/quiz/${this.quizId}`);
 				const data = await res.json();
 				this.updateUI(data);
 			} catch (e) {
@@ -124,14 +124,14 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 			this.setLoading(true);
 
 			try {
-				const res = await fetch(`/api/quiz/${this.id}`, {
+				const res = await fetch(`/api/quiz/${this.quizId}`, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ optionIndex: index }),
 				});
 
 				if (res.ok) {
-					localStorage.setItem(`quiz_vote_${this.id}`, String(index));
+					localStorage.setItem(`quiz_vote_${this.quizId}`, String(index));
 					this.hasVoted = true;
 					this.markSelected(index);
 					

@@ -62,7 +62,7 @@ const { title, title_ja, title_en_simple, description, pubDate, updatedDate, her
 				font-style: italic;
 			}
 			.prose :global(figure) {
-				margin: 2em 0;
+				margin: 1.8em 0 1.3em 0;
 			}
 			.prose :global(figure img) {
 				display: block;
@@ -78,6 +78,9 @@ const { title, title_ja, title_en_simple, description, pubDate, updatedDate, her
 				font-style: italic;
 				font-weight: 700 ;
 				line-height: 1.5;
+			}
+			.prose :global(figcaption a) {
+				white-space: nowrap;
 			}
 			.prose[data-blog-content] :global(img:not([data-lightbox="off"])) {
 				cursor: zoom-in;
