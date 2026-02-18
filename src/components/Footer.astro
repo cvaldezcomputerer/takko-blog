@@ -1,5 +1,6 @@
 ---
 import Logo from './Logo.astro';
+import T from './T.astro';
 import { SITE_TITLE } from '../consts';
 
 const today = new Date();
@@ -14,9 +15,27 @@ const today = new Date();
 
 		<div class="footer-middle">
 			<nav class="footer-nav">
-				<a href="/">Home</a>
-				<a href="/about">About</a>
-				<a href="/contact/">Contact</a>
+				<a href="/">
+					<T fluid>
+						<span slot="en">Blog</span>
+						<span slot="ja">ブログ</span>
+						<span slot="en_simple">📖 Blog</span>
+					</T>
+				</a>
+				<a href="/about">
+					<T fluid>
+						<span slot="en">About</span>
+						<span slot="ja">プロフィール</span>
+						<span slot="en_simple">👋 About</span>
+					</T>
+				</a>
+				<a href="/contact/">
+					<T fluid>
+						<span slot="en">Contact</span>
+						<span slot="ja">コンタクト</span>
+						<span slot="en_simple">📬 Contact</span>
+					</T>
+				</a>
 			</nav>
 
 			<div class="footer-separator" aria-hidden="true"></div>

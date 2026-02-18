@@ -211,7 +211,7 @@ const posts = (await getCollection('blog')).sort(
 										)}
 										<div class="post-content">
 											<h4 class="title">
-												<T>
+												<T fluid>
 												<span slot="en" lang="en">{post.data.title}</span>
 												<span slot="ja" lang="ja" set:html={post.data.title_ja || post.data.title}></span>
 												<span slot="en_simple" lang="en">{post.data.title_en_simple || post.data.title}</span>
