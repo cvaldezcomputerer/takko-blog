@@ -1,6 +1,6 @@
 ---
-import LanguageSelector from './LanguageSelector.astro';
-import SettingsCog from './SettingsCog.astro';
+import LanguageSelector from '../i18n/LanguageSelector.astro';
+import SettingsCog from '../settings/SettingsCog.astro';
 
 const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !== '/blog' && Astro.url.pathname !== '/blog/' ? '/blog' : '/';
 ---
@@ -297,7 +297,7 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 		}
 
 		.island-settings :global(.settings-panel) {
-			right: -0.5rem;
+			right: 0;
 			min-width: 210px;
 		}
 		
