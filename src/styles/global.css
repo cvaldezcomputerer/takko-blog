@@ -73,6 +73,7 @@
 }
 html {
   background-color: var(--background);
+  overflow-x: hidden;
 }
 
 html.text-size-sm {
@@ -101,6 +102,7 @@ body {
   font-size: var(--base-font-size-desktop);
   line-height: 1.7;
   transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
 }
 main {
   width: 720px;
