@@ -1,13 +1,13 @@
 ---
 import { Image, Picture } from 'astro:assets';
 
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import FormattedDate from '../components/FormattedDate.astro';
-import LikeButton from '../components/LikeButton.astro';
-import OptimizedImage from '../components/OptimizedImage.astro';
-import T from '../components/T.astro';
+import BaseHead from '../components/layout/BaseHead.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import FormattedDate from '../components/content/FormattedDate.astro';
+import LikeButton from '../components/content/LikeButton.astro';
+import OptimizedImage from '../components/media/OptimizedImage.astro';
+import T from '../components/i18n/T.astro';
 
 const { title, title_ja, title_en_simple, description, pubDate, updatedDate, heroImage, slug, heroImageFit } = Astro.props;
 ---
