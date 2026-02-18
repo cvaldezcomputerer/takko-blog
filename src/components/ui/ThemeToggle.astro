@@ -61,7 +61,8 @@
 	class ThemeToggle extends HTMLElement {
 		constructor() {
 			super();
-			const button = this.querySelector('button');
+			const button = this.querySelector<HTMLButtonElement>('button');
+			if (!button) return;
 
 			button.addEventListener('click', () => {
 				if (window.TakkoSettings) {

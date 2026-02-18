@@ -1,0 +1,132 @@
+---
+interface Props {
+  videoId: string;
+  title: string;
+  thumbnail?: string;
+  start?: number;
+}
+
+const { videoId, title, thumbnail, start = 0 } = Astro.props as Props;
+
+const thumb = thumbnail ?? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+const startParam = start > 0 ? `&start=${Math.floor(start)}` : "";
+const embedSrc = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1${startParam}`;
+---
+
+<youtube-preview>
+  <div class="yt-preview" data-embed-src={embedSrc}>
+    <button class="yt-preview__button" type="button" aria-label={`Play: ${title}`}>
+      <img class="yt-preview__image" src={thumb} alt={title} loading="lazy" decoding="async" />
+      <span class="yt-preview__overlay" aria-hidden="true">
+        <span class="yt-preview__play"></span>
+      </span>
+    </button>
+  </div>
+</youtube-preview>
+
+<script>
+  class YouTubePreviewElement extends HTMLElement {
+    connectedCallback() {
+      const button = this.querySelector<HTMLButtonElement>(".yt-preview__button");
+      if (!button || button.dataset.bound === "true") return;
+      button.dataset.bound = "true";
+
+      button.addEventListener("click", () => {
+        const wrapper = button.closest(".yt-preview");
+        const embedSrc = wrapper?.getAttribute("data-embed-src");
+        if (!wrapper || !embedSrc) return;
+
+        const iframe = document.createElement("iframe");
+        iframe.src = embedSrc;
+        iframe.title = button.getAttribute("aria-label")?.replace(/^Play:\s*/, "") || "YouTube video";
+        iframe.loading = "lazy";
+        iframe.style.width = "100%";
+        iframe.style.height = "100%";
+        iframe.style.border = "0";
+        iframe.style.display = "block";
+        iframe.allow =
+          "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+        iframe.allowFullscreen = true;
+
+        wrapper.innerHTML = "";
+        wrapper.appendChild(iframe);
+      });
+    }
+  }
+
+  if (!customElements.get("youtube-preview")) {
+    customElements.define("youtube-preview", YouTubePreviewElement);
+  }
+</script>
+
+<style>
+  .yt-preview {
+    width: 100%;
+    max-width: 900px;
+    margin: 1rem auto;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #000;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+  }
+
+  .yt-preview__button {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    padding: 0;
+    display: block;
+    background: #000;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .yt-preview__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .yt-preview__overlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.4));
+  }
+
+  .yt-preview__play {
+    width: 78px;
+    height: 54px;
+    border-radius: 14px;
+    background: rgba(0, 0, 0, 0.75);
+    position: relative;
+    transition: transform 120ms ease, background-color 120ms ease;
+  }
+
+  .yt-preview__play::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-35%, -50%);
+    border-style: solid;
+    border-width: 12px 0 12px 20px;
+    border-color: transparent transparent transparent #fff;
+  }
+
+  .yt-preview__button:hover .yt-preview__play,
+  .yt-preview__button:focus-visible .yt-preview__play {
+    transform: scale(1.04);
+    background: #ff0033;
+  }
+
+  .yt-preview iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+ </style>

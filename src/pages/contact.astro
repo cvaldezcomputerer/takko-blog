@@ -308,14 +308,14 @@ import { SITE_TITLE } from '../consts';
 		<script>
 			// Contact form handling
 			document.addEventListener('astro:page-load', function() {
-				const contactForm = document.getElementById('contactForm');
-				const submitBtn = document.getElementById('submitBtn');
+				const contactForm = document.getElementById('contactForm') as HTMLFormElement | null;
+				const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement | null;
 				
 				if (contactForm && submitBtn) {
 					contactForm.addEventListener('submit', handleFormSubmit);
 				}
 				
-				async function handleFormSubmit(e) {
+				async function handleFormSubmit(e: SubmitEvent) {
 					e.preventDefault();
 					
 					if (!contactForm || !submitBtn) return;
@@ -323,11 +323,11 @@ import { SITE_TITLE } from '../consts';
 					// Get form data
 					const formData = new FormData(contactForm);
 					const data = {
-						name: formData.get('name'),
-						email: formData.get('email'),
-						subject: formData.get('subject'),
-						message: formData.get('message'),
-						trap: formData.get('trap')
+						name: String(formData.get('name') || ''),
+						email: String(formData.get('email') || ''),
+						subject: String(formData.get('subject') || ''),
+						message: String(formData.get('message') || ''),
+						trap: String(formData.get('trap') || ''),
 					};
 					
 					// Basic validation
@@ -369,7 +369,7 @@ import { SITE_TITLE } from '../consts';
 					}
 				}
 				
-				function showMessage(message, type) {
+				function showMessage(message: string, type: 'success' | 'error' | 'loading') {
 					if (!contactForm) return;
 					
 					// Remove existing messages
@@ -397,7 +397,7 @@ import { SITE_TITLE } from '../consts';
 					}, 5000);
 				}
 				
-				function setLoading(loading) {
+				function setLoading(loading: boolean) {
 					if (!submitBtn) return;
 					
 					submitBtn.disabled = loading;
@@ -405,7 +405,7 @@ import { SITE_TITLE } from '../consts';
 					submitBtn.classList.toggle('is-loading', loading);
 				}
 				
-				function isValidEmail(email) {
+				function isValidEmail(email: string) {
 					const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 					return emailRegex.test(email);
 				}
