@@ -63,18 +63,14 @@
 			super();
 			const button = this.querySelector('button');
 
-			const setTheme = (theme) => {
-				if (theme === 'dark') {
-					document.documentElement.classList.add('dark');
-				} else {
-					document.documentElement.classList.remove('dark');
-				}
-				localStorage.setItem('theme', theme);
-			};
-
 			button.addEventListener('click', () => {
+				if (window.TakkoSettings) {
+					window.TakkoSettings.toggleTheme();
+					return;
+				}
+
 				const isDark = document.documentElement.classList.contains('dark');
-				setTheme(isDark ? 'light' : 'dark');
+				document.documentElement.classList.toggle('dark', !isDark);
 			});
 		}
 	}
