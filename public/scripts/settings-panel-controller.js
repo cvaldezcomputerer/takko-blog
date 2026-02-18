@@ -107,6 +107,7 @@
 
       if (target.closest('.settings-cog-wrapper .settings-cog')) return;
       if (panel && panel.contains(target)) return;
+      if (target.closest('.language-controls')) return;
 
       closeAllPanels();
     });

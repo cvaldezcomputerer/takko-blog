@@ -1,4 +1,6 @@
 ---
+import T from './T.astro';
+
 const { class: className, size = '44px' } = Astro.props;
 ---
 
@@ -10,21 +12,44 @@ const { class: className, size = '44px' } = Astro.props;
     </svg>
   </summary>
   <div class="settings-panel">
-    <p class="settings-title">Settings</p>
-    <!-- TODO: Wrap settings labels/values with <T fluid> when i18n wiring is added. -->
+    <p class="settings-title">
+      <T fluid>
+        <span slot="en">Settings</span>
+        <span slot="ja">設定</span>
+        <span slot="en_simple">⚙️ Settings</span>
+      </T>
+    </p>
 
     <div class="settings-groups">
       <section class="settings-section" aria-label="Study settings">
-        <p class="section-title">Study</p>
+        <p class="section-title">
+          <T fluid>
+            <span slot="en">Learn</span>
+            <span slot="ja">学習</span>
+            <span slot="en_simple">Study</span>
+          </T>
+        </p>
         <button type="button" class="setting-item" data-setting-toggle="island-visibility">
-          <span class="setting-label">Island Visibility</span>
+          <span class="setting-label">
+            <T fluid>
+              <span slot="en">Island</span>
+              <span slot="ja">アイランド表示</span>
+              <span slot="en_simple">🏝️ Island</span>
+            </T>
+          </span>
           <span class="setting-control">
             <span class="setting-value" data-setting-value="island-visibility">On</span>
             <span class="setting-switch" aria-hidden="true"><span class="setting-switch-knob"></span></span>
           </span>
         </button>
         <button type="button" class="setting-item" data-setting-toggle="show-definition-highlights">
-          <span class="setting-label">Show Definition Highlights</span>
+          <span class="setting-label">
+            <T fluid>
+              <span slot="en">Show Explanation</span>
+              <span slot="ja">説明を表示</span>
+              <span slot="en_simple">📖 Explain</span>
+            </T>
+          </span>
           <span class="setting-control">
             <span class="setting-value" data-setting-value="show-definition-highlights">On</span>
             <span class="setting-switch" aria-hidden="true"><span class="setting-switch-knob"></span></span>
@@ -33,17 +58,35 @@ const { class: className, size = '44px' } = Astro.props;
       </section>
 
       <section class="settings-section" aria-label="Site settings">
-        <p class="section-title">Site</p>
+        <p class="section-title">
+          <T fluid>
+            <span slot="en">Site</span>
+            <span slot="ja">サイト</span>
+            <span slot="en_simple">Site</span>
+          </T>
+        </p>
         <button type="button" class="setting-item" data-setting-toggle="theme">
-          <span class="setting-label">Theme</span>
+          <span class="setting-label">
+            <T fluid>
+              <span slot="en">Dark or Light</span>
+              <span slot="ja">テーマ</span>
+              <span slot="en_simple">Dark or Light</span>
+            </T>
+          </span>
           <span class="setting-control">
             <span class="setting-value" data-setting-value="theme">Light</span>
             <span class="setting-switch" aria-hidden="true"><span class="setting-switch-knob"></span></span>
           </span>
         </button>
-        <button type="button" class="setting-item">
-          <span class="setting-label">Text Size</span>
-          <span class="setting-value">Medium</span>
+        <button type="button" class="setting-item" data-setting-toggle="text-size">
+          <span class="setting-label">
+            <T fluid>
+              <span slot="en">Word Size</span>
+              <span slot="ja">文字サイズ</span>
+              <span slot="en_simple">Word Size</span>
+            </T>
+          </span>
+          <span class="setting-value" data-setting-value="text-size">Medium</span>
         </button>
       </section>
     </div>
@@ -238,6 +281,16 @@ const { class: className, size = '44px' } = Astro.props;
   }
 
   @media (max-width: 720px) {
+    .settings-cog {
+      width: 38px;
+      height: 38px;
+    }
+
+    .settings-cog svg {
+      width: 23px;
+      height: 23px;
+    }
+
     .settings-panel.settings-sheet {
       width: min(92vw, 340px);
     }
@@ -260,6 +313,31 @@ const { class: className, size = '44px' } = Astro.props;
     return window.TakkoSettings;
   }
 
+  function getCurrentLanguage() {
+    const lang = localStorage.getItem('takko-blog-lang');
+    return lang === 'ja' || lang === 'en_simple' ? lang : 'en';
+  }
+
+  function getToggleValueLabel(isOn) {
+    const lang = getCurrentLanguage();
+    if (lang === 'ja') return isOn ? 'オン' : 'オフ';
+    return isOn ? 'On' : 'Off';
+  }
+
+  function getThemeValueLabel(theme) {
+    const lang = getCurrentLanguage();
+    if (lang === 'ja') return theme === 'dark' ? 'ダーク' : 'ライト';
+    if (lang === 'en_simple') return theme === 'dark' ? 'Black' : 'White';
+    return theme === 'dark' ? 'Dark' : 'Light';
+  }
+
+  function getTextSizeValueLabel(size) {
+    const lang = getCurrentLanguage();
+    if (lang === 'ja') return size === 'sm' ? '小' : size === 'lg' ? '大' : '中';
+    if (lang === 'en_simple') return size === 'sm' ? 'S' : size === 'lg' ? 'L' : 'M';
+    return size === 'sm' ? 'Small' : size === 'lg' ? 'Large' : 'Medium';
+  }
+
   function applyToggleVisual(toggleKey, isOn) {
     const toggleButtons = document.querySelectorAll(`[data-setting-toggle="${toggleKey}"]`);
     for (const button of toggleButtons) {
@@ -276,7 +354,7 @@ const { class: className, size = '44px' } = Astro.props;
 
     const valueEls = document.querySelectorAll('[data-setting-value="show-definition-highlights"]');
     for (const el of valueEls) {
-      el.textContent = isEnabled ? 'On' : 'Off';
+      el.textContent = getToggleValueLabel(isEnabled);
     }
     applyToggleVisual('show-definition-highlights', isEnabled);
   }
@@ -288,7 +366,7 @@ const { class: className, size = '44px' } = Astro.props;
 
     const valueEls = document.querySelectorAll('[data-setting-value="theme"]');
     for (const el of valueEls) {
-      el.textContent = theme === 'dark' ? 'Dark' : 'Light';
+      el.textContent = getThemeValueLabel(theme);
     }
     applyToggleVisual('theme', theme === 'dark');
   }
@@ -301,15 +379,29 @@ const { class: className, size = '44px' } = Astro.props;
 
     const valueEls = document.querySelectorAll('[data-setting-value="island-visibility"]');
     for (const el of valueEls) {
-      el.textContent = isVisible ? 'On' : 'Off';
+      el.textContent = getToggleValueLabel(isVisible);
     }
     applyToggleVisual('island-visibility', isVisible);
+  }
+
+  function applyTextSizeSetting() {
+    const settings = getSettingsState();
+    if (!settings) return;
+    const size = settings.getTextSize();
+    settings.applyTextSizeSetting(size);
+
+    const label = getTextSizeValueLabel(size);
+    const valueEls = document.querySelectorAll('[data-setting-value="text-size"]');
+    for (const el of valueEls) {
+      el.textContent = label;
+    }
   }
 
   function initializeSettingsCogPanels() {
     applyShowDefinitionHighlightsSetting();
     applyThemeSetting();
     applyIslandVisibilitySetting();
+    applyTextSizeSetting();
 
     const toggleButtons = document.querySelectorAll('[data-setting-toggle="show-definition-highlights"]');
     for (const button of toggleButtons) {
@@ -359,6 +451,18 @@ const { class: className, size = '44px' } = Astro.props;
       });
     }
 
+    const textSizeButtons = document.querySelectorAll('[data-setting-toggle="text-size"]');
+    for (const button of textSizeButtons) {
+      if (button.dataset.settingBound) continue;
+      button.dataset.settingBound = 'true';
+      button.addEventListener('click', () => {
+        const settings = getSettingsState();
+        if (!settings) return;
+        settings.cycleTextSize();
+        applyTextSizeSetting();
+      });
+    }
+
     if (!window.__settingsCogAfterSwapBound) {
       window.__settingsCogAfterSwapBound = true;
       document.addEventListener('astro:after-swap', () => {
@@ -370,6 +474,16 @@ const { class: className, size = '44px' } = Astro.props;
   if (!window.__settingsCogPageLoadBound) {
     window.__settingsCogPageLoadBound = true;
     document.addEventListener('astro:page-load', initializeSettingsCogPanels);
+  }
+
+  if (!window.__settingsCogLanguageBound) {
+    window.__settingsCogLanguageBound = true;
+    document.addEventListener('takko:language-changed', () => {
+      applyShowDefinitionHighlightsSetting();
+      applyThemeSetting();
+      applyIslandVisibilitySetting();
+      applyTextSizeSetting();
+    });
   }
 
   initializeSettingsCogPanels();
