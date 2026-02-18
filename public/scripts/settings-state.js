@@ -11,6 +11,7 @@
     theme: 'theme',
     showDefinitionHighlights: 'showDefinitionHighlights',
     islandVisibility: 'islandVisibility',
+    textSize: 'textSize',
   };
 
   function safeGet(key) {
@@ -84,10 +85,43 @@
     );
   }
 
+  function getTextSize() {
+    const storedSize = safeGet(STORAGE_KEYS.textSize);
+    if (storedSize === 'sm' || storedSize === 'lg') return storedSize;
+    return 'md';
+  }
+
+  function applyTextSizeSetting(size = getTextSize()) {
+    const root = document.documentElement;
+    root.classList.remove('text-size-sm', 'text-size-md', 'text-size-lg');
+    root.classList.add(`text-size-${size}`);
+  }
+
+  function setTextSize(size) {
+    const nextSize = size === 'sm' || size === 'lg' ? size : 'md';
+    safeSet(STORAGE_KEYS.textSize, nextSize);
+    applyTextSizeSetting(nextSize);
+  }
+
+  function cycleTextSize() {
+    const current = getTextSize();
+    if (current === 'sm') {
+      setTextSize('md');
+      return 'md';
+    }
+    if (current === 'md') {
+      setTextSize('lg');
+      return 'lg';
+    }
+    setTextSize('sm');
+    return 'sm';
+  }
+
   function applyAll() {
     applyTheme();
     applyDefinitionHighlightsSetting();
     applyIslandVisibilitySetting();
+    applyTextSizeSetting();
   }
 
   window.TakkoSettings = {
@@ -102,6 +136,10 @@
     getIslandVisibility,
     applyIslandVisibilitySetting,
     setIslandVisibility,
+    getTextSize,
+    applyTextSizeSetting,
+    setTextSize,
+    cycleTextSize,
     applyAll,
   };
 })();

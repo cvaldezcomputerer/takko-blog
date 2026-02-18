@@ -42,8 +42,9 @@
           btn.classList.toggle("active", isActive);
           btn.setAttribute("aria-pressed", String(isActive));
         });
-  
+
         localStorage.setItem(storageKey, lang);
+        document.dispatchEvent(new CustomEvent("takko:language-changed", { detail: { lang } }));
       }
   
       const savedLang = localStorage.getItem(storageKey);
