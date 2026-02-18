@@ -16,7 +16,7 @@
 - `src/components/FloatingIsland.astro`
   - Appears after scroll, includes language controls and settings cog
 - `src/components/SettingsCog.astro`
-  - Settings UI and toggle wiring
+  - Settings UI + toggle wiring (no panel orchestration ownership)
 - `src/components/ThemeToggle.astro`
   - Standalone theme button (hidden on mobile in header)
 - `src/components/Explain.astro`
@@ -24,6 +24,9 @@
   - Disabled globally via root class when setting is off
 - `public/scripts/settings-state.js`
   - Centralized browser-only settings state helper
+- `public/scripts/settings-panel-controller.js`
+  - Centralized open/close lifecycle for shared settings sheet/backdrop
+  - Listens to `takko:settings-open` and `takko:settings-close`
 
 ## Content / Pages
 - Blog listing: `src/pages/blog/index.astro`
@@ -41,11 +44,13 @@
 - Theme: root `.dark` class + persisted setting
 - Study setting:
   - `showDefinitionHighlights` controls `Explain.astro` visuals/tooltip behavior
+- Island setting:
+  - `islandVisibility` controls root `html.island-hidden` class
 
 ## Notes For Edits
 - Changes to global preferences usually touch:
   - `public/scripts/settings-state.js`
-  - `src/components/SettingsCog.astro`
-  - Possibly `src/components/BaseHead.astro` if pre-paint behavior is needed
+  - `src/components/SettingsCog.astro` (value toggles/labels only)
+  - `public/scripts/settings-panel-controller.js` (sheet open/close behavior)
+  - `src/components/BaseHead.astro` (script loading/pre-paint behavior)
 - Run `npm run build` after UI or script changes (project depends heavily on client behavior + transitions)
-
