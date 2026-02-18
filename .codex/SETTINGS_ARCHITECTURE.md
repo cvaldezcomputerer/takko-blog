@@ -18,6 +18,7 @@
 - `theme`
   - Stored in `localStorage` key: `theme`
   - Values used currently: `light` | `dark`
+  - If missing, defaults to system preference (`prefers-color-scheme`)
 - `showDefinitionHighlights`
   - Stored in `localStorage` key: `showDefinitionHighlights`
   - Values: `'1'` (on) / `'0'` (off)
@@ -28,6 +29,14 @@
   - Values: `'1'` (on) / `'0'` (off)
   - Applied by toggling root class:
     - off => `html.island-hidden`
+- `textSize`
+  - Stored in `localStorage` key: `textSize`
+  - Values: `sm` | `md` | `lg` (default: `md`)
+  - Applied by toggling root class:
+    - `html.text-size-sm`
+    - `html.text-size-md`
+    - `html.text-size-lg`
+  - CSS variables (`--base-font-size-desktop`, `--base-font-size-mobile`) in `src/styles/global.css` respond to these classes
 
 ## Removed Setting
 - `hideImages` was removed and is no longer part of persisted settings or UI.
@@ -40,14 +49,20 @@
   - Toggles `theme`
   - Toggles `showDefinitionHighlights`
   - Toggles `islandVisibility`
+  - Cycles `textSize`
   - Reflects current values in setting labels
+  - Uses language-aware value labels and refreshes them on `takko:language-changed`
 - `settings-panel-controller.js`
   - Owns the shared settings sheet/backdrop DOM lifecycle
   - Owns trigger binding/open/close behavior across header/island cogs
   - Handles global close interactions: backdrop click, outside click, `Escape`
+  - Outside-click close ignores `.language-controls` so language switch does not auto-close settings
   - Supports cross-component open requests via:
     - `takko:settings-open` (detail: `{ wrapper }`)
     - `takko:settings-close`
+- `LanguageSelector.astro`
+  - Persists language in `localStorage` key `takko-blog-lang`
+  - Dispatches `takko:language-changed` after language updates
 - `ThemeToggle.astro`
   - Calls `TakkoSettings.toggleTheme()`
 - `Explain.astro`
