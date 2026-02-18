@@ -89,6 +89,23 @@ const id = `explain-${Math.random().toString(36).slice(2, 11)}`;
 		pointer-events: auto;
 	}
 
+	:global(html.definition-highlights-off) .explain-trigger {
+		cursor: inherit;
+		border-bottom: none;
+	}
+
+	:global(html.definition-highlights-off) .explain-trigger:hover,
+	:global(html.definition-highlights-off) .explain-trigger:focus,
+	:global(html.definition-highlights-off) .explain-wrapper:hover .explain-trigger {
+		color: inherit;
+		background: none;
+		border-bottom: none;
+	}
+
+	:global(html.definition-highlights-off) .explain-box {
+		display: none;
+	}
+
 	@media (max-width: 480px) {
 		.explain-box {
 			min-width: 200px;

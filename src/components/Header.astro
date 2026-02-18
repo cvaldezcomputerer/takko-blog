@@ -6,6 +6,7 @@ import T from './T.astro';
 import Logo from './Logo.astro';
 import FloatingIsland from './FloatingIsland.astro';
 import ThemeToggle from './ThemeToggle.astro';
+import SettingsCog from './SettingsCog.astro';
 ---
 
 <header>
@@ -18,6 +19,7 @@ import ThemeToggle from './ThemeToggle.astro';
 
 		<LanguageSelector />
 		<ThemeToggle />
+		<SettingsCog class="header-settings" size="40px" />
 		
 		<div class="menu-content">
 			<div class="internal-links">
@@ -91,12 +93,24 @@ import ThemeToggle from './ThemeToggle.astro';
 	.logo-link:hover :global(.takko-logo) {
 		transform: scale(1.1);
 	}
+	.logo-link.is-sleeping :global(.takko-logo) {
+		animation: logo-breathe 3.8s ease-in-out infinite;
+		transform-origin: center;
+	}
 	.site-title-text {
 		transition: all 0.3s ease;
 		opacity: 1;
 		max-width: 400px;
 		overflow: hidden;
 		white-space: nowrap;
+	}
+	@keyframes logo-breathe {
+		0%, 100% {
+			transform: scale(1);
+		}
+		50% {
+			transform: scale(1.03);
+		}
 	}
 
 	.hamburger-menu {
@@ -175,7 +189,17 @@ import ThemeToggle from './ThemeToggle.astro';
 		}
 	}
 
+	@media (prefers-reduced-motion: reduce) {
+		.logo-link.is-sleeping :global(.takko-logo) {
+			animation: none;
+		}
+	}
+
 	@media (max-width: 720px) {
+		:global(theme-toggle) {
+			display: none;
+		}
+
 		.hamburger-menu {
 			display: block;
 		}
@@ -249,6 +273,7 @@ import ThemeToggle from './ThemeToggle.astro';
 	}
 
 	let cleanupScroll;
+	let cleanupIdleSleep;
 
 	function initializeScrollEffect() {
 		if (cleanupScroll) {
@@ -260,6 +285,12 @@ import ThemeToggle from './ThemeToggle.astro';
 		if (!header) return;
 		
 		function handleScroll() {
+			const islandVisible = window.TakkoSettings ? window.TakkoSettings.getIslandVisibility() : true;
+			if (!islandVisible) {
+				header.classList.remove('is-scrolled');
+				return;
+			}
+
 			if (window.scrollY > 50) {
 				header.classList.add('is-scrolled');
 			} else {
@@ -268,12 +299,107 @@ import ThemeToggle from './ThemeToggle.astro';
 		}
 
 		window.addEventListener('scroll', handleScroll, { passive: true });
-		cleanupScroll = () => window.removeEventListener('scroll', handleScroll);
+		document.addEventListener('takko:settings-change', handleScroll);
+		cleanupScroll = () => {
+			window.removeEventListener('scroll', handleScroll);
+			document.removeEventListener('takko:settings-change', handleScroll);
+		};
 		handleScroll();
+	}
+
+	function initializeIdleSleepEffect() {
+		if (cleanupIdleSleep) {
+			cleanupIdleSleep();
+			cleanupIdleSleep = null;
+		}
+
+		const header = document.querySelector('header');
+		const logoLink = document.querySelector('.logo-link');
+		if (!logoLink || !header) return;
+
+		const isLikelyMobile = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+		if (isLikelyMobile) return;
+
+		const idleDelayMs = 30000;
+		const blinkDurationMs = 520;
+		const minPointerMoveResetMs = 250;
+		let sleepTimer;
+		let blinkTimer;
+		let lastPointerMoveResetAt = 0;
+		let isPausedForScroll = false;
+		const interactionEvents = ['pointermove', 'pointerdown', 'keydown', 'wheel', 'touchstart', 'scroll'];
+
+		function pauseSleepEffect() {
+			isPausedForScroll = true;
+			logoLink.classList.remove('is-blinking');
+			logoLink.classList.remove('is-sleeping');
+			window.clearTimeout(blinkTimer);
+			window.clearTimeout(sleepTimer);
+		}
+
+		function enterSleep() {
+			if (logoLink.classList.contains('is-sleeping') || logoLink.classList.contains('is-blinking')) return;
+			logoLink.classList.add('is-blinking');
+			window.clearTimeout(blinkTimer);
+			blinkTimer = window.setTimeout(() => {
+				logoLink.classList.remove('is-blinking');
+				logoLink.classList.add('is-sleeping');
+			}, blinkDurationMs);
+		}
+
+		function wakeAndResetTimer(event) {
+			if (header.classList.contains('is-scrolled')) {
+				pauseSleepEffect();
+				return;
+			}
+
+			if (event?.type === 'pointermove') {
+				const now = Date.now();
+				if (now - lastPointerMoveResetAt < minPointerMoveResetMs) return;
+				lastPointerMoveResetAt = now;
+			}
+
+			isPausedForScroll = false;
+			logoLink.classList.remove('is-blinking');
+			logoLink.classList.remove('is-sleeping');
+			window.clearTimeout(blinkTimer);
+			window.clearTimeout(sleepTimer);
+			sleepTimer = window.setTimeout(enterSleep, idleDelayMs);
+		}
+
+		function syncWithHeaderState() {
+			if (header.classList.contains('is-scrolled')) {
+				pauseSleepEffect();
+				return;
+			}
+
+			if (isPausedForScroll) {
+				wakeAndResetTimer();
+			}
+		}
+
+		for (const eventName of interactionEvents) {
+			window.addEventListener(eventName, wakeAndResetTimer, { passive: true });
+		}
+
+		window.addEventListener('scroll', syncWithHeaderState, { passive: true });
+		document.addEventListener('visibilitychange', wakeAndResetTimer);
+		wakeAndResetTimer();
+
+		cleanupIdleSleep = () => {
+			window.clearTimeout(blinkTimer);
+			window.clearTimeout(sleepTimer);
+			for (const eventName of interactionEvents) {
+				window.removeEventListener(eventName, wakeAndResetTimer);
+			}
+			window.removeEventListener('scroll', syncWithHeaderState);
+			document.removeEventListener('visibilitychange', wakeAndResetTimer);
+		};
 	}
 
 	document.addEventListener('astro:page-load', () => {
 		initializeHamburgerMenu();
 		initializeScrollEffect();
+		initializeIdleSleepEffect();
 	});
 </script>
