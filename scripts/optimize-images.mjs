@@ -1,4 +1,5 @@
 import sharp from 'sharp';
+import exifReader from 'exif-reader';
 import fs from 'fs';
 import path from 'path';
 
@@ -13,6 +14,51 @@ const maxDimension = 1600;
 const jpegQuality = 90;
 const pngCompressionLevel = 9;
 let stats = { processed: 0, skipped: 0, errors: 0 };
+
+function formatExifDate(value) {
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    const yyyy = String(value.getFullYear()).padStart(4, '0');
+    const mm = String(value.getMonth() + 1).padStart(2, '0');
+    const dd = String(value.getDate()).padStart(2, '0');
+    const hh = String(value.getHours()).padStart(2, '0');
+    const min = String(value.getMinutes()).padStart(2, '0');
+    const sec = String(value.getSeconds()).padStart(2, '0');
+    return `${yyyy}:${mm}:${dd} ${hh}:${min}:${sec}`;
+  }
+  return typeof value === 'string' && value.trim() ? value.trim() : null;
+}
+
+function buildSelectedExif(metadata) {
+  if (!metadata.exif) return null;
+
+  let parsed;
+  try {
+    parsed = exifReader(metadata.exif);
+  } catch {
+    return null;
+  }
+
+  const ifd0 = {};
+  const ifd2 = {};
+
+  if (typeof parsed?.image?.Make === 'string' && parsed.image.Make.trim()) {
+    ifd0.Make = parsed.image.Make.trim();
+  }
+
+  if (typeof parsed?.image?.Model === 'string' && parsed.image.Model.trim()) {
+    ifd0.Model = parsed.image.Model.trim();
+  }
+
+  const dateTimeOriginal = formatExifDate(parsed?.exif?.DateTimeOriginal);
+  if (dateTimeOriginal) {
+    ifd2.DateTimeOriginal = dateTimeOriginal;
+  }
+
+  const exif = {};
+  if (Object.keys(ifd0).length > 0) exif.IFD0 = ifd0;
+  if (Object.keys(ifd2).length > 0) exif.IFD2 = ifd2;
+  return Object.keys(exif).length > 0 ? exif : null;
+}
 
 async function walkAndProcess(currentDir) {
   let items;
@@ -53,6 +99,12 @@ async function walkAndProcess(currentDir) {
           fit: 'inside',
           withoutEnlargement: true 
         });
+
+        // Keep only a small EXIF subset (camera make/model + capture date), drop GPS and other metadata.
+        const selectedExif = buildSelectedExif(metadata);
+        if (selectedExif) {
+          pipeline = pipeline.withExif(selectedExif);
+        }
 
         if (ext === '.png') {
           pipeline = pipeline.png({ compressionLevel: pngCompressionLevel });
