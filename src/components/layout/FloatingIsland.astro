@@ -319,10 +319,12 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 </style>
 
 <script>
-	function initializeScrollEffect() {
-		const island = document.getElementById('floating-island');
-		const ghosts = document.querySelectorAll('.ghost-island');
-		if (!island) return;
+		type IslandPosition = 'left' | 'center' | 'right';
+
+		function initializeScrollEffect() {
+			const island = document.getElementById('floating-island');
+			const ghosts = document.querySelectorAll<HTMLElement>('.ghost-island');
+			if (!island) return;
 		
 		function handleScroll() {
 			if (window.scrollY > 50) {
@@ -340,20 +342,25 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 			}
 		}
 		
-		function setPosition(pos) {
-			island.setAttribute('data-position', pos);
-			ghosts.forEach(g => {
-				if (g.getAttribute('data-target') === pos) {
+			function setPosition(pos: IslandPosition) {
+				island.setAttribute('data-position', pos);
+				ghosts.forEach(g => {
+					if (g.getAttribute('data-target') === pos) {
 					g.classList.add('active-pos');
 				} else {
 					g.classList.remove('active-pos');
 				}
 			});
 		}
-		
-		ghosts.forEach(g => {
-			g.addEventListener('click', () => setPosition(g.getAttribute('data-target')));
-		});
+			
+			ghosts.forEach(g => {
+				g.addEventListener('click', () => {
+					const target = g.getAttribute('data-target');
+					if (target === 'left' || target === 'center' || target === 'right') {
+						setPosition(target);
+					}
+				});
+			});
 		
 		setPosition('center');
 

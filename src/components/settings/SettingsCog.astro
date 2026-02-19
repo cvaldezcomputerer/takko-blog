@@ -1,7 +1,12 @@
 ---
 import T from '../i18n/T.astro';
 
-const { class: className, size = '44px' } = Astro.props;
+interface Props {
+  class?: string;
+  size?: string;
+}
+
+const { class: className, size = '44px' } = Astro.props as Props;
 ---
 
 <details class:list={["settings-cog-wrapper", className]} style={`--settings-size: ${size};`}>

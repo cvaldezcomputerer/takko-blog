@@ -1,5 +1,9 @@
 ---
-const { fluid = false } = Astro.props;
+interface Props {
+  fluid?: boolean;
+}
+
+const { fluid = false } = Astro.props as Props;
 ---
 
 <span class:list={["translatable-text", { fluid }]}>

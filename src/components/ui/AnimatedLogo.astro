@@ -1,5 +1,11 @@
 ---
-const { size = "150px", class: className, ...props } = Astro.props;
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'span'> {
+  size?: string;
+}
+
+const { size = "150px", class: className, ...props } = Astro.props as Props;
 ---
 
 <span class:list={["logo-container", className]} style={`width: ${size}; height: ${size};`} {...props}>
