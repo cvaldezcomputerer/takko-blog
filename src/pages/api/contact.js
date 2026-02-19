@@ -1,12 +1,22 @@
 export const prerender = false;
 
+/**
+ * @typedef {object} ContactRequestBody
+ * @property {string} name
+ * @property {string} email
+ * @property {string} subject
+ * @property {string} message
+ * @property {string} [trap]
+ */
+
+/** @type {import('astro').APIRoute} */
 export const POST = async ({ request, locals }) => {
   if (request.method !== 'POST') {
     return new Response(JSON.stringify({ message: 'Method not allowed' }), { status: 405 });
   }
 
   try {
-    const body = await request.json();
+    const body = /** @type {ContactRequestBody} */ (await request.json());
     const { name, email, subject, message, trap } = body;
 
     // Honeypot check: Silent drop
@@ -59,11 +69,12 @@ export const POST = async ({ request, locals }) => {
     if (res.ok) {
       return new Response(JSON.stringify({ message: 'Message sent successfully!' }), { status: 200 });
     } else {
-      const errorData = await res.json();
+      const errorData = /** @type {{ message?: string }} */ (await res.json());
       return new Response(JSON.stringify({ message: errorData.message || JSON.stringify(errorData) }), { status: 500 });
     }
   } catch (error) {
     console.error(error);
-    return new Response(JSON.stringify({ message: error.message || 'Internal server error' }), { status: 500 });
+    const message = error instanceof Error ? error.message : 'Internal server error';
+    return new Response(JSON.stringify({ message }), { status: 500 });
   }
 };

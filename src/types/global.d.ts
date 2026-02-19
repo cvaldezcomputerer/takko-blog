@@ -17,6 +17,10 @@ interface TakkoSettingsApi {
 }
 
 declare global {
+  interface Document {
+    startViewTransition?: (callback: () => void | Promise<void>) => unknown;
+  }
+
   interface Window {
     TakkoSettings?: TakkoSettingsApi;
     __settingsCogAfterSwapBound?: boolean;

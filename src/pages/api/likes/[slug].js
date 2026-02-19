@@ -1,5 +1,11 @@
 export const prerender = false;
 
+/**
+ * @typedef {object} LikeRow
+ * @property {number | string} [count]
+ */
+
+/** @type {import('astro').APIRoute} */
 export const GET = async ({ params, locals }) => {
   try {
     const { slug } = params;
@@ -30,20 +36,22 @@ export const GET = async ({ params, locals }) => {
       .bind(slug)
       .first();
 
-    const count = result?.count ?? 0;
+    const count = Number((/** @type {LikeRow | null} */ (result))?.count ?? 0);
     return new Response(JSON.stringify({ count }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
   } catch (e) {
     console.error("Error fetching likes:", e);
-    return new Response(JSON.stringify({ error: e.message }), {
+    const message = e instanceof Error ? e.message : "Unknown error";
+    return new Response(JSON.stringify({ error: message }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
   }
 };
 
+/** @type {import('astro').APIRoute} */
 export const POST = async ({ params, locals }) => {
   try {
     const { slug } = params;
@@ -73,8 +81,8 @@ export const POST = async ({ params, locals }) => {
         RETURNING count;
       `);
 
-    const result = await stmt.bind(slug).first();
-    const count = result?.count ?? 0;
+    const result = /** @type {LikeRow | null} */ (await stmt.bind(slug).first());
+    const count = Number(result?.count ?? 0);
     console.log(`Successfully updated count for ${slug}: ${count}`);
 
     return new Response(JSON.stringify({ count }), {
@@ -83,7 +91,8 @@ export const POST = async ({ params, locals }) => {
     });
   } catch (e) {
     console.error("Error updating likes:", e);
-    return new Response(JSON.stringify({ error: e.message }), {
+    const message = e instanceof Error ? e.message : "Unknown error";
+    return new Response(JSON.stringify({ error: message }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });

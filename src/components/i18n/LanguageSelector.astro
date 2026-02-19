@@ -19,8 +19,8 @@
   <script>
     type Language = "en" | "ja" | "en_simple";
   
-    function isLanguage(value: any): value is Language {
-      return ["en", "ja", "en_simple"].includes(value);
+    function isLanguage(value: unknown): value is Language {
+      return typeof value === "string" && ["en", "ja", "en_simple"].includes(value);
     }
   
    
@@ -55,9 +55,7 @@
         button.addEventListener("click", () => {
           const langAttr = button.getAttribute("data-lang-btn");
           if (isLanguage(langAttr)) {
-            // @ts-ignore
             if (document.startViewTransition) {
-                // @ts-ignore
                 document.startViewTransition(() => {
                     setLanguage(langAttr);
                 });
