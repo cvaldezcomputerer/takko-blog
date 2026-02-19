@@ -8,6 +8,13 @@
 - Global API exposed on `window`:
   - `window.TakkoSettingsPanelController`
 
+## Type Declarations Related To Settings
+- Browser globals are declared in `src/types/global.d.ts`:
+  - `window.TakkoSettings`
+  - settings cog binding flags (`__settingsCog*`)
+  - `document.startViewTransition` (optional API)
+- Cloudflare runtime env typing lives in `src/env.d.ts` (`App.Locals.runtime.env`).
+
 ## Important Warning
 - `settings-state.js` is browser-only.
 - It directly uses `window`, `document`, and `localStorage`.
@@ -61,11 +68,14 @@
     - `takko:settings-open` (detail: `{ wrapper }`)
     - `takko:settings-close`
 - `LanguageSelector.astro`
+  - File: `src/components/i18n/LanguageSelector.astro`
   - Persists language in `localStorage` key `takko-blog-lang`
   - Dispatches `takko:language-changed` after language updates
 - `ThemeToggle.astro`
+  - File: `src/components/ui/ThemeToggle.astro`
   - Calls `TakkoSettings.toggleTheme()`
 - `Explain.astro`
+  - File: `src/components/content/Explain.astro`
   - Reads root class (`definition-highlights-off`) via CSS to disable highlight behavior site-wide
 
 ## Pattern For Adding New Settings
@@ -75,4 +85,4 @@
 4. Apply effect globally via class/attribute on `<html>` where possible.
 5. Add CSS/logic in affected components to react to that global class/state.
 6. If UI flow depends on panel behavior, route it through `takko:settings-open`/`takko:settings-close` events rather than direct DOM globals.
-7. Verify with `npm run build`.
+7. Verify with `npm run check` and `npm run build`.
