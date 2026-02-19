@@ -2,7 +2,7 @@
 import LanguageSelector from '../i18n/LanguageSelector.astro';
 import SettingsCog from '../settings/SettingsCog.astro';
 
-const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !== '/blog' && Astro.url.pathname !== '/blog/' ? '/blog' : '/';
+const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !== '/blog' && Astro.url.pathname !== '/blog/' ? '/' : '/';
 ---
 
 <button class="ghost-island" data-target="left" aria-label="Move island left"></button>
