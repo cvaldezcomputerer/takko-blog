@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
+    "check": "astro check",
     "build": "astro build",
     "preview": "wrangler dev",
     "db:migrate": "wrangler d1 migrations apply takko-blog-likes --local",
