@@ -1,5 +1,9 @@
 ---
-const { slug } = Astro.props;
+interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props as Props;
 ---
 
 <like-button data-slug={slug}>
@@ -40,6 +44,10 @@ const { slug } = Astro.props;
 </like-button>
 
 <script>
+  type LikeCountResponse = {
+    count: number;
+  };
+
   class LikeButton extends HTMLElement {
     isFlying = false;
 
@@ -47,7 +55,8 @@ const { slug } = Astro.props;
       super();
       
       const slug = this.dataset.slug;
-      const countSpan = this.querySelector('.count');
+      const countSpan = this.querySelector<HTMLElement>('.count');
+      if (!slug || !countSpan) return;
 
       let lastScrollY = window.scrollY;
 
@@ -91,22 +100,22 @@ const { slug } = Astro.props;
           if (!res.ok) throw new Error(await res.text());
           return res.json();
         })
-        .then(data => {
-          countSpan.textContent = data.count;
+        .then((data: LikeCountResponse) => {
+          countSpan.textContent = String(data.count);
         })
         .catch(e => console.error("Failed to fetch likes", e));
     }
 
-    sendLike(slug, countSpan) {
-      const current = parseInt(countSpan.textContent) || 0;
-      countSpan.textContent = current + 1;
+    sendLike(slug: string, countSpan: HTMLElement) {
+      const current = Number.parseInt(countSpan.textContent ?? '0', 10) || 0;
+      countSpan.textContent = String(current + 1);
 
       fetch(`/api/likes/${slug}`, { method: 'POST' })
         .then(async res => {
           if (!res.ok) throw new Error(await res.text());
           return res.json();
         })
-        .then(data => { countSpan.textContent = data.count; })
+        .then((data: LikeCountResponse) => { countSpan.textContent = String(data.count); })
         .catch(e => console.error("Failed to update likes", e));
     }
   }

@@ -1,11 +1,17 @@
 ---
 import Logo from './Logo.astro';
 
+interface Props {
+  size?: number;
+  stepMs?: number;
+  class?: string;
+}
+
 const {
   size = 26,
   stepMs = 340,
   class: className
-} = Astro.props;
+} = Astro.props as Props;
 
 const unitTypes = ['garlic', 'garlic', 'logo', 'garlic', 'garlic'];
 const garlicSymbolId = `garlic-shape-${Math.random().toString(36).slice(2, 8)}`;
@@ -48,7 +54,8 @@ const garlicSymbolId = `garlic-shape-${Math.random().toString(36).slice(2, 8)}`;
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   if (!prefersReducedMotion) {
-    document.querySelectorAll('.garlic-loader[data-step-ms]').forEach((loader) => {
+    const loaders = /** @type {NodeListOf<HTMLElement>} */ (document.querySelectorAll('.garlic-loader[data-step-ms]'));
+    loaders.forEach((loader) => {
       if (loader.dataset.loaderInit === 'true') return;
       loader.dataset.loaderInit = 'true';
 
