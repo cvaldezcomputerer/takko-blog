@@ -131,6 +131,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 				font-weight: 700;
 				letter-spacing: -0.01em;
 				font-size: 1.6rem;
+				text-wrap: balance;
 			}
 
 			ul li:first-child .title {
@@ -146,6 +147,20 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 
 			ul li:first-child .title:has([lang="ja"]) {
 				line-height: 1.35;
+			}
+
+			.title :global(.lang-en),
+			.title :global(.lang-en_simple) {
+				word-break: normal;
+				overflow-wrap: normal;
+				hyphens: auto;
+				text-wrap: pretty;
+			}
+
+			.title :global(.lang-ja) {
+				word-break: normal;
+				line-break: strict;
+				overflow-wrap: break-word;
 			}
 
 			.date {
@@ -184,6 +199,17 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 				}
 				ul li:first-child .title {
 					font-size: 2.25rem;
+				}
+			}
+
+			@media (max-width: 720px) {
+				.title {
+					font-size: 1.35rem;
+					line-height: 1.25;
+				}
+				ul li:first-child .title {
+					font-size: 1.85rem;
+					line-height: 1.2;
 				}
 			}
 		</style>
