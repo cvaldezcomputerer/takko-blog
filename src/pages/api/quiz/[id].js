@@ -1,5 +1,17 @@
 export const prerender = false;
 
+/**
+ * @typedef {object} QuizVoteRow
+ * @property {number | string} option_index
+ * @property {number | string} count
+ */
+
+/**
+ * @typedef {object} QuizVoteBody
+ * @property {number} optionIndex
+ */
+
+/** @type {import('astro').APIRoute} */
 export const GET = async ({ params, locals }) => {
     try {
       const { id } = params;
@@ -28,10 +40,11 @@ export const GET = async ({ params, locals }) => {
         .all();
   
       // Transform array [{option_index: 0, count: 5}, ...] into object { 0: 5, ... }
+      /** @type {Record<string, number>} */
       const votes = {};
       if (results) {
-        results.forEach((row) => {
-          votes[row.option_index] = row.count;
+        (/** @type {QuizVoteRow[]} */ (results)).forEach((row) => {
+          votes[String(row.option_index)] = Number(row.count);
         });
       }
   
@@ -43,20 +56,22 @@ export const GET = async ({ params, locals }) => {
       });
     } catch (e) {
       console.error("Error fetching quiz:", e);
-      return new Response(JSON.stringify({ error: e.message }), {
+      const message = e instanceof Error ? e.message : "Unknown error";
+      return new Response(JSON.stringify({ error: message }), {
         status: 500,
         headers: { "Content-Type": "application/json" },
       });
     }
   };
   
+  /** @type {import('astro').APIRoute} */
   export const POST = async ({ params, request, locals }) => {
     try {
       const { id } = params;
-      const body = await request.json();
+      const body = /** @type {QuizVoteBody} */ (await request.json());
       const { optionIndex } = body;
   
-      if (!id || optionIndex === undefined) {
+      if (!id || typeof optionIndex !== "number" || !Number.isInteger(optionIndex) || optionIndex < 0) {
         return new Response(JSON.stringify({ error: "Missing data" }), {
           status: 400,
           headers: { "Content-Type": "application/json" },
@@ -75,15 +90,16 @@ export const GET = async ({ params, locals }) => {
         RETURNING count;
       `);
   
-      const result = await stmt.bind(id, optionIndex).first();
+      const result = /** @type {{ count?: number | string } | null} */ (await stmt.bind(id, optionIndex).first());
   
-      return new Response(JSON.stringify({ success: true, newCount: result.count }), {
+      return new Response(JSON.stringify({ success: true, newCount: Number(result?.count ?? 0) }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
     } catch (e) {
       console.error("Error voting:", e);
-      return new Response(JSON.stringify({ error: e.message }), {
+      const message = e instanceof Error ? e.message : "Unknown error";
+      return new Response(JSON.stringify({ error: message }), {
         status: 500,
         headers: { "Content-Type": "application/json" },
       });

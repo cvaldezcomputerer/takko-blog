@@ -1,5 +1,9 @@
 ---
-const { class: className, ...props } = Astro.props;
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = HTMLAttributes<'svg'>;
+
+const { class: className, ...props } = Astro.props as Props;
 ---
 
 <svg class:list={["takko-logo", className]} viewBox="0 0 687 508" xmlns="http://www.w3.org/2000/svg" {...props}>
