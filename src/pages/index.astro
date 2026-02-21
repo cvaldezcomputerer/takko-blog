@@ -235,7 +235,9 @@ function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 											{post.data.heroImage && isOptimizedImageSrc(post.data.heroImage) ? (
 												<OptimizedImage
 													src={post.data.heroImage}
-													sizes={index === 0 ? "(max-width: 960px) 100vw, 960px" : "(max-width: 720px) 100vw, (max-width: 960px) 50vw, 480px"}
+													sizes={index === 0
+														? "(max-width: 1024px) calc(100vw - 4rem), 620px"
+														: "(max-width: 1024px) calc((100vw - 6rem) / 2), 524px"}
 													alt={post.data.title}
 												loading={index === 0 ? "eager" : "lazy"}
 												fetchpriority={index === 0 ? "high" : "auto"}
