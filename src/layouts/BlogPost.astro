@@ -11,7 +11,22 @@ import type { CollectionEntry } from 'astro:content';
 
 type Props = CollectionEntry<'blog'>['data'] & { slug: string };
 
-const { title, title_ja, title_en_simple, description, pubDate, updatedDate, heroImage, slug, heroImageFit } = Astro.props as Props;
+const {
+	title,
+	title_ja,
+	title_en_simple,
+	description,
+	pubDate,
+	updatedDate,
+	heroImage,
+	slug,
+	heroImageFit,
+	cameraUsedName,
+	cameraUsedImage,
+	cameraUsedImageAlt,
+	cameraUsedLink,
+	cameraUsedLinkLabel,
+} = Astro.props as Props;
 
 function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 	if (typeof value === 'string') return true;
@@ -66,6 +81,60 @@ function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 			.date {
 				margin-bottom: 0.5em;
 				color: rgb(var(--gray));
+			}
+			.post-meta-line {
+				margin-top: 0.6rem;
+				display: flex;
+				justify-content: center;
+			}
+			.camera-used {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.7rem;
+				padding: 0.6rem 0.9rem;
+				border-radius: 14px;
+				background: rgba(var(--gray-light), 0.5);
+				border: 1px solid rgba(var(--gray), 0.18);
+				color: rgb(var(--gray-dark));
+				font-size: 1rem;
+				line-height: 1.1;
+				text-align: left;
+				max-width: min(100%, 680px);
+			}
+			.camera-used__thumb {
+				width: 46px;
+				height: 46px;
+				object-fit: cover;
+				border-radius: 12px;
+				flex-shrink: 0;
+				background: rgba(255, 255, 255, 0.75);
+				border: 1px solid rgba(var(--gray), 0.18);
+			}
+			.camera-used__label {
+				font-weight: 700;
+				color: rgb(var(--gray));
+				margin-right: 0.15rem;
+			}
+			.camera-used__name {
+				font-weight: 700;
+				color: rgb(var(--gray-dark));
+			}
+			.camera-used__link {
+				color: inherit;
+				text-decoration: none;
+			}
+			.camera-used__link:hover .camera-used__name {
+				text-decoration: underline;
+			}
+			@media (max-width: 640px) {
+				.camera-used {
+					border-radius: 12px;
+					padding: 0.65rem 0.75rem;
+					align-items: flex-start;
+				}
+				.camera-used__copy {
+					display: inline-block;
+				}
 			}
 			.last-updated-on {
 				font-style: italic;
@@ -167,6 +236,47 @@ function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 								updatedDate && (
 									<div class="last-updated-on">
 										Last updated on <FormattedDate date={updatedDate} />
+									</div>
+								)
+							}
+							{
+								cameraUsedName && (
+									<div class="post-meta-line">
+										<div class="camera-used">
+											{
+												cameraUsedImage && (
+													<img
+														class="camera-used__thumb"
+														src={cameraUsedImage}
+														alt={cameraUsedImageAlt || `${cameraUsedName} image`}
+														loading="lazy"
+														decoding="async"
+													/>
+												)
+											}
+											<span class="camera-used__copy">
+												<span class="camera-used__label">
+													<T>
+														<span slot="en" lang="en">Shot with:</span>
+														<span slot="ja" lang="ja">撮影機材:</span>
+														<span slot="en_simple" lang="en">Camera:</span>
+													</T>
+												</span>
+												{
+													cameraUsedLink ? (
+														<a
+															class="camera-used__link"
+															href={cameraUsedLink}
+															aria-label={cameraUsedLinkLabel || `Read post about ${cameraUsedName}`}
+														>
+															<span class="camera-used__name">{cameraUsedName}</span>
+														</a>
+													) : (
+														<span class="camera-used__name">{cameraUsedName}</span>
+													)
+												}
+											</span>
+										</div>
 									</div>
 								)
 							}
