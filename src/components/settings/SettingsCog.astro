@@ -35,12 +35,21 @@ const { class: className, size = '44px' } = Astro.props as Props;
           </T>
         </p>
         <button type="button" class="setting-item" data-setting-toggle="island-visibility">
-          <span class="setting-label">
-            <T fluid>
-              <span slot="en">Island</span>
-              <span slot="ja">アイランド表示</span>
-              <span slot="en_simple">🏝️ Island</span>
-            </T>
+          <span class="setting-text">
+            <span class="setting-label">
+              <T fluid>
+                <span slot="en">Island</span>
+                <span slot="ja">アイランド表示</span>
+                <span slot="en_simple">🏝️ Island</span>
+              </T>
+            </span>
+            <span class="setting-description">
+              <T fluid>
+                <span slot="en">Show or hide the floating island shortcut controls.</span>
+                <span slot="ja">画面のフローティング操作ボタンを表示または非表示にします。</span>
+                <span slot="en_simple">Show or hide the floating button bar.</span>
+              </T>
+            </span>
           </span>
           <span class="setting-control">
             <span class="setting-value" data-setting-value="island-visibility">On</span>
@@ -48,12 +57,21 @@ const { class: className, size = '44px' } = Astro.props as Props;
           </span>
         </button>
         <button type="button" class="setting-item" data-setting-toggle="show-definition-highlights">
-          <span class="setting-label">
-            <T fluid>
-              <span slot="en">Show Explanation</span>
-              <span slot="ja">説明を表示</span>
-              <span slot="en_simple">📖 Explain</span>
-            </T>
+          <span class="setting-text">
+            <span class="setting-label">
+              <T fluid>
+                <span slot="en">Show Explanation</span>
+                <span slot="ja">説明を表示</span>
+                <span slot="en_simple">📖 Explain</span>
+              </T>
+            </span>
+            <span class="setting-description">
+              <T fluid>
+                <span slot="en">Highlight terms with study hints and expandable explanations.</span>
+                <span slot="ja">学習用のヒントや説明付きの語句ハイライトを表示します。</span>
+                <span slot="en_simple">Show study highlights and explanation hints.</span>
+              </T>
+            </span>
           </span>
           <span class="setting-control">
             <span class="setting-value" data-setting-value="show-definition-highlights">On</span>
@@ -71,12 +89,21 @@ const { class: className, size = '44px' } = Astro.props as Props;
           </T>
         </p>
         <button type="button" class="setting-item" data-setting-toggle="theme">
-          <span class="setting-label">
-            <T fluid>
-              <span slot="en">Dark or Light</span>
-              <span slot="ja">テーマ</span>
-              <span slot="en_simple">Dark or Light</span>
-            </T>
+          <span class="setting-text">
+            <span class="setting-label">
+              <T fluid>
+                <span slot="en">Dark or Light</span>
+                <span slot="ja">テーマ</span>
+                <span slot="en_simple">Dark or Light</span>
+              </T>
+            </span>
+            <span class="setting-description">
+              <T fluid>
+                <span slot="en">Switch the site appearance between light mode and dark mode.</span>
+                <span slot="ja">サイトの表示をライトモードとダークモードで切り替えます。</span>
+                <span slot="en_simple">Change the site colors: light or dark.</span>
+              </T>
+            </span>
           </span>
           <span class="setting-control">
             <span class="setting-value" data-setting-value="theme">Light</span>
@@ -84,12 +111,21 @@ const { class: className, size = '44px' } = Astro.props as Props;
           </span>
         </button>
         <button type="button" class="setting-item" data-setting-toggle="text-size">
-          <span class="setting-label">
-            <T fluid>
-              <span slot="en">Word Size</span>
-              <span slot="ja">文字サイズ</span>
-              <span slot="en_simple">Word Size</span>
-            </T>
+          <span class="setting-text">
+            <span class="setting-label">
+              <T fluid>
+                <span slot="en">Word Size</span>
+                <span slot="ja">文字サイズ</span>
+                <span slot="en_simple">Word Size</span>
+              </T>
+            </span>
+            <span class="setting-description">
+              <T fluid>
+                <span slot="en">Cycle reading text size to make Japanese words easier to scan.</span>
+                <span slot="ja">日本語の読みやすさに合わせて文字サイズを切り替えます。</span>
+                <span slot="en_simple">Change text size to S / M / L.</span>
+              </T>
+            </span>
           </span>
           <span class="setting-value" data-setting-value="text-size">Medium</span>
         </button>
@@ -152,15 +188,15 @@ const { class: className, size = '44px' } = Astro.props as Props;
     left: 50%;
     top: 52%;
     transform: translate(-50%, -50%);
-    width: min(92vw, 560px);
-    max-height: 80vh;
+    width: min(96vw, 920px);
+    max-height: 90vh;
     overflow: auto;
     background: var(--secondary);
     border: 2px solid var(--accent);
-    border-radius: 14px;
+    border-radius: 16px;
     box-shadow: 0 16px 50px rgba(0, 0, 0, 0.25);
-    padding: 0.75rem;
-    gap: 0.75rem;
+    padding: 1rem;
+    gap: 0.9rem;
     z-index: 350;
   }
 
@@ -185,13 +221,13 @@ const { class: className, size = '44px' } = Astro.props as Props;
     margin: 0;
     font-weight: 700;
     color: var(--accent);
-    font-size: 0.95rem;
+    font-size: 1rem;
   }
 
   .settings-groups {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.75rem;
+    gap: 1rem;
   }
 
   .settings-section {
@@ -218,14 +254,21 @@ const { class: className, size = '44px' } = Astro.props as Props;
     border: 1px solid rgba(var(--gray), 0.35);
     background: var(--background);
     color: rgb(var(--black));
-    border-radius: 10px;
-    padding: 0.6rem 0.7rem;
+    border-radius: 12px;
+    padding: 0.75rem 0.85rem;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     font-size: 0.83rem;
     cursor: pointer;
-    gap: 0.75rem;
+    gap: 0.85rem;
+    min-width: 0;
+    text-align: left;
+  }
+
+  .setting-text {
+    display: grid;
+    gap: 0.2rem;
     min-width: 0;
   }
 
@@ -235,17 +278,31 @@ const { class: className, size = '44px' } = Astro.props as Props;
     min-width: 0;
   }
 
+  .setting-description {
+    color: rgb(var(--gray-dark));
+    font-size: 0.75rem;
+    line-height: 1.35;
+    min-width: 0;
+    text-wrap: pretty;
+  }
+
   .settings-value {
     color: rgb(var(--gray-dark));
     font-size: 0.78rem;
     white-space: nowrap;
+    word-break: keep-all;
+    flex-shrink: 0;
   }
 
   .setting-control {
     display: inline-flex;
     align-items: center;
+    flex-wrap: nowrap;
     gap: 0.5rem;
     margin-left: auto;
+    margin-top: 0.1rem;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
   .setting-switch {
@@ -297,7 +354,9 @@ const { class: className, size = '44px' } = Astro.props as Props;
     }
 
     .settings-panel.settings-sheet {
-      width: min(92vw, 340px);
+      width: min(96vw, 520px);
+      padding: 0.85rem;
+      gap: 0.8rem;
     }
 
     .settings-groups {
@@ -309,6 +368,10 @@ const { class: className, size = '44px' } = Astro.props as Props;
       padding-left: 0;
       border-top: 1px solid rgba(var(--gray), 0.3);
       padding-top: 0.7rem;
+    }
+
+    .settings-panel .setting-item {
+      padding: 0.7rem 0.75rem;
     }
   }
 </style>
