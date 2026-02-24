@@ -13,6 +13,11 @@ const blog = defineCollection({
       draft: z.boolean().optional(),
       heroImage: image().optional(),
       heroImageFit: z.string().optional(),
+      cameraUsedName: z.string().optional(),
+      cameraUsedImage: z.string().optional(),
+      cameraUsedImageAlt: z.string().optional(),
+      cameraUsedLink: z.string().optional(),
+      cameraUsedLinkLabel: z.string().optional(),
     }),
 });
 
