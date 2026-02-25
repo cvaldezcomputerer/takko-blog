@@ -55,13 +55,9 @@
         button.addEventListener("click", () => {
           const langAttr = button.getAttribute("data-lang-btn");
           if (isLanguage(langAttr)) {
-            if (document.startViewTransition) {
-                document.startViewTransition(() => {
-                    setLanguage(langAttr);
-                });
-            } else {
-                setLanguage(langAttr);
-            }
+            // Avoid View Transition snapshot crossfades for text-only language swaps.
+            // The browser crossfade can make glyphs look blurry during the switch.
+            setLanguage(langAttr);
           }
         });
       });
