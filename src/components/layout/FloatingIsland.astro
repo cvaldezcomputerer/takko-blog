@@ -208,7 +208,6 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 		transform: translateX(-50%);
 		width: 80px;
 		height: 40px;
-		display: none;
 	}
 	.ghost-island[data-target="bottom"]:hover { transform: translateX(-50%) scale(1.2); }
 
@@ -319,7 +318,7 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 </style>
 
 <script>
-		type IslandPosition = 'left' | 'center' | 'right';
+		type IslandPosition = 'left' | 'center' | 'right' | 'bottom';
 
 		function initializeScrollEffect() {
 			const island = document.getElementById('floating-island');
@@ -356,7 +355,7 @@ const backLink = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !
 			ghosts.forEach(g => {
 				g.addEventListener('click', () => {
 					const target = g.getAttribute('data-target');
-					if (target === 'left' || target === 'center' || target === 'right') {
+					if (target === 'left' || target === 'center' || target === 'right' || target === 'bottom') {
 						setPosition(target);
 					}
 				});
