@@ -17,9 +17,11 @@ import SettingsCog from '../settings/SettingsCog.astro';
 			<span class="site-title-text">{SITE_TITLE}</span>
 		</a>
 
-		<LanguageSelector />
-		<ThemeToggle />
-		<SettingsCog class="header-settings" size="40px" />
+		<div class="header-preferences-controls">
+			<LanguageSelector />
+			<ThemeToggle />
+			<SettingsCog class="header-settings" size="40px" />
+		</div>
 		
 		<div class="menu-content">
 			<div class="internal-links">
@@ -139,9 +141,16 @@ import SettingsCog from '../settings/SettingsCog.astro';
 		flex-grow: 1;
 		transition: transform 0.3s ease;
 	}
+
+	.header-preferences-controls {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		flex-shrink: 0;
+	}
 	
 	@media (min-width: 1400px) {
-		nav :global(.language-controls) {
+		.header-preferences-controls {
 			position: absolute;
 			left: 50%;
 			transform: translateX(-50%);
