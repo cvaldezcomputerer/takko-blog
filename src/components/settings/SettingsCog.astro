@@ -307,6 +307,12 @@ const { class: className, size = '44px' } = Astro.props as Props;
     flex-shrink: 0;
   }
 
+  [data-setting-value="text-size"] {
+    display: inline-block;
+    min-width: 4.5rem;
+    text-align: center;
+  }
+
   .setting-control {
     display: inline-flex;
     align-items: center;
