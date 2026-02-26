@@ -211,6 +211,71 @@ function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 				background: #fff;
 				transform: scale(1.04);
 			}
+			.post-outro {
+				margin-top: 2.25rem;
+				padding: 0.95rem 0.95rem 0.85rem;
+				border-radius: 16px;
+				border: 1px solid rgba(var(--gray), 0.18);
+				border-top: 2px solid rgba(var(--accent), 0.5);
+				background: rgba(var(--gray-light), 0.28);
+				text-align: center;
+				box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+			}
+			.post-outro__title {
+				margin: 0 0 0.45rem 0;
+				font-size: 1.15rem;
+				font-weight: 800;
+				line-height: 1.1;
+				color: rgb(var(--gray-dark));
+			}
+			.post-outro__line {
+				margin: 0;
+				line-height: 1.5;
+				color: rgb(var(--gray-dark));
+			}
+			.post-outro__line + .post-outro__line {
+				margin-top: 0.5rem;
+			}
+			.post-outro__link {
+				display: inline;
+				margin: 0 0.18rem;
+				padding: 0;
+				background: transparent;
+				color: var(--accent);
+				font-weight: 700;
+				text-decoration: underline;
+				text-decoration-thickness: 1.5px;
+				text-underline-offset: 0.14em;
+				transition: opacity 120ms ease;
+			}
+			.post-outro__link:hover {
+				opacity: 0.8;
+			}
+			.post-outro__link:focus-visible {
+				outline: 2px solid var(--accent);
+				outline-offset: 2px;
+				border-radius: 4px;
+			}
+			:global(.dark) .post-outro {
+				background: rgba(255,255,255,0.04);
+				border-color: rgba(255,255,255,0.12);
+				border-top-color: rgba(var(--accent), 0.6);
+				box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14);
+			}
+			@media (max-width: 640px) {
+				.post-outro {
+					margin-top: 1.8rem;
+					padding: 0.85rem 0.75rem 0.8rem;
+					border-radius: 12px;
+				}
+				.post-outro__line {
+					font-size: 0.95rem;
+					line-height: 1.5;
+				}
+				.post-outro__title {
+					font-size: 1.05rem;
+				}
+			}
 
 		</style>
 	</head>
@@ -218,7 +283,7 @@ function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 	<body class="blog-post-page">
 		<Header />
 		
-		<main>
+		<main id="top">
 			
 			<article>
 				<div class="prose">
@@ -297,6 +362,47 @@ function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 				}
 				<div class="prose" data-blog-content>
 					<slot />
+					<div class="post-outro" aria-label="Post ending actions">
+						<h3 class="post-outro__title">
+							<T fluid>
+								<span slot="en" lang="en">Thank you!</span>
+								<span slot="ja" lang="ja">ありがとう！</span>
+								<span slot="en_simple" lang="en">Thank you!</span>
+							</T>
+						</h3>
+						<p class="post-outro__line">
+							<T fluid>
+								<span slot="en" lang="en">
+									Thank you for reading. Please click on the doggy to leave a like, and go back to the top!
+								</span>
+								<span slot="ja" lang="ja">
+									読んでくれてありがとうございます。わんこをクリックして「いいね」をして、ページの上へ戻ってね！
+								</span>
+								<span slot="en_simple" lang="en">
+									Thank you for reading! Click the doggy to like this post, and go back to the top.
+								</span>
+							</T>
+						</p>
+						<p class="post-outro__line">
+							<T fluid>
+								<span slot="en" lang="en">
+									Or click
+									<a class="post-outro__link" href="/" aria-label="Return to posts page">here</a>
+									to return to the posts page.
+								</span>
+								<span slot="ja" lang="ja">
+									または
+									<a class="post-outro__link" href="/" aria-label="記事一覧ページに戻る">ここ</a>
+									をクリックして記事一覧ページに戻ってください。
+								</span>
+								<span slot="en_simple" lang="en">
+									Or click
+									<a class="post-outro__link" href="/" aria-label="Go back to posts page">here</a>
+									to go back to the posts page.
+								</span>
+							</T>
+						</p>
+					</div>
 				</div>
 			</article>
 			{slug && <LikeButton slug={slug} />}
