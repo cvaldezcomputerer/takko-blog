@@ -1,0 +1,280 @@
+---
+import T from "../i18n/T.astro";
+
+interface TranslationText {
+	en: string;
+	ja?: string;
+	en_simple?: string;
+}
+
+type LocalizedText = string | TranslationText;
+
+interface Ingredient {
+	name: LocalizedText;
+	amount: number | string;
+	unit?: LocalizedText;
+	note?: LocalizedText;
+}
+
+interface Props {
+	title?: LocalizedText;
+	ingredients: Ingredient[];
+}
+
+const { title = "Ingredients", ingredients = [] } = Astro.props as Props;
+
+function toTranslation(value: LocalizedText): TranslationText {
+	if (typeof value === "string") {
+		return {
+			en: value,
+			ja: value,
+			en_simple: value,
+		};
+	}
+
+	return {
+		en: value.en,
+		ja: value.ja ?? value.en,
+		en_simple: value.en_simple ?? value.en,
+	};
+}
+
+const titleText = toTranslation(title);
+---
+
+<recipe-ingredients>
+	<section class="recipe-card" aria-label={titleText.en}>
+		<div class="tape tape-tl"></div>
+		<div class="tape tape-tr"></div>
+		<div class="tape tape-bl"></div>
+		<div class="tape tape-br"></div>
+		<div class="recipe-card__header">
+			<h3 class="recipe-card__title">
+				<T fluid>
+					<span slot="en">{titleText.en}</span>
+					<span slot="ja">{titleText.ja}</span>
+					<span slot="en_simple">{titleText.en_simple}</span>
+				</T>
+			</h3>
+		</div>
+
+		<ul class="recipe-card__list">
+			{
+				ingredients.map((ingredient) => {
+					const nameText = toTranslation(ingredient.name);
+					const unitText = ingredient.unit ? toTranslation(ingredient.unit) : null;
+					const noteText = ingredient.note ? toTranslation(ingredient.note) : null;
+
+					return (
+						<li class="recipe-card__item">
+							<span class="recipe-card__amount">
+								<span>{ingredient.amount}</span>
+								{
+									unitText && (
+										<span class="recipe-card__unit">
+											{" "}
+											<T fluid>
+												<span slot="en">{unitText.en}</span>
+												<span slot="ja">{unitText.ja}</span>
+												<span slot="en_simple">{unitText.en_simple}</span>
+											</T>
+										</span>
+									)
+								}
+							</span>
+							<span class="recipe-card__name">
+								<T fluid>
+									<span slot="en">{nameText.en}</span>
+									<span slot="ja">{nameText.ja}</span>
+									<span slot="en_simple">{nameText.en_simple}</span>
+								</T>
+								{
+									noteText && (
+										<span class="recipe-card__note">
+											{" ("}
+											<T fluid>
+												<span slot="en">{noteText.en}</span>
+												<span slot="ja">{noteText.ja}</span>
+												<span slot="en_simple">{noteText.en_simple}</span>
+											</T>
+											{")"}
+										</span>
+									)
+								}
+							</span>
+						</li>
+					);
+				})
+			}
+		</ul>
+	</section>
+</recipe-ingredients>
+
+<style>
+	recipe-ingredients {
+		display: block;
+		overflow: visible;
+		margin: 2.5rem 0;
+	}
+
+	.recipe-card {
+		position: relative;
+		padding: 1.15rem 0.95rem 0.95rem;
+		margin: 0 auto;
+		border: 1px solid #ddd;
+		border-radius: 2px;
+		background-color: var(--secondary);
+		background-image:
+			linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+		background-size: 20px 20px;
+		box-shadow:
+			5px 5px 0px #e0e0e0,
+			10px 10px 0px rgba(0, 0, 0, 0.05);
+		transform: rotate(0.2deg);
+		overflow: visible;
+	}
+
+	:global(.dark) .recipe-card {
+		border-color: rgba(255, 255, 255, 0.1);
+		background-color: var(--secondary);
+		background-image:
+			linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+		box-shadow:
+			5px 5px 0px rgba(0, 0, 0, 0.3),
+			10px 10px 0px rgba(0, 0, 0, 0.1);
+	}
+
+	.tape {
+		position: absolute;
+		width: 76px;
+		height: 22px;
+		background-color: hsla(var(--theme-hue, 45), 85%, 90%, 0.8);
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+		backdrop-filter: blur(1px);
+		opacity: 0.92;
+		z-index: 10;
+		border-left: 1px dashed rgba(0, 0, 0, 0.05);
+		border-right: 1px dashed rgba(0, 0, 0, 0.05);
+	}
+
+	:global(.dark) .tape {
+		background-color: hsla(var(--theme-hue, 45), 85%, 90%, 0.3);
+	}
+
+	.tape-tl {
+		top: -6px;
+		left: -12px;
+		transform: rotate(-35deg);
+	}
+
+	.tape-tr {
+		top: -6px;
+		right: -12px;
+		transform: rotate(35deg);
+	}
+
+	.tape-bl {
+		bottom: -6px;
+		left: -12px;
+		transform: rotate(35deg);
+	}
+
+	.tape-br {
+		bottom: -6px;
+		right: -12px;
+		transform: rotate(-35deg);
+	}
+
+	.recipe-card__header {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		margin-bottom: 0.9rem;
+	}
+
+	.recipe-card__title {
+		margin: 0;
+		font-size: 1.15rem;
+		line-height: 1.25;
+		color: inherit;
+		font-family: "Courier New", Courier, monospace;
+	}
+
+	.recipe-card__list {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		display: grid;
+		gap: 0.5rem;
+		overflow: visible;
+	}
+
+	.recipe-card__item {
+		display: grid;
+		grid-template-columns: minmax(6.8rem, 8.5rem) 1fr;
+		gap: 0.8rem;
+		align-items: start;
+		padding: 0.62rem 0.7rem;
+		background: #fff;
+		border: 1px solid rgba(0, 0, 0, 0.08);
+		box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.06);
+		transform: none;
+		line-height: 1.35;
+	}
+
+	:global(.dark) .recipe-card__item {
+		background: var(--background);
+		border-color: rgba(255, 255, 255, 0.12);
+		box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.25);
+	}
+
+	.recipe-card__amount {
+		font-weight: 700;
+		white-space: nowrap;
+		color: inherit;
+		font-family: "Courier New", Courier, monospace;
+		display: inline-flex;
+		align-items: baseline;
+		padding: 0.15rem 0.35rem;
+		background: rgba(var(--accent), 0.08);
+		border-left: 3px solid rgba(var(--accent), 0.55);
+	}
+
+	.recipe-card__unit {
+		font-weight: 600;
+		color: rgb(var(--gray));
+	}
+
+	.recipe-card__name {
+		color: inherit;
+		min-width: 0;
+	}
+
+	.recipe-card__note {
+		color: rgb(var(--gray));
+		font-size: 0.92em;
+	}
+
+	@media (max-width: 520px) {
+		.recipe-card {
+			padding: 1rem 0.75rem 0.8rem;
+			transform: none;
+		}
+
+		.recipe-card__header {
+			margin-bottom: 0.7rem;
+		}
+
+		.recipe-card__item {
+			grid-template-columns: 1fr;
+			gap: 0.35rem;
+			transform: none;
+		}
+
+		.recipe-card__amount {
+			width: fit-content;
+		}
+	}
+</style>
