@@ -7,6 +7,7 @@ Use this for any new post. Duplicate this file per post and check items as you g
 - [ ] Replace draft text with final `en` content.
 - [ ] Replace draft text with final `en_simple` content.
 - [ ] Add/update `ja` content.
+- [ ] Add `Explain` components for tricky vocabulary/phrases while drafting (as needed).
 - [ ] Confirm section headers are final in all languages.
 - [ ] Add/update frontmatter:
   - [ ] `title`
@@ -40,7 +41,7 @@ Use this for any new post. Duplicate this file per post and check items as you g
 
 - [ ] Keep tone natural (not over-literal) in `ja`.
 - [ ] Keep `en_simple` short and clear.
-- [ ] Add `Explain` hints for tricky English phrases/idioms.
+- [ ] Review/confirm `Explain` hints for tricky English phrases/idioms.
 - [ ] Verify all links are present in each language slot where required.
 
 ## 5) QA Pass
