@@ -1,0 +1,359 @@
+---
+title: 'Chili con Carne'
+title_ja: "チリコンカンネ"
+title_en_simple: "Mexico chili!"
+description: "My first recipe post: a countryside-Japan version of chili con carne."
+pubDate: "2026-02-26"
+heroImage: "../../assets/images/blog/chili-con-carne-easy/chili-con-carne-header.webp"
+---
+
+import T from "../../components/i18n/T.astro";
+import RecipeIngredients from "../../components/content/RecipeIngredients.astro";
+import Explain from "../../components/content/Explain.astro";
+
+
+<T>
+  <span slot="en">
+    Today I was asked about the recipe for a dish I cooked a while ago, so I
+    decided to make my first recipe post. The Mexican dish is called "chili con
+    carne," which is Spanish for chili with meat. However, this recipe is a bit
+    unique since I was{" "}
+    <Explain meaning="limited by what was available">restricted to</Explain>{" "}
+    what I could find in my Japanese
+    countryside town.
+  </span>
+  <span slot="ja">
+    今日、前に作った料理のレシピについて聞かれたので、初めてのレシピ記事を書いてみることにしました。今回のメキシコ料理は「チリコンカンネ」です。スペイン語で「肉入りのチリ」という意味です。でもこのレシピは、僕が日本の田舎町で手に入る材料に限られていたので、ちょっと独特なバージョンになっています。
+  </span>
+  <span slot="en_simple">
+    Hello! Today, I will introduce my Mexican recipe. The dish is "chili con
+    carne." It means "chili with meat." But, my recipe is a little special. I
+    used food from my town.
+  </span>
+</T>
+
+### <T><span slot="en">Ingredients (4 Servings)</span><span slot="ja">材料（4人分）</span><span slot="en_simple">Ingredients (4 people)</span></T>
+
+<RecipeIngredients
+  title={{
+    en: "Ingredients (4 servings)",
+    ja: "材料（4人分）",
+    en_simple: "Ingredients (4 people)",
+  }}
+  ingredients={[
+    {
+      amount: "450",
+      unit: {
+        en: "g",
+        ja: "g",
+        en_simple: "g",
+      },
+      name: {
+        en: "Ground beef/pork mix (aibiki niku)",
+        ja: "合いびき肉",
+        en_simple: "Mixed beef and pork (aibiki niku)",
+      },
+    },
+    {
+      amount: "1",
+      name: {
+        en: "Large onion, diced",
+        ja: "大きい玉ねぎ 1個（角切り）",
+        en_simple: "1 big onion (cut small)",
+      },
+    },
+    {
+      amount: "2",
+      name: {
+        en: "cloves garlic, minced",
+        ja: "にんにく 2かけ（みじん切り）",
+        en_simple: "2 garlic pieces (cut small)",
+      },
+    },
+    {
+      amount: "1",
+      name: {
+        en: "can (15 oz) red beans (ideally large), drained and rinsed",
+        ja: "赤い豆 1缶（約15oz・大きめがおすすめ／水気を切って洗う）",
+        en_simple: "1 can red beans (drain and wash)",
+      },
+    },
+    {
+      amount: "1",
+      name: {
+        en: "can (14.5 oz) crushed or diced tomatoes",
+        ja: "トマト缶 1缶（約14.5oz・カットまたはつぶし）",
+        en_simple: "1 can tomatoes",
+      },
+    },
+    {
+      amount: "1",
+      unit: {
+        en: "cup",
+        ja: "カップ",
+        en_simple: "cup",
+      },
+      name: {
+        en: "Beef broth (or water)",
+        ja: "ビーフブロス（または水）",
+        en_simple: "Beef broth (or water)",
+      },
+    },
+    {
+      amount: "2",
+      unit: {
+        en: "tbsp",
+        ja: "大さじ",
+        en_simple: "tbsp",
+      },
+      name: {
+        en: "Tomato paste",
+        ja: "トマトペースト",
+        en_simple: "Tomato paste",
+      },
+    },
+    {
+      amount: "2",
+      unit: {
+        en: "tbsp",
+        ja: "大さじ",
+        en_simple: "tbsp",
+      },
+      name: {
+        en: "Chili powder",
+        ja: "チリパウダー",
+        en_simple: "Chili powder",
+      },
+    },
+    {
+      amount: "1",
+      unit: {
+        en: "tsp",
+        ja: "小さじ",
+        en_simple: "tsp",
+      },
+      name: {
+        en: "Ground cumin",
+        ja: "クミンパウダー",
+        en_simple: "Cumin powder",
+      },
+    },
+    {
+      amount: "1",
+      unit: {
+        en: "tsp",
+        ja: "小さじ",
+        en_simple: "tsp",
+      },
+      name: {
+        en: "Paprika",
+        ja: "パプリカパウダー",
+        en_simple: "Paprika",
+      },
+    },
+    {
+      amount: "0.5",
+      unit: {
+        en: "tbsp",
+        ja: "大さじ",
+        en_simple: "tbsp",
+      },
+      name: {
+        en: "Vegetable oil (for browning)",
+        ja: "サラダ油（焼き色用）",
+        en_simple: "Oil (for cooking meat)",
+      },
+    },
+    {
+      amount: "-",
+      name: {
+        en: "Salt and black pepper to taste",
+        ja: "塩・黒こしょう（味を見ながら）",
+        en_simple: "Salt and black pepper (as you like)",
+      },
+    },
+  ]}
+/>
+
+<T>
+  <span slot="en">
+    I made two changes to a traditional chili recipe here. First, I{" "}
+    <Explain meaning="replaced one thing with another">swapped out</Explain>{" "}
+    pure ground beef for a ground beef/pork mix. Unlike in America, 100% ground
+    beef is harder to find and much more expensive, which is particularly true
+    in my town! Even if you are willing to{" "}
+    <Explain meaning="spend extra money on something">splurge for</Explain>{" "}
+    the fancy Japanese ground
+    beef, it tends to be a bit too fatty for this dish.
+  </span>
+  <span slot="ja">
+    今回は、伝統的なチリのレシピから2つ変更しました。1つ目は、牛ひき肉100%ではなく、合いびき肉を使ったことです。アメリカと違って、日本では牛ひき肉100%は見つけにくく、しかもかなり高いです。特に僕の町ではそうです！それに、少し高い日本の牛ひき肉を買っても、この料理には脂が多すぎることが多いと思います。
+  </span>
+  <span slot="en_simple">
+    I changed two things. First, I used mixed beef and pork (aibiki niku). In
+    America, 100% beef is normal. But here, it is expensive! Also, Japanese
+    beef has too much fat for this food.
+  </span>
+</T>
+
+<T>
+  <span slot="en">
+    The beans are the second{" "}
+    <Explain meaning="replacement or change">swap</Explain>. You can actually
+    order kidney beans online on Amazon which often delivers the next day even
+    out here, but I found
+    standard red beans from the local supermarket to be perfectly fine instead.
+  </span>
+  <span slot="ja">
+    2つ目の変更は豆です。実はAmazonでキドニービーンズを注文することもできます。こんな田舎でも、翌日に届くことがよくあります。でも今回は、地元のスーパーにある普通の赤い豆で十分おいしく作れました。
+  </span>
+  <span slot="en_simple">
+    Second, I changed the beans. You can buy kidney beans on Amazon. They come
+    fast! But, I bought red beans. They are very good.
+  </span>
+</T>
+
+### <T><span slot="en">How to Make It</span><span slot="ja">作り方</span><span slot="en_simple">How to Make It</span></T>
+
+<T>
+  <span slot="en">
+    To put it simply, just add everything to the pot and cook it for 20-30
+    minutes. It really is my kind of low-effort recipe. However, I think it
+    will taste a lot better if you properly follow this order to build the
+    flavor:
+  </span>
+  <span slot="ja">
+    ざっくり言うと、全部を鍋に入れて20〜30分煮るだけです。本当に僕好みの手間が少ないレシピです。でも、味をしっかり作るために、この順番で進めたほうがかなりおいしくなると思います。
+  </span>
+  <span slot="en_simple">
+    Making this is very easy. You can put everything in a pot. Cook for 20 to
+    30 minutes. Please follow these steps:
+  </span>
+</T>
+
+#### <T><span slot="en">1. Brown the meat</span><span slot="ja">1. 肉を焼く</span><span slot="en_simple">1. Cook the meat</span></T>
+
+<T>
+  <span slot="en">
+    Heat the oil and cook the ground beef/pork mixture. Drain off any excess
+    oil. Make sure to break the meat apart if it gets stuck in big chunks.
+  </span>
+  <span slot="ja">
+    油を熱して、合いびき肉を炒めます。余分な油は取り除いてください。肉が大きなかたまりになったら、しっかりほぐしながら炒めるのがポイントです。
+  </span>
+  <span slot="en_simple">
+    Heat the oil. Cook the meat. Take out the extra oil. Cut the meat into
+    small pieces.
+  </span>
+</T>
+
+#### <T><span slot="en">2. Saute the onions</span><span slot="ja">2. 玉ねぎを炒める</span><span slot="en_simple">2. Cook the onions</span></T>
+
+<T>
+  <span slot="en">
+    Add the diced onions and let them cook for at least 5 minutes until
+    softened.
+  </span>
+  <span slot="ja">
+    角切りにした玉ねぎを加えて、やわらかくなるまで最低5分は炒めます。
+  </span>
+  <span slot="en_simple">
+    Add the onions. Cook for 5 minutes.
+  </span>
+</T>
+
+#### <T><span slot="en">3. Add spices</span><span slot="ja">3. スパイスを入れる</span><span slot="en_simple">3. Add spices</span></T>
+
+<T>
+  <span slot="en">
+    Add the minced garlic, chili powder, cumin, and paprika. Stir and cook for
+    about 30 seconds until fragrant.
+  </span>
+  <span slot="ja">
+    みじん切りにしたにんにく、チリパウダー、クミン、パプリカを加えます。香りが立つまで、混ぜながら30秒ほど炒めます。
+  </span>
+  <span slot="en_simple">
+    Add the garlic and spices. Mix well. Cook for 30 seconds.
+  </span>
+</T>
+
+#### <T><span slot="en">4. Simmer</span><span slot="ja">4. 煮込む</span><span slot="en_simple">4. Cook together</span></T>
+
+<T>
+  <span slot="en">
+    Finally, add the tomato paste, canned tomatoes, broth, and beans. Let the
+    chili <Explain meaning="cook gently on low heat">simmer</Explain> on low
+    heat for 20-30 minutes.
+  </span>
+  <span slot="ja">
+    最後に、トマトペースト、トマト缶、スープ（または水）、豆を加えます。弱火で20〜30分煮込みます。
+  </span>
+  <span slot="en_simple">
+    Add the tomato paste, tomatoes, soup, and beans. Cook on low heat for 20 to
+    30 minutes.
+  </span>
+</T>
+
+#### <T><span slot="en">5. Season</span><span slot="ja">5. 味を整える</span><span slot="en_simple">5. Season</span></T>
+
+<T>
+  <span slot="en">
+    Add salt and black pepper{" "}
+    <Explain meaning="as much as you like after tasting">to taste</Explain>{" "}
+    right before serving.
+  </span>
+  <span slot="ja">
+    食べる直前に、塩と黒こしょうで味を整えます。
+  </span>
+  <span slot="en_simple">
+    Add salt and pepper.
+  </span>
+</T>
+
+### <T><span slot="en">Extras</span><span slot="ja">おすすめの食べ方・追加</span><span slot="en_simple">BONUS</span></T>
+
+<figure>
+  ![Chili con carne from when I made it](../../assets/images/blog/chili-con-carne-easy/sides.webp)
+  <figcaption>
+    <T>
+      <span slot="en">Toppings!</span>
+      <span slot="ja">トッピング！</span>
+      <span slot="en_simple">Yummy!</span>
+    </T>
+  </figcaption>
+</figure>
+
+<T>
+  <span slot="en">
+    I highly recommend eating this with rice! There are also plenty of great
+    toppings you can add. Shredded cheese (I prefer cheddar), sour cream,
+    pickled jalapenos, lime, and corn chips are all excellent choices.
+  </span>
+  <span slot="ja">
+    これはご飯と一緒に食べるのをすごくおすすめします！トッピングの相性もとてもいいです。細かくしたチーズ（僕はチェダーが好き）、サワークリーム、ハラペーニョのピクルス、ライム、コーンチップスはどれも最高です。
+  </span>
+  <span slot="en_simple">
+    Please eat this with rice! It is very delicious. You can put many things on
+    top. Cheese, sour cream, lime, jalapenos, and corn chips are good too.
+  </span>
+</T>
+
+<T>
+  <span slot="en">
+    Unfortunately, none of those are typically available directly in my town.
+    However, diced red onion, avocado, green onions, and corn are easy to find.
+    You can also <Explain meaning="use instead">substitute</Explain> the sour
+    cream with plain Greek yogurt. I think it tastes{" "}
+    <Explain meaning="similar enough to be a good replacement">close enough</Explain>.
+  </span>
+  <span slot="ja">
+    残念ながら、そういう材料は僕の町では普通あまり売っていません。でも、赤玉ねぎ、アボカド、青ねぎ、コーンは手に入りやすいです。サワークリームの代わりにプレーンのギリシャヨーグルトを使うこともできます。かなり近い味になると思います。
+  </span>
+  <span slot="en_simple">
+    I cannot buy those in my town. But, I can buy red onions, avocados, and
+    green onions, and corn. You can use plain yogurt instead of sour cream. It
+    tastes very good.
+  </span>
+</T>
+
+
