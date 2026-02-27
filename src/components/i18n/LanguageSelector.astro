@@ -23,6 +23,16 @@
       return typeof value === "string" && ["en", "ja", "en_simple"].includes(value);
     }
   
+    function detectPreferredLanguage(): Language {
+      const browserLanguages = Array.isArray(navigator.languages) && navigator.languages.length > 0
+        ? navigator.languages
+        : [navigator.language];
+      const prefersJapanese = browserLanguages.some((lang) =>
+        typeof lang === "string" && lang.toLowerCase().startsWith("ja")
+      );
+      return prefersJapanese ? "ja" : "en";
+    }
+
    
     function initializeLanguageSwitcher() {
       const buttons = document.querySelectorAll("[data-lang-btn]");
@@ -48,7 +58,7 @@
       }
   
       const savedLang = localStorage.getItem(storageKey);
-      const initialLang: Language = isLanguage(savedLang) ? savedLang : "en";
+      const initialLang: Language = isLanguage(savedLang) ? savedLang : detectPreferredLanguage();
       setLanguage(initialLang);
   
       buttons.forEach((button) => {
