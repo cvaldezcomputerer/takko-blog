@@ -8,6 +8,7 @@ Use this for any new post. Duplicate this file per post and check items as you g
 - [ ] Replace draft text with final `en_simple` content.
 - [ ] Add/update `ja` content.
 - [ ] Add `Explain` components for tricky vocabulary/phrases while drafting (as needed).
+- [ ] Add `Explain` only when meaning is still unclear after switching to `en_simple` (avoid redundant hints).
 - [ ] Confirm section headers are final in all languages.
 - [ ] Add/update frontmatter:
   - [ ] `title`
@@ -31,10 +32,6 @@ Use this for any new post. Duplicate this file per post and check items as you g
 
 - [ ] Add/position video embeds (if used).
 - [ ] Use lightweight embed strategy (click-to-load/lazy where possible).
-- [ ] Add source links in captions:
-  - [ ] `en`: `Watch video`
-  - [ ] `ja`: `動画を見る`
-  - [ ] `en_simple`: `watch`
 - [ ] Add key channel/profile links in body text where relevant.
 
 ## 4) Language & Learning UX
