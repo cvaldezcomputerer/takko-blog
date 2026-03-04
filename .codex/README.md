@@ -2,6 +2,11 @@
 
 Use this folder as quick onboarding context for new Codex sessions.
 
+## Required First Read
+- Always read this file first at the start of a session.
+- If any choice is vague, ask the user before proceeding.
+- Do not assume or guess when there are multiple reasonable options.
+
 ## Start Here
 - Project type: Astro + Cloudflare Pages/Workers adapter
 - Main commands:

@@ -38,18 +38,21 @@ function buildSelectedExif(metadata) {
     return null;
   }
 
+  const image = parsed?.Image ?? parsed?.image;
+  const photo = parsed?.Photo ?? parsed?.photo ?? parsed?.Exif ?? parsed?.exif;
+
   const ifd0 = {};
   const ifd2 = {};
 
-  if (typeof parsed?.image?.Make === 'string' && parsed.image.Make.trim()) {
-    ifd0.Make = parsed.image.Make.trim();
+  if (typeof image?.Make === 'string' && image.Make.trim()) {
+    ifd0.Make = image.Make.trim();
   }
 
-  if (typeof parsed?.image?.Model === 'string' && parsed.image.Model.trim()) {
-    ifd0.Model = parsed.image.Model.trim();
+  if (typeof image?.Model === 'string' && image.Model.trim()) {
+    ifd0.Model = image.Model.trim();
   }
 
-  const dateTimeOriginal = formatExifDate(parsed?.exif?.DateTimeOriginal);
+  const dateTimeOriginal = formatExifDate(photo?.DateTimeOriginal);
   if (dateTimeOriginal) {
     ifd2.DateTimeOriginal = dateTimeOriginal;
   }
