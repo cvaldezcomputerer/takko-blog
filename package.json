@@ -6,6 +6,7 @@
     "dev": "astro dev",
     "check": "astro check",
     "build": "astro build",
+    "postbuild": "node scripts/patch-wrangler.mjs",
     "preview": "wrangler dev",
     "db:migrate": "wrangler d1 migrations apply takko-blog-likes --local",
     "db:migrate:prod": "wrangler d1 migrations apply takko-blog-likes --remote",
