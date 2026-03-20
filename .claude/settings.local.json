@@ -15,7 +15,8 @@
       "Bash(node -e \"const c=JSON.parse\\(require\\(''fs''\\).readFileSync\\(''c:/Users/babyo/OneDrive/Desktop/projects/blog/takko-blog/dist/server/wrangler.json''\\)\\); console.log\\(''assets:'', JSON.stringify\\(c.assets\\)\\); console.log\\(''kv_namespaces:'', JSON.stringify\\(c.kv_namespaces\\)\\); console.log\\(''triggers:'', JSON.stringify\\(c.triggers\\)\\);\")",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "WebFetch(domain:developers.cloudflare.com)"
+      "WebFetch(domain:developers.cloudflare.com)",
+      "Bash(python -m json.tool)"
     ]
   }
 }
