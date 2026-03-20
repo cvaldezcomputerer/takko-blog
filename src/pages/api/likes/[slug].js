@@ -1,12 +1,14 @@
 export const prerender = false;
 
+import { env } from "cloudflare:workers";
+
 /**
  * @typedef {object} LikeRow
  * @property {number | string} [count]
  */
 
 /** @type {import('astro').APIRoute} */
-export const GET = async ({ params, locals }) => {
+export const GET = async ({ params }) => {
   try {
     const { slug } = params;
     console.log(`GET /api/likes/${slug}`);
@@ -18,8 +20,7 @@ export const GET = async ({ params, locals }) => {
       });
     }
 
-    // Access the Cloudflare D1 database safely
-    const db = locals?.runtime?.env?.DB;
+    const db = env.DB;
 
     if (!db) {
       console.error("Database connection not available");
@@ -52,7 +53,7 @@ export const GET = async ({ params, locals }) => {
 };
 
 /** @type {import('astro').APIRoute} */
-export const POST = async ({ params, locals }) => {
+export const POST = async ({ params }) => {
   try {
     const { slug } = params;
     console.log(`POST /api/likes/${slug}`);
@@ -64,7 +65,7 @@ export const POST = async ({ params, locals }) => {
       });
     }
 
-    const db = locals?.runtime?.env?.DB;
+    const db = env.DB;
 
     if (!db) {
       console.error("Database connection not available");

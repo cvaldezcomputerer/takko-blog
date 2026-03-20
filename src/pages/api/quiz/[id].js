@@ -1,5 +1,7 @@
 export const prerender = false;
 
+import { env } from "cloudflare:workers";
+
 /**
  * @typedef {object} QuizVoteRow
  * @property {number | string} option_index
@@ -12,18 +14,18 @@ export const prerender = false;
  */
 
 /** @type {import('astro').APIRoute} */
-export const GET = async ({ params, locals }) => {
+export const GET = async ({ params }) => {
     try {
       const { id } = params;
-  
+
       if (!id) {
         return new Response(JSON.stringify({ error: "Quiz ID is missing" }), {
           status: 400,
           headers: { "Content-Type": "application/json" },
         });
       }
-  
-      const db = locals?.runtime?.env?.DB;
+
+      const db = env.DB;
   
       if (!db) {
         // Return empty object if DB is missing (dev mode fallback)
@@ -65,20 +67,20 @@ export const GET = async ({ params, locals }) => {
   };
   
   /** @type {import('astro').APIRoute} */
-  export const POST = async ({ params, request, locals }) => {
+  export const POST = async ({ params, request }) => {
     try {
       const { id } = params;
       const body = /** @type {QuizVoteBody} */ (await request.json());
       const { optionIndex } = body;
-  
+
       if (!id || typeof optionIndex !== "number" || !Number.isInteger(optionIndex) || optionIndex < 0) {
         return new Response(JSON.stringify({ error: "Missing data" }), {
           status: 400,
           headers: { "Content-Type": "application/json" },
         });
       }
-  
-      const db = locals?.runtime?.env?.DB;
+
+      const db = env.DB;
       if (!db) {
         return new Response(JSON.stringify({ success: false, error: "No DB" }), { status: 500 });
       }
