@@ -3,10 +3,9 @@
  * Cloudflare Pages CI validation errors caused by @astrojs/cloudflare v13.
  *
  * Issues fixed:
- * - "pages_build_output_dir" in generated file causes Pages CI to redirect to it,
- *   then fail because it also contains Worker-only fields (main, rules, assets, no_bundle).
- *   Removing it lets Pages CI use the root wrangler.jsonc instead.
- * - "ASSETS" is a reserved binding name in Pages (Pages provides it automatically)
+ * - Worker-only fields (main, rules, no_bundle, assets) cause Pages CI validation
+ *   errors when pages_build_output_dir is present. Pages finds the worker via
+ *   _worker.js in the output dir, not via "main".
  * - SESSION KV namespace is auto-added by the adapter without an "id", which fails CI validation
  * - "triggers: {}" is invalid in Pages — must be { crons: [] } or absent
  */
@@ -22,15 +21,15 @@ if (!existsSync(wranglerPath)) {
 
 const config = JSON.parse(readFileSync(wranglerPath, "utf-8"));
 
-// Fix 1: Remove pages_build_output_dir — this is what causes Pages CI to
-// "redirect" to this file and then fail on Worker-only fields.
-delete config.pages_build_output_dir;
+// Fix 1: Remove Worker-only fields that Pages CI rejects when pages_build_output_dir
+// is present. Pages finds the worker via _worker.js in the output dir, not "main".
+delete config.main;
+delete config.rules;
+delete config.no_bundle;
 
-// Fix 2: Remove "ASSETS" binding name — Pages provides it automatically.
-// Keep assets.directory so Pages knows where static files are.
-if (config.assets?.binding === "ASSETS") {
-  delete config.assets.binding;
-}
+// Fix 2: Remove "assets" block — Pages CI does not support this field and
+// Pages serves static assets automatically from pages_build_output_dir.
+delete config.assets;
 
 // Fix 3: Remove SESSION KV namespace added by adapter — it has no "id" and
 // this project does not use Astro sessions.
