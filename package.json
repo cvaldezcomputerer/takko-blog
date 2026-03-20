@@ -12,23 +12,22 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^12.6.12",
-    "@astrojs/mdx": "^4.3.13",
-    "@astrojs/rss": "^4.0.15",
-    "@astrojs/sitemap": "^3.7.0",
+    "@astrojs/cloudflare": "^13.1.2",
+    "@astrojs/mdx": "^5.0.2",
+    "@astrojs/rss": "^4.0.17",
+    "@astrojs/sitemap": "^3.7.1",
     "@sentry/astro": "^10.32.1",
-    "@spotlightjs/astro": "^3.2.6",
-    "astro": "^5.18.0"
+    "astro": "^6.0.7"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.6",
+    "@astrojs/check": "^0.9.8",
     "exif-reader": "^2.0.3",
     "sharp": "^0.34.5",
     "typescript": "^5.9.3",
-    "wrangler": "^4.60.0"
+    "wrangler": "^4.75.0"
   },
   "overrides": {
     "undici": "^7.18.2",
-    "wrangler": "^4.60.0"
+    "wrangler": "^4.75.0"
   }
 }

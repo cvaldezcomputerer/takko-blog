@@ -6,7 +6,6 @@ import { fileURLToPath } from "url";
 import path from "path";
 
 import sentry from "@sentry/astro";
-import spotlightjs from "@spotlightjs/astro";
 
 import cloudflare from "@astrojs/cloudflare";
 
@@ -19,14 +18,18 @@ export default defineConfig({
     platformProxy: {
       enabled: true,
     },
+    prerenderEnvironment: "node",
   }),
-  integrations: [mdx(), sitemap(), sentry(), spotlightjs()],
+  integrations: [mdx(), sitemap(), sentry()],
 
   vite: {
     resolve: {
       alias: {
         "~": path.resolve(path.dirname(fileURLToPath(import.meta.url)), "src"),
       },
+    },
+    optimizeDeps: {
+      exclude: ["@sentry/astro"],
     },
   },
 });

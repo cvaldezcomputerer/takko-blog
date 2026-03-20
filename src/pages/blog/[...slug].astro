@@ -1,5 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
 
@@ -8,18 +8,18 @@ export const prerender = true;
 export async function getStaticPaths() {
 	const posts = await getCollection('blog', ({ data }) => !data.draft);
 	return posts.map((post) => ({
-		params: { slug: post.slug },
+		params: { slug: post.id.replace(/\.mdx?$/, '') },
 		props: { post },
 	}));
 }
 
 const { post } = Astro.props as { post: CollectionEntry<'blog'> };
 
-const { Content } = await post.render();
+const { Content } = await render(post);
 
 import OptimizedImage from '../../components/media/OptimizedImage.astro';
 ---
 
-<BlogPost {...post.data} slug={post.slug}>
+<BlogPost {...post.data} slug={post.id.replace(/\.mdx?$/, '')}>
 	<Content components={{ img: OptimizedImage }} />
 </BlogPost>
