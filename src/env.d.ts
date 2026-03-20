@@ -10,13 +10,11 @@ interface D1DatabaseLike {
   prepare: (query: string) => D1PreparedStatement;
 }
 
-declare namespace App {
-  interface Locals {
-    runtime?: {
-      env?: {
-        DB?: D1DatabaseLike;
-        RESEND_API_KEY?: string;
-      };
-    };
-  }
+declare module "cloudflare:workers" {
+  const env: {
+    DB: D1DatabaseLike;
+    RESEND_API_KEY: string;
+    SESSION: unknown;
+  };
+  export { env };
 }

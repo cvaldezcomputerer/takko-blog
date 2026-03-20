@@ -231,7 +231,7 @@ function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 						{
 							posts.map((post, index) => (
 								<li>
-									<a href={`/blog/${post.slug}/`}>
+									<a href={`/blog/${post.id.replace(/\.mdx?$/, '')}/`}>
 											{post.data.heroImage && isOptimizedImageSrc(post.data.heroImage) ? (
 												<OptimizedImage
 													src={post.data.heroImage}

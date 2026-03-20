@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:docs.astro.build)",
+      "WebFetch(domain:astro.build)",
+      "Bash(npm run:*)",
+      "Bash(npm install:*)",
+      "Bash(node -e \"const z = require\\(''c:/Users/babyo/OneDrive/Desktop/projects/blog/takko-blog/node_modules/zod''\\); console.log\\(z.ZodObject ? ''v3'' : ''v4'', require\\(''c:/Users/babyo/OneDrive/Desktop/projects/blog/takko-blog/node_modules/zod/package.json''\\).version\\)\")",
+      "Bash(node -e \"const s = require\\(''c:/Users/babyo/OneDrive/Desktop/projects/blog/takko-blog/node_modules/@spotlightjs/astro''\\); console.log\\(Object.keys\\(s\\)\\)\")",
+      "Bash(node -e \"const p = JSON.parse\\(require\\(''fs''\\).readFileSync\\(''c:/Users/babyo/OneDrive/Desktop/projects/blog/takko-blog/node_modules/@spotlightjs/astro/package.json'',''utf8''\\)\\); console.log\\(''version:'', p.version, ''\\\\nmain:'', p.main, ''\\\\nexports:'', JSON.stringify\\(p.exports?.''.'', null, 2\\)\\)\")",
+      "Bash(npm view:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(node -p \"require\\(''c:/Users/babyo/OneDrive/Desktop/projects/blog/takko-blog/node_modules/@cloudflare/vite-plugin/package.json''\\).version\")"
+    ]
+  }
+}

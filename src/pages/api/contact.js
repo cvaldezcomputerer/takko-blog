@@ -1,5 +1,7 @@
 export const prerender = false;
 
+import { env } from "cloudflare:workers";
+
 /**
  * @typedef {object} ContactRequestBody
  * @property {string} name
@@ -10,7 +12,7 @@ export const prerender = false;
  */
 
 /** @type {import('astro').APIRoute} */
-export const POST = async ({ request, locals }) => {
+export const POST = async ({ request }) => {
   if (request.method !== 'POST') {
     return new Response(JSON.stringify({ message: 'Method not allowed' }), { status: 405 });
   }
@@ -36,8 +38,7 @@ export const POST = async ({ request, locals }) => {
       return new Response(JSON.stringify({ message: 'Invalid email address' }), { status: 400 });
     }
 
-    // Try to get the key from Cloudflare runtime env (locals) first, then fallback to import.meta.env
-    const RESEND_API_KEY = locals?.runtime?.env?.RESEND_API_KEY || import.meta.env.RESEND_API_KEY;
+    const RESEND_API_KEY = env.RESEND_API_KEY || import.meta.env.RESEND_API_KEY;
     
     if (!RESEND_API_KEY) {
       return new Response(JSON.stringify({ message: 'Missing RESEND_API_KEY environment variable' }), { status: 500 });
