@@ -5,7 +5,6 @@
     "nodejs_compat",
     "disable_nodejs_process_v2"
   ],
-  "pages_build_output_dir": "./dist/client",
   "d1_databases": [
     {
       "binding": "DB",
