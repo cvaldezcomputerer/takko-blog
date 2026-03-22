@@ -28,7 +28,13 @@ export default defineConfig({
       },
     },
     optimizeDeps: {
-      exclude: ["@sentry/astro"],
+      exclude: [
+        "@sentry/astro",
+        "astro/virtual-modules/transitions-router.js",
+        "astro/virtual-modules/transitions-types.js",
+        "astro/virtual-modules/transitions-events.js",
+        "astro/virtual-modules/transitions-swap-functions.js",
+      ],
     },
   },
 });

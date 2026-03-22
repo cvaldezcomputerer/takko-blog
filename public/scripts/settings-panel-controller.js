@@ -128,7 +128,15 @@
 
   document.addEventListener('takko:settings-close', closeAllPanels);
   document.addEventListener('astro:page-load', initialize);
-  document.addEventListener('astro:after-swap', initialize);
+  document.addEventListener('astro:after-swap', () => {
+    // Remove any panel that persisted through the view transition so
+    // ensurePanelNodes() always grabs a fresh element from the new page.
+    if (panel && panel.isConnected) {
+      panel.remove();
+    }
+    panel = null;
+    initialize();
+  });
 
   window.TakkoSettingsPanelController = {
     initialize,
