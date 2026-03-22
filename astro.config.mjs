@@ -18,7 +18,6 @@ export default defineConfig({
     platformProxy: {
       enabled: true,
     },
-    prerenderEnvironment: "node",
   }),
   integrations: [mdx(), sitemap(), sentry()],
 

@@ -16,7 +16,10 @@
       "WebFetch(domain:github.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebFetch(domain:developers.cloudflare.com)",
-      "Bash(python -m json.tool)"
+      "Bash(python -m json.tool)",
+      "Bash(python -c \"import json; d=json.load\\(open\\(''c:/Users/babyo/OneDrive/Desktop/projects/blog/takko-blog/dist/server/wrangler.json''\\)\\); print\\(''main:'', d.get\\(''main''\\)\\); print\\(''assets:'', d.get\\(''assets''\\)\\); print\\(''pages_build_output_dir:'', d.get\\(''pages_build_output_dir''\\)\\); print\\(''kv_namespaces:'', d.get\\(''kv_namespaces''\\)\\); print\\(''d1:'', [x[''binding''] for x in d.get\\(''d1_databases'',[]\\)]\\)\")",
+      "Bash(node -e \"const d=JSON.parse\\(require\\(''fs''\\).readFileSync\\(''c:/Users/babyo/OneDrive/Desktop/projects/blog/takko-blog/dist/server/wrangler.json'',''utf8''\\)\\); console.log\\(''main:'',d.main\\); console.log\\(''assets:'',JSON.stringify\\(d.assets\\)\\); console.log\\(''pages_build_output_dir:'',d.pages_build_output_dir\\); console.log\\(''kv_namespaces:'',JSON.stringify\\(d.kv_namespaces\\)\\); console.log\\(''d1:'',d.d1_databases?.map\\(x=>x.binding\\)\\)\")",
+      "Bash(node -e \"const d=JSON.parse\\(require\\(''''fs''''\\).readFileSync\\(''''dist/server/wrangler.json'''',''''utf8''''\\)\\); console.log\\(''''kv_namespaces:'''',d.kv_namespaces\\)\")"
     ]
   }
 }
