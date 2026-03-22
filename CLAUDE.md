@@ -40,9 +40,9 @@ Run `npm run check` after JS/TS changes. Run `npm run build` after UI or script 
 | `islandVisibility` | `islandVisibility` | `'1'` \| `'0'` |
 | `textSize` | `textSize` | `sm` \| `md` \| `lg` |
 
-All settings applied as classes on `<html>`. See `.ai/SETTINGS_ARCHITECTURE.md` for full detail.
+All settings applied as classes on `<html>`. See `.claude/SETTINGS_ARCHITECTURE.md` for full detail.
 
 ## Reference Docs
-- `.ai/PROJECT_MAP.md` — full file map, API routes, UI systems
-- `.ai/SETTINGS_ARCHITECTURE.md` — settings state, storage keys, panel events
-- `.ai/making-blog-post-checklist.md` — checklist for publishing a new post
+- `.claude/PROJECT_MAP.md` — full file map, API routes, UI systems
+- `.claude/SETTINGS_ARCHITECTURE.md` — settings state, storage keys, panel events
+- `.claude/making-blog-post-checklist.md` — checklist for publishing a new post
