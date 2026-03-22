@@ -6,8 +6,9 @@
     "dev": "astro dev",
     "check": "astro check",
     "build": "astro build",
-    "postbuild": "node scripts/patch-wrangler.mjs",
-    "preview": "wrangler dev",
+    "postbuild": "node -e \"const fs=require('fs'),p='dist/server/wrangler.json',c=JSON.parse(fs.readFileSync(p));c.kv_namespaces=c.kv_namespaces?.filter(k=>k.id);fs.writeFileSync(p,JSON.stringify(c));\"",
+    "preview": "wrangler dev --config dist/server/wrangler.json",
+    "deploy": "npm run build && wrangler deploy --config dist/server/wrangler.json",
     "db:migrate": "wrangler d1 migrations apply takko-blog-likes --local",
     "db:migrate:prod": "wrangler d1 migrations apply takko-blog-likes --remote",
     "astro": "astro"
