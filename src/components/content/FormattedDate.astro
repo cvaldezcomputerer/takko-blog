@@ -1,17 +1,29 @@
 ---
+import T from "../i18n/T.astro";
+
 interface Props {
 	date: Date;
 }
 
 const { date } = Astro.props;
+
+const dateEn = date.toLocaleDateString('en-us', {
+	year: 'numeric',
+	month: 'short',
+	day: 'numeric',
+});
+
+const dateJa = date.toLocaleDateString('ja-JP', {
+	year: 'numeric',
+	month: 'long',
+	day: 'numeric',
+});
 ---
 
 <time datetime={date.toISOString()}>
-	{
-		date.toLocaleDateString('en-us', {
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric',
-		})
-	}
+	<T fluid>
+		<span slot="en">{dateEn}</span>
+		<span slot="ja">{dateJa}</span>
+		<span slot="en_simple">{dateEn}</span>
+	</T>
 </time>
