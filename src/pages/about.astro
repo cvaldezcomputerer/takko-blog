@@ -5,8 +5,11 @@ import Footer from '../components/layout/Footer.astro';
 import T from '../components/i18n/T.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import { Image } from 'astro:assets';
-import profileImage from '../assets/images/me/full-body-selfie-circuit-day.png';
 import takkoMap from '../assets/images/misc/takko-on-map.png';
+import scarecrow1 from '../assets/images/misc/scarecrow1.png';
+import scarecrow2 from '../assets/images/misc/scarecrow2.png';
+import scarecrowLookingLeft from '../assets/images/misc/scarecrow-looking-left.png';
+import scarecrowLookingRight from '../assets/images/misc/scarecrow-looking-right.png';
 ---
 
 <!doctype html>
@@ -39,6 +42,20 @@ import takkoMap from '../assets/images/misc/takko-on-map.png';
 					transform: translateY(0);
 				}
 			}
+
+			@keyframes sway {
+				0%, 100% { transform: rotate(calc(var(--sway-angle, 2deg) * -1)); }
+				50%       { transform: rotate(var(--sway-angle, 2deg)); }
+			}
+
+			.sway-wrapper {
+				transform-origin: bottom center;
+				animation: sway 6s ease-in-out 1.5s infinite;
+			}
+			.sidebar-left  .sway-top    { --sway-angle: 2deg; }
+			.sidebar-left  .sway-bottom { --sway-angle: 2.5deg; }
+			.sidebar-right .sway-top    { --sway-angle: 1.8deg; }
+			.sidebar-right .sway-bottom { --sway-angle: 3deg; }
 			
 			/* Fix for Japanese text overflow */
 			main {
@@ -63,25 +80,78 @@ import takkoMap from '../assets/images/misc/takko-on-map.png';
 				position: relative;
 				z-index: 1;
 				display: flex;
-				align-items: flex-start; /* Changed from center to flex-start for long content */
-				gap: 3rem;
-				width: 960px;
+				align-items: stretch;
+				gap: 2rem;
+				width: 1060px;
 				max-width: calc(100% - 2em);
 				margin: 0 auto;
 			}
-			.hero-image {
-				width: 150px;
-				height: auto;
+			.sidebar {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
 				flex-shrink: 0;
-				filter: drop-shadow(5px 5px 15px rgba(0,0,0,0.15)); /* Adds a nice depth to the cutout */
+				width: 180px;
+			}
+			.sidebar .spacer {
+				flex: 1;
+			}
+			.hero-image {
+				width: 180px;
+				height: auto;
+				filter: drop-shadow(5px 5px 15px rgba(0,0,0,0.15));
 				opacity: 0;
 				animation: fadeIn 1s ease-out 0.1s forwards;
-				position: sticky; /* Keeps the image visible while scrolling the long text */
-				top: 5rem;
+			}
+			.hero-image.delayed {
+				animation-delay: 0.3s;
 			}
 			.hero-content {
 				flex: 1;
 			}
+
+			/* Comic caption bubble — shared style, color via --bubble-color */
+			.chat-bubble-caption {
+				--bubble-color: #FFE44D;
+				position: relative;
+				background: var(--bubble-color);
+				border: 3px solid #111;
+				border-radius: 999px;
+				padding: 0.3em 0.6em;
+				font-size: 0.72em;
+				font-weight: 900;
+				text-transform: uppercase;
+				letter-spacing: 0.08em;
+				color: #111;
+				margin-bottom: 14px;
+				transform: rotate(-2deg);
+				text-align: center;
+				white-space: nowrap;
+			}
+			.chat-bubble-caption::before {
+				content: '';
+				position: absolute;
+				bottom: -12px;
+				left: 50%;
+				transform: translateX(-50%);
+				border: 12px solid transparent;
+				border-top-color: #111;
+				border-bottom: 0;
+			}
+			.chat-bubble-caption::after {
+				content: '';
+				position: absolute;
+				bottom: -7px;
+				left: 50%;
+				transform: translateX(-50%);
+				border: 8px solid transparent;
+				border-top-color: var(--bubble-color);
+				border-bottom: 0;
+				z-index: 1;
+			}
+			.chat-bubble-caption.blue  { --bubble-color: #87CEEB; }
+			.chat-bubble-caption.pink  { --bubble-color: #FFB6D9; }
+			.chat-bubble-caption.green { --bubble-color: #98E898; }
 
 			.hero-content h3 {
 				margin-top: 2rem;
@@ -90,30 +160,41 @@ import takkoMap from '../assets/images/misc/takko-on-map.png';
 			}
 
 			/* Responsive adjustments */
+			@media (max-width: 960px) {
+				.sidebar-right {
+					display: none;
+				}
+			}
+
 			@media (max-width: 800px) {
-				
 				.hero-section {
 					flex-direction: column;
 					text-align: center;
 					align-items: center;
 					gap: 1.5rem;
 				}
+				.sidebar {
+					flex-direction: row;
+					width: auto;
+					height: auto;
+				}
+				.sidebar .spacer {
+					display: none;
+				}
 				.hero-image {
-					position: static; /* Remove sticky on mobile */
-					width: 120px;
+					width: 110px;
 				}
 				.main-title {
 					font-size: 2.5rem;
 				}
 			}
-			
+
 			@media (max-width: 480px) {
-				
 				.main-title {
 					font-size: 2rem;
 				}
-				.hero-image {
-					display: none; /* Keep hiding it on very small screens if desired, or show it */
+				.sidebar {
+					display: none;
 				}
 			}
 		</style>
@@ -124,7 +205,29 @@ import takkoMap from '../assets/images/misc/takko-on-map.png';
 			<!-- Hero Section -->
 			<div class="hero-wrapper pattern-bg">
 				<div class="hero-section">
-					<Image src={profileImage} alt="Cristian" class="hero-image" loading="eager" />
+					<div class="sidebar sidebar-left">
+						<div class="sway-wrapper sway-top">
+							<div class="chat-bubble-caption">
+								<T>
+									<span slot="en">Welcome!</span>
+									<span slot="ja">ようこそ！</span>
+									<span slot="en_simple">Hello!</span>
+								</T>
+							</div>
+							<Image src={scarecrowLookingRight} alt="Scarecrow" class="hero-image" loading="eager" />
+						</div>
+						<div class="spacer"></div>
+						<div class="sway-wrapper sway-bottom">
+							<div class="chat-bubble-caption blue">
+								<T>
+									<span slot="en">I'll do my best!</span>
+									<span slot="ja">頑張ります！</span>
+									<span slot="en_simple">Let's go!</span>
+								</T>
+							</div>
+							<Image src={scarecrow1} alt="Scarecrow" class="hero-image delayed" loading="lazy" />
+						</div>
+					</div>
 					<div class="hero-content">
 						<h1 class="main-title">
 							<T>
@@ -249,6 +352,30 @@ import takkoMap from '../assets/images/misc/takko-on-map.png';
 								</span>
 							</T>
 						</p>
+					</div>
+					<div class="sidebar sidebar-right">
+						<div class="sway-wrapper sway-top">
+							<div class="chat-bubble-caption pink">
+								<T>
+									<span slot="en">Welcome!</span>
+									<span slot="ja">ようこそ！</span>
+									<span slot="en_simple">Hello!</span>
+								</T>
+							</div>
+							<Image src={scarecrowLookingLeft} alt="Scarecrow" class="hero-image" loading="eager" />
+						</div>
+						<div class="spacer" style="flex: 0.5"></div>
+						<div class="sway-wrapper sway-bottom">
+							<div class="chat-bubble-caption green">
+								<T>
+									<span slot="en">I love Takko!</span>
+									<span slot="ja">田子町が大好き！</span>
+									<span slot="en_simple">I love Takko!</span>
+								</T>
+							</div>
+							<Image src={scarecrow2} alt="Scarecrow" class="hero-image delayed" loading="lazy" />
+						</div>
+						<div class="spacer" style="flex: 0.8"></div>
 					</div>
 				</div>
 			</div>
