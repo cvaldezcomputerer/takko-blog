@@ -23,8 +23,9 @@ Use this for any new post. Duplicate this file per post and check items as you g
 - [ ] Collect final images/screenshots in a dedicated folder under `src/assets/images/blog/<post-slug>/`.
 - [ ] Replace placeholder image paths in the post.
 - [ ] If needed, stitch/collage multiple images.
-- [ ] Resize/compress source images (project script or manual pipeline).
-- [ ] Convert heavy PNG/JPG screenshots to `.webp` (high quality).
+- [ ] Run `node scripts/optimize-images.mjs src/assets/images/blog/<post-slug>/` to resize + compress all JPG/PNG in-place (max 1600px, q90 mozjpeg, bakes in EXIF orientation, strips GPS).
+- [ ] No manual webp conversion needed for camera photos — Astro auto-converts to avif + webp at build time. Only manually create a `.webp` if the source is a screenshot or composite image (not a straight camera shot).
+- [ ] Only import images at the top of the MDX if they are passed as props to a component (e.g. `Gallery`, `TwoImages`). Inline `<figure>` images use markdown path strings directly — no import needed.
 - [ ] Remove now-unused source files from that post’s image folder.
 - [ ] Crop/adjust hero image composition if needed.
 

@@ -1,29 +1,13 @@
 ---
-import type { ImageMetadata } from 'astro';
-import OptimizedImage from '../media/OptimizedImage.astro';
-
-interface Props {
-  images?: Array<ImageMetadata | string>;
-}
-
-const { images = [] } = Astro.props as Props;
 ---
 <div class="scrapbook-container">
-  {images.length > 0 ? (
-    images.map((img) => (
-      <div class="photo-card">
-        <OptimizedImage src={img} alt="" loading="lazy" sizes="(max-width: 600px) 90vw, 200px" />
-      </div>
-    ))
-  ) : (
-    <slot />
-  )}
+  <slot />
 </div>
 
 <style>
   .scrapbook-container {
     background-color: var(--secondary);
-    color: #333;
+    color: var(--text);
     
     background-image: 
       linear-gradient(#e1e1e1 1px, transparent 1px),
@@ -95,10 +79,9 @@ const { images = [] } = Astro.props as Props;
     z-index: 1;
     cursor: pointer;
     border: 1px solid rgba(0,0,0,0.05);
-    position: relative; 
+    position: relative;
     outline: 1px solid transparent;
 
-    will-change: transform;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
   }
@@ -123,12 +106,9 @@ const { images = [] } = Astro.props as Props;
     box-shadow: none;
     
     transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.5s, border 0.5s;
-    
-    will-change: transform;
+
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
   }
 
   .scrapbook-container :global(figcaption) {
@@ -187,6 +167,7 @@ const { images = [] } = Astro.props as Props;
     background: transparent;
     box-shadow: none;
     border-color: transparent;
+    will-change: transform;
   }
   
   .photo-card:hover :global(figcaption),
