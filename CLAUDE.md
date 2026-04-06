@@ -42,6 +42,9 @@ Run `npm run check` after JS/TS changes. Run `npm run build` after UI or script 
 
 All settings applied as classes on `<html>`. See `.claude/SETTINGS_ARCHITECTURE.md` for full detail.
 
+## New Blog Posts
+Always follow `.claude/making-blog-post-checklist.md` when creating a new post. Key image step: run `node scripts/optimize-images.mjs src/assets/images/blog/<post-slug>/` before publishing. No manual webp conversion needed — Astro handles avif/webp at build time.
+
 ## Reference Docs
 - `.claude/PROJECT_MAP.md` — full file map, API routes, UI systems
 - `.claude/SETTINGS_ARCHITECTURE.md` — settings state, storage keys, panel events
