@@ -32,4 +32,7 @@ coverage/
 # windows
 Thumbs.db
 
+# AWS CLI installer
+awscliv2.pkg
+
 
