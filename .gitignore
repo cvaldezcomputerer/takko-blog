@@ -35,4 +35,7 @@ Thumbs.db
 # AWS CLI installer
 awscliv2.pkg
 
+# S3-hosted post images (not committed — use CloudFront URLs in MDX)
+src/assets/images/blog/golden-week-2026/
+
 

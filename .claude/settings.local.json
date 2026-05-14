@@ -22,7 +22,11 @@
       "Bash(node -e \"const d=JSON.parse\\(require\\(''''fs''''\\).readFileSync\\(''''dist/server/wrangler.json'''',''''utf8''''\\)\\); console.log\\(''''kv_namespaces:'''',d.kv_namespaces\\)\")",
       "Bash(mv c:/Users/babyo/OneDrive/Desktop/projects/blog/takko-blog/.ai/* c:/Users/babyo/OneDrive/Desktop/projects/blog/takko-blog/.claude/)",
       "Bash(rmdir c:/Users/babyo/OneDrive/Desktop/projects/blog/takko-blog/.ai)",
-      "Bash(npm i *)"
+      "Bash(npm i *)",
+      "Bash(node scripts/optimize-images.mjs src/assets/images/blog/golden-week-2026/)",
+      "Bash(aws s3 *)",
+      "Bash(node scripts/optimize-images.mjs src/assets/images/blog/golden-week-2026/blog-header-image.jpg)",
+      "Bash(python3)"
     ]
   }
 }
