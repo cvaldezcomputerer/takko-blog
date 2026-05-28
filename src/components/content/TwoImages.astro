@@ -13,7 +13,7 @@ const { src1, alt1, src2, alt2 } = Astro.props;
 ---
 
 <div class="two-images-container">
-  <div class="photo-card left">
+  <div class="ti-card left">
     <OptimizedImage src={src1} alt={alt1 || ""} sizes="(max-width: 720px) 45vw, 350px" />
   </div>
 
@@ -23,7 +23,7 @@ const { src1, alt1, src2, alt2 } = Astro.props;
     </div>
   </div>
 
-  <div class="photo-card right">
+  <div class="ti-card right">
     <OptimizedImage src={src2} alt={alt2 || ""} sizes="(max-width: 720px) 45vw, 350px" />
   </div>
 </div>
@@ -43,7 +43,7 @@ const { src1, alt1, src2, alt2 } = Astro.props;
     margin-right: auto;
   }
 
-  .photo-card {
+  .ti-card {
     flex: 1;
     background: white;
     padding: 10px 10px 25px 10px;
@@ -54,13 +54,13 @@ const { src1, alt1, src2, alt2 } = Astro.props;
     min-width: 0;
   }
 
-  :global(.dark) .photo-card {
+  :global(.dark) .ti-card {
     background: #e5e5e5; /* Light gray for the card in dark mode too, to keep the photo feel */
     border-color: rgba(0,0,0,0.1);
   }
 
   /* Target the img inside OptimizedImage */
-  .photo-card :global(picture img) {
+  .ti-card :global(picture img) {
     width: 100%;
     aspect-ratio: 1 / 1;
     object-fit: cover;
@@ -68,15 +68,15 @@ const { src1, alt1, src2, alt2 } = Astro.props;
     display: block;
   }
 
-  .photo-card.left {
+  .ti-card.left {
     transform: rotate(-3deg) translateX(5%);
   }
 
-  .photo-card.right {
+  .ti-card.right {
     transform: rotate(3deg) translateX(-5%);
   }
 
-  .photo-card:hover {
+  .ti-card:hover {
     transform: rotate(0deg) scale(1.05);
     z-index: 20;
     box-shadow: 0 10px 25px rgba(0,0,0,0.2);
@@ -118,7 +118,7 @@ const { src1, alt1, src2, alt2 } = Astro.props;
       margin: 2rem 0;
     }
     
-    .photo-card {
+    .ti-card {
       padding: 6px 6px 18px 6px;
     }
 
@@ -129,11 +129,11 @@ const { src1, alt1, src2, alt2 } = Astro.props;
       border-width: 2px;
     }
 
-    .photo-card.left {
+    .ti-card.left {
       transform: rotate(-2deg) translateX(2%);
     }
 
-    .photo-card.right {
+    .ti-card.right {
       transform: rotate(2deg) translateX(-2%);
     }
   }
