@@ -4,40 +4,32 @@
   <slot />
 </div>
 
-<style>
+<style is:global>
   .scrapbook-container {
     background-color: var(--secondary);
     color: var(--text);
-    
-    background-image: 
+
+    background-image:
       linear-gradient(#e1e1e1 1px, transparent 1px),
       linear-gradient(90deg, #e1e1e1 1px, transparent 1px);
     background-size: 20px 20px;
-    
+
     position: relative;
     padding: 40px 20px 60px 20px;
     margin: 50px auto;
-    border: 1px solid #ddd;
-    box-shadow: 
-      5px 5px 0px #f0f0f0,
-      10px 10px 0px #e0e0e0;
     max-width: 100%;
-    
+
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
   }
 
-  :global(.dark) .scrapbook-container {
+  .dark .scrapbook-container {
     background-color: var(--secondary);
-    background-image: 
+    background-image:
       linear-gradient(rgba(var(--gray), 0.1) 1px, transparent 1px),
       linear-gradient(90deg, rgba(var(--gray), 0.1) 1px, transparent 1px);
-    border-color: rgba(var(--gray), 0.2);
-    box-shadow: 
-      5px 5px 0px rgba(var(--gray), 0.1),
-      10px 10px 0px rgba(var(--gray), 0.05);
     color: var(--text);
   }
 
@@ -47,10 +39,10 @@
     top: -15px;
     left: 50%;
     transform: translateX(-50%) rotate(-1.5deg);
-    
+
     width: 140px;
     height: 35px;
-    
+
     background-color: hsla(var(--theme-hue, 45), 85%, 90%, 0.8);
     border-left: 2px dashed rgba(0,0,0,0.1);
     border-right: 2px dashed rgba(0,0,0,0.1);
@@ -59,22 +51,22 @@
     z-index: 10;
   }
 
-  :global(.dark) .scrapbook-container::before {
+  .dark .scrapbook-container::before {
     background-color: hsla(var(--theme-hue, 45), 85%, 90%, 0.3);
   }
 
   .photo-card,
-  .scrapbook-container :global(figure) {
+  .scrapbook-container figure {
     background: white;
-    padding: 12px 12px 30px 12px; 
+    padding: 12px 12px 30px 12px;
     box-shadow: 2px 4px 12px rgba(0,0,0,0.2);
     width: 180px;
     height: 240px;
-    
+
     display: flex;
     flex-direction: column;
     align-items: center;
-    
+
     transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), background 0.5s, box-shadow 0.5s;
     z-index: 1;
     cursor: pointer;
@@ -86,82 +78,82 @@
     backface-visibility: hidden;
   }
 
-  :global(.dark) .photo-card,
-  :global(.dark) .scrapbook-container :global(figure) {
+  .dark .photo-card,
+  .dark .scrapbook-container figure {
     background: var(--text);
   }
-  
-  .scrapbook-container :global(figure) {
+
+  .scrapbook-container figure {
     margin: 0;
   }
 
   .photo-card img,
-  .scrapbook-container :global(figure img) {
+  .scrapbook-container figure img {
     width: 100%;
-    aspect-ratio: 1 / 1; 
+    aspect-ratio: 1 / 1;
     object-fit: cover;
     display: block;
     border: 2px solid rgba(255,255,255,0);
     border-radius: 0;
     box-shadow: none;
-    
+
     transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.5s, border 0.5s;
 
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
   }
 
-  .scrapbook-container :global(figcaption) {
+  .scrapbook-container figcaption {
      position: absolute;
      bottom: 10px;
      left: 10px;
      right: 10px;
      text-align: center;
-     
+
      font-family: "Courier New", Courier, monospace;
      font-size: 0.8em;
      color: #444;
      line-height: 1.2;
-     
+
      margin-top: 0;
      max-height: 40px;
      overflow: hidden;
      transition: opacity 0.4s;
   }
 
-  .scrapbook-container :global(figcaption [data-lang-content="ja"]) {
+  .scrapbook-container figcaption [data-lang-content="ja"] {
     line-height: 1.2;
   }
 
-  :global(.dark) .scrapbook-container :global(figcaption) {
+  .dark .scrapbook-container figcaption {
     color: var(--background);
   }
 
   .photo-card:nth-child(odd),
-  .scrapbook-container :global(figure:nth-child(odd)) { 
-    transform: rotate(-3deg) translateZ(0); 
+  .scrapbook-container figure:nth-child(odd) {
+    transform: rotate(-3deg) translateZ(0);
   }
-  
+
   .photo-card:nth-child(even),
-  .scrapbook-container :global(figure:nth-child(even)) { 
-    transform: rotate(2deg) translateZ(0); 
-    margin-top: 20px; 
+  .scrapbook-container figure:nth-child(even) {
+    transform: rotate(2deg) translateZ(0);
+    margin-top: 20px;
   }
-  
+
   .photo-card:nth-child(3n),
-  .scrapbook-container :global(figure:nth-child(3n)) { 
-    transform: rotate(4deg) translateZ(0); 
-    margin-top: -10px; 
+  .scrapbook-container figure:nth-child(3n) {
+    transform: rotate(4deg) translateZ(0);
+    margin-top: -10px;
   }
-  
+
   .photo-card:nth-child(5n),
-  .scrapbook-container :global(figure:nth-child(5n)) { 
-    transform: rotate(-5deg) translateZ(0); 
-    margin-top: 10px; 
+  .scrapbook-container figure:nth-child(5n) {
+    transform: rotate(-5deg) translateZ(0);
+    margin-top: 10px;
   }
 
   .photo-card:hover,
-  .scrapbook-container :global(figure:hover) {
+  .scrapbook-container figure:hover {
     transform: rotate(0deg) translateZ(0);
     z-index: 1000;
     background: transparent;
@@ -169,29 +161,29 @@
     border-color: transparent;
     will-change: transform;
   }
-  
-  .photo-card:hover :global(figcaption),
-  .scrapbook-container :global(figure:hover figcaption) {
+
+  .photo-card:hover figcaption,
+  .scrapbook-container figure:hover figcaption {
     opacity: 0;
   }
 
   .photo-card:hover img,
-  .scrapbook-container :global(figure:hover img) {
+  .scrapbook-container figure:hover img {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(1.1);
-    
+
     width: auto;
     height: auto;
     max-width: 400px;
     max-height: 60vh;
     aspect-ratio: unset;
     object-fit: contain;
-    
+
     box-shadow: 0 15px 40px rgba(0,0,0,0.4);
     border: 2px solid white;
-    background: white; 
+    background: white;
     border-radius: 0;
   }
 
@@ -200,57 +192,57 @@
       gap: 0;
       padding: 20px 10px;
     }
-    
+
     .photo-card,
-    .scrapbook-container :global(figure) {
-      margin-bottom: -120px; 
+    .scrapbook-container figure {
+      margin-bottom: -120px;
       width: 200px;
     }
-    
+
     .photo-card:last-child,
-    .scrapbook-container :global(figure:last-child) {
+    .scrapbook-container figure:last-child {
       margin-bottom: 0;
     }
-    
-    .photo-card:nth-child(n), 
-    .scrapbook-container :global(figure:nth-child(n)) { 
-      margin-top: 0; 
+
+    .photo-card:nth-child(n),
+    .scrapbook-container figure:nth-child(n) {
+      margin-top: 0;
     }
 
     .photo-card:hover,
-    .scrapbook-container :global(figure:hover) {
+    .scrapbook-container figure:hover {
       background: white;
       box-shadow: 0 10px 25px rgba(0,0,0,0.3);
       transform: scale(1.02) rotate(0deg) translateZ(0);
       border: 1px solid rgba(0,0,0,0.05);
-      
+
       width: 90vw;
       max-width: none;
       height: auto;
-      
+
       padding: 6px 6px 10px 6px;
       z-index: 1000;
     }
 
     .photo-card:hover img,
-    .scrapbook-container :global(figure:hover img) {
+    .scrapbook-container figure:hover img {
       position: static;
       top: auto;
       left: auto;
       transform: none;
-      
+
       width: 100%;
       height: auto;
       max-width: none;
       max-height: none;
-      
+
       box-shadow: none;
       border: 1px solid rgba(0,0,0,0.1);
       border-radius: 0;
     }
 
-    .photo-card:hover :global(figcaption),
-    .scrapbook-container :global(figure:hover figcaption) {
+    .photo-card:hover figcaption,
+    .scrapbook-container figure:hover figcaption {
       opacity: 1;
       position: static;
       width: 100%;
