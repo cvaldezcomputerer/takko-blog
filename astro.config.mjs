@@ -13,9 +13,6 @@ import cloudflare from "@astrojs/cloudflare";
 export default defineConfig({
   site: "https://bloggydoggy.com",
   output: "static",
-  image: {
-    domains: ["d2iqb5t9tunqwu.cloudfront.net"],
-  },
   adapter: cloudflare({
     imageService: "compile",
     platformProxy: {
