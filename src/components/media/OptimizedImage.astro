@@ -19,10 +19,10 @@ interface Props {
   [key: string]: unknown; // Allow arbitrary props like transition:name
 }
 
-const { 
-  src, 
-  alt, 
-  className, 
+const {
+  src,
+  alt,
+  className,
   style,
   loading = "lazy",
   fetchpriority,
@@ -32,6 +32,8 @@ const {
   sizes = "(max-width: 720px) 100vw, 720px",
   ...rest // Capture other props
 } = Astro.props as Props;
+
+const isRemote = typeof src === 'string';
 ---
 
 <Picture
@@ -41,11 +43,12 @@ const {
   style={style}
   loading={loading}
   fetchpriority={fetchpriority}
-  widths={IMAGE_WIDTHS} 
+  widths={IMAGE_WIDTHS}
   sizes={sizes}
   formats={IMAGE_FORMATS}
   fallbackFormat="webp"
   quality={IMAGE_QUALITY}
+  inferSize={isRemote}
   {...rest}
 />
 
