@@ -162,6 +162,20 @@ function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 			.prose :global(figcaption a) {
 				white-space: nowrap;
 			}
+			.prose :global(.scrapbook-container figure) {
+				margin: 0;
+			}
+			.prose :global(.scrapbook-container figure img) {
+				border-radius: 0;
+				box-shadow: none;
+				max-height: none;
+				width: 100%;
+			}
+			.prose :global(.scrapbook-container figure:hover img) {
+				width: auto;
+				max-height: 60vh;
+				box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+			}
 			.prose[data-blog-content] :global(img:not([data-lightbox="off"])) {
 				cursor: zoom-in;
 			}
@@ -416,41 +430,44 @@ function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 			</div>
 		</dialog>
 		<Footer />
-			<script is:inline>
-				const content = document.querySelector('.prose[data-blog-content]');
-				const dialog = /** @type {HTMLDialogElement | null} */ (document.getElementById('post-image-lightbox'));
-				const dialogImg = /** @type {HTMLImageElement | null} */ (dialog?.querySelector('img'));
-				const dialogCloseBtn = /** @type {HTMLButtonElement | null} */ (dialog?.querySelector('.lightbox-close'));
+			<script>
+				document.addEventListener('astro:page-load', () => {
+					const content = document.querySelector('.prose[data-blog-content]');
+					const dialogEl = document.getElementById('post-image-lightbox');
+					const dialog = dialogEl instanceof HTMLDialogElement ? dialogEl : null;
+					const dialogImg = dialog?.querySelector('img');
+					const dialogCloseBtn = dialog?.querySelector<HTMLButtonElement>('.lightbox-close');
 
-			if (content && dialog && dialogImg) {
-				const excludedSelector = [
-					'a',
-					'[data-no-lightbox]',
-					'[data-lightbox="off"]',
-					'.no-lightbox',
-					'.scrapbook-container',
-				].join(',');
+					if (!content || !dialog || !dialogImg) return;
 
-				content.addEventListener('click', (event) => {
-					const target = event.target;
-					if (!(target instanceof HTMLImageElement)) return;
-					if (target.closest(excludedSelector)) return;
+					const excludedSelector = [
+						'a',
+						'[data-no-lightbox]',
+						'[data-lightbox="off"]',
+						'.no-lightbox',
+						'.scrapbook-container',
+					].join(',');
 
-					dialogImg.src = target.currentSrc || target.src;
-					dialogImg.alt = target.alt || '';
-					dialog.showModal();
-				});
+					content.addEventListener('click', (event) => {
+						const target = event.target;
+						if (!(target instanceof HTMLImageElement)) return;
+						if (target.closest(excludedSelector)) return;
 
-				dialog.addEventListener('click', (event) => {
-					if (event.target === dialog) {
+						dialogImg.src = target.currentSrc || target.src;
+						dialogImg.alt = target.alt || '';
+						dialog.showModal();
+					});
+
+					dialog.addEventListener('click', (event) => {
+						if (event.target === dialog) {
+							dialog.close();
+						}
+					});
+
+					dialogCloseBtn?.addEventListener('click', () => {
 						dialog.close();
-					}
+					});
 				});
-
-				dialogCloseBtn?.addEventListener('click', () => {
-					dialog.close();
-				});
-			}
-		</script>
+			</script>
 	</body>
 </html>
