@@ -11,9 +11,7 @@ if (!rootFolder) {
 }
 
 const maxDimension = 1600;
-const jpegQuality = 90;
-const pngCompressionLevel = 9;
-let stats = { processed: 0, skipped: 0, errors: 0 };
+let stats = { processed: 0, errors: 0 };
 
 function formatExifDate(value) {
   if (value instanceof Date && !Number.isNaN(value.getTime())) {
@@ -47,7 +45,6 @@ function buildSelectedExif(metadata) {
   if (typeof image?.Make === 'string' && image.Make.trim()) {
     ifd0.Make = image.Make.trim();
   }
-
   if (typeof image?.Model === 'string' && image.Model.trim()) {
     ifd0.Model = image.Model.trim();
   }
@@ -79,61 +76,51 @@ async function walkAndProcess(currentDir) {
       if (!['node_modules', '.git', 'dist', 'build', '.astro'].includes(item.name)) {
         await walkAndProcess(fullPath);
       }
-    } 
-    // WARNING: This still ignores HEIC. Export as JPEG from iPhone first!
-    else if (item.isFile() && item.name.match(/\.(jpg|jpeg|png)$/i)) {
+    } else if (item.isFile() && item.name.match(/\.(jpg|jpeg|png)$/i)) {
       try {
         const image = sharp(fullPath);
         const metadata = await image.metadata();
         const ext = path.extname(item.name).toLowerCase();
-        
-        // 1. Check size logic remains the same
-        if (metadata.width <= maxDimension && metadata.height <= maxDimension) {
-          stats.skipped++;
-          continue;
+        const needsResize = metadata.width > maxDimension || metadata.height > maxDimension;
+
+        // Always bake orientation and strip GPS. Resize only if over the limit.
+        let pipeline = image.rotate();
+
+        if (needsResize) {
+          pipeline = pipeline.resize({
+            width: maxDimension,
+            height: maxDimension,
+            fit: 'inside',
+            withoutEnlargement: true,
+          });
         }
 
-        // 2. CRITICAL FIX: .rotate() 
-        // This ensures iPhone portrait photos don't turn sideways 
-        // when we strip the metadata later.
-        let pipeline = image.rotate().resize({ 
-          width: maxDimension, 
-          height: maxDimension, 
-          fit: 'inside',
-          withoutEnlargement: true 
-        });
-
-        // Keep only a small EXIF subset (camera make/model + capture date), drop GPS and other metadata.
         const selectedExif = buildSelectedExif(metadata);
         if (selectedExif) {
           pipeline = pipeline.withExif(selectedExif);
         }
 
         if (ext === '.png') {
-          pipeline = pipeline.png({ compressionLevel: pngCompressionLevel });
+          pipeline = pipeline.png({ compressionLevel: 6 });
         } else {
-          // mozjpeg is great, but ensure .rotate() happened first!
-          pipeline = pipeline.jpeg({ quality: jpegQuality, mozjpeg: true });
+          pipeline = pipeline.jpeg({ quality: 95 });
         }
 
-        // 3. Save to temp
         const tempPath = fullPath + '.tmp';
         await pipeline.toFile(tempPath);
-        
+
         const originalSize = fs.statSync(fullPath).size;
         const newSize = fs.statSync(tempPath).size;
-        
-        // 4. Overwrite (Safe because temp file was successfully created)
+
         fs.unlinkSync(fullPath);
         fs.renameSync(tempPath, fullPath);
-        
-        const savings = ((originalSize - newSize) / originalSize * 100).toFixed(1);
-        console.log(`   ✅ ${item.name}: ${metadata.width}x${metadata.height} → ≤${maxDimension}px (${savings}% smaller)`);
+
+        const action = needsResize ? 'resized + GPS stripped' : 'GPS stripped';
+        console.log(`   ✅ ${item.name}: ${action} (${(originalSize / 1024 / 1024).toFixed(1)}MB → ${(newSize / 1024 / 1024).toFixed(1)}MB)`);
         stats.processed++;
 
       } catch (error) {
         console.error(`   ❌ Error on ${item.name}:`, error.message);
-        // Clean up temp file if it exists so we don't leave garbage
         if (fs.existsSync(fullPath + '.tmp')) fs.unlinkSync(fullPath + '.tmp');
         stats.errors++;
       }
@@ -141,4 +128,5 @@ async function walkAndProcess(currentDir) {
   }
 }
 
-walkAndProcess(rootFolder);
+await walkAndProcess(rootFolder);
+console.log(`\nDone: ${stats.processed} processed, ${stats.errors} errors`);
