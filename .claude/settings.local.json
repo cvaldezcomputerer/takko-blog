@@ -21,7 +21,14 @@
       "Bash(node -e \"const d=JSON.parse\\(require\\(''fs''\\).readFileSync\\(''c:/Users/babyo/OneDrive/Desktop/projects/blog/takko-blog/dist/server/wrangler.json'',''utf8''\\)\\); console.log\\(''main:'',d.main\\); console.log\\(''assets:'',JSON.stringify\\(d.assets\\)\\); console.log\\(''pages_build_output_dir:'',d.pages_build_output_dir\\); console.log\\(''kv_namespaces:'',JSON.stringify\\(d.kv_namespaces\\)\\); console.log\\(''d1:'',d.d1_databases?.map\\(x=>x.binding\\)\\)\")",
       "Bash(node -e \"const d=JSON.parse\\(require\\(''''fs''''\\).readFileSync\\(''''dist/server/wrangler.json'''',''''utf8''''\\)\\); console.log\\(''''kv_namespaces:'''',d.kv_namespaces\\)\")",
       "Bash(mv c:/Users/babyo/OneDrive/Desktop/projects/blog/takko-blog/.ai/* c:/Users/babyo/OneDrive/Desktop/projects/blog/takko-blog/.claude/)",
-      "Bash(rmdir c:/Users/babyo/OneDrive/Desktop/projects/blog/takko-blog/.ai)"
+      "Bash(rmdir c:/Users/babyo/OneDrive/Desktop/projects/blog/takko-blog/.ai)",
+      "Bash(npm i *)",
+      "Bash(node scripts/optimize-images.mjs src/assets/images/blog/golden-week-2026/)",
+      "Bash(aws s3 *)",
+      "Bash(node scripts/optimize-images.mjs src/assets/images/blog/golden-week-2026/blog-header-image.jpg)",
+      "Bash(python3)",
+      "Bash(node scripts/optimize-images.mjs src/assets/images/blog/bread-festival/)",
+      "Bash(node scripts/optimize-images.mjs src/assets/images/blog/bread-festival/venue-map.JPG)"
     ]
   }
 }

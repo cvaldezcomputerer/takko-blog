@@ -40,6 +40,8 @@ Use this for any new post. Duplicate this file per post and check items as you g
 - [ ] Keep tone natural (not over-literal) in `ja`.
 - [ ] Keep `en_simple` short and clear.
 - [ ] Review/confirm `Explain` hints for tricky English phrases/idioms.
+  - For a **single word**, keep the meaning to 1–2 words (e.g. `meaning="famously"` for *notoriously*).
+  - If the same word is already explained earlier in the post, don't wrap a longer phrase containing it — just leave the phrase as plain text.
 - [ ] Verify all links are present in each language slot where required.
 
 ## 5) QA Pass
