@@ -1,11 +1,22 @@
-# Bloggy Doggy 
+# DoggyBloggy
 
-Welcome to the source code for **Bloggy Doggy**, a personal blog sharing experiences of life in rural Japan (Takko-machi).
+A personal blog about life in Takko-machi, a small garlic farming town in Aomori, Japan. Built while living and teaching English there.
 
-## About The Project
+Posts are written for English learners — each one comes in regular English, Simple English, and Japanese so students can read at their own level.
 
-I'm Cristian, an English teacher living in Takko. I built this site to document my life here and to provide accessible reading material for English learners.
+## What's on it
 
-### Key Features
+**Blog** - Slice-of-life posts about living in rural Aomori. Cooking, farming seasons, local events, teaching life. Written in three versions side by side so readers can switch between them.
 
-- **Multilingual Content**: Posts are available in English, Japanese, and Simple English.
+**English Learning** - Interactive tools built for Takko students. Vocabulary quizzes, reading practice, and classroom-friendly content tied to the blog posts.
+
+## Goals
+- Give students reading material that's actually about their town and their lives
+- Make Takko-machi more findable for English speakers curious about rural Japan
+- Keep writing and adding posts over time
+
+## Built with
+- Astro
+- Cloudflare Pages for hosting and deployment
+- Cloudflare D1 for likes and quiz data
+- TypeScript
