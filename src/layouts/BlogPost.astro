@@ -57,7 +57,7 @@ function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 			.hero-image :global(img) {
 				display: block;
 				margin: 0 auto;
-				border-radius: 12px;
+				border-radius: var(--radius-md);
 				box-shadow: var(--box-shadow);
 				max-height: 510px;  
     			object-fit: cover;  
@@ -105,7 +105,7 @@ function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 				width: 46px;
 				height: 46px;
 				object-fit: cover;
-				border-radius: 12px;
+				border-radius: var(--radius-md);
 				flex-shrink: 0;
 				background: rgba(255, 255, 255, 0.75);
 				border: 1px solid rgba(var(--gray), 0.18);
@@ -128,7 +128,7 @@ function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 			}
 			@media (max-width: 640px) {
 				.camera-used {
-					border-radius: 12px;
+					border-radius: var(--radius-md);
 					padding: 0.65rem 0.75rem;
 					align-items: flex-start;
 				}
@@ -145,7 +145,7 @@ function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 			.prose :global(figure img) {
 				display: block;
 				margin: 0 auto;
-				border-radius: 12px;
+				border-radius: var(--radius-md);
 				box-shadow: var(--box-shadow);
 				max-height: 600px;
 				width: auto;
@@ -194,7 +194,7 @@ function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 			.lightbox-content {
 				position: relative;
 				background: rgb(var(--gray-dark));
-				border-radius: 12px;
+				border-radius: var(--radius-md);
 				padding: 1rem;
 			}
 			.lightbox-dialog img {
@@ -203,7 +203,7 @@ function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 				max-height: 68vh;
 				width: auto;
 				height: auto;
-				border-radius: 8px;
+				border-radius: var(--radius);
 				box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
 			}
 			.lightbox-close {
@@ -213,7 +213,7 @@ function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 				width: 2.25rem;
 				height: 2.25rem;
 				border: 1px solid rgba(0, 0, 0, 0.1);
-				border-radius: 999px;
+				border-radius: var(--radius-pill);
 				background: rgba(255, 255, 255, 0.96);
 				color: #222;
 				font-size: 1.15rem;
@@ -230,7 +230,7 @@ function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 			.post-outro {
 				margin-top: 2.25rem;
 				padding: 0.95rem 0.95rem 0.85rem;
-				border-radius: 16px;
+				border-radius: var(--radius-lg);
 				border: 1px solid rgba(var(--gray), 0.18);
 				border-top: 2px solid rgba(var(--accent), 0.5);
 				background: rgba(var(--gray-light), 0.28);
@@ -282,7 +282,7 @@ function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 				.post-outro {
 					margin-top: 1.8rem;
 					padding: 0.85rem 0.75rem 0.8rem;
-					border-radius: 12px;
+					border-radius: var(--radius-md);
 				}
 				.post-outro__line {
 					font-size: 0.95rem;

@@ -3,6 +3,24 @@
   https://github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd6b9f7961c350917dd/templates/styles/blog/default.css
   License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
  */
+
+/* ---------------------------------------------------------------------------
+   Reset
+   Minimal, prose-safe reset. box-sizing is the important one — it stops
+   padding/border from expanding element widths (the root cause of the
+   horizontal-overflow hacks this site used to need).
+--------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 :root {
   --accent: #059669;
   --accent-dark: #047857;
@@ -34,6 +52,43 @@
 
   --base-font-size-desktop: 20px;
   --base-font-size-mobile: 18px;
+
+  /* ----- Semantic tokens -----
+     Surface / line / status colors. Use these instead of raw hex in
+     components so a palette change happens in one place and dark mode
+     comes for free. */
+  --surface: #ffffff;       /* raised card / input backgrounds */
+  --border: #dddddd;        /* default hairline borders */
+  --border-strong: #999999; /* hover / emphasized borders */
+  --text-muted: #666666;    /* secondary / caption text */
+
+  --success: var(--accent);
+  --success-strong: var(--accent-dark);
+  --success-bg: #ecfdf5;
+  --danger: #dc2626;
+  --danger-strong: #b91c1c;
+  --danger-bg: #fef2f2;
+  --info: #3b82f6;
+
+  /* ----- Spacing scale -----
+     rem-based steps. Use for padding/margin/gap on NEW work and wherever a
+     value already lands on the scale. Deliberately off-scale values (e.g. the
+     tilted scrapbook cards) are left as-is on purpose. */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  /* ----- Radius scale ----- */
+  --radius-sm: 2px;     /* paper-strip edges */
+  --radius: 8px;        /* default */
+  --radius-md: 12px;    /* cards (most common) */
+  --radius-lg: 16px;    /* large panels */
+  --radius-pill: 9999px;
 }
 
 .dark {
@@ -55,6 +110,15 @@
   --pill-en: #38bdf8;
   --pill-ez: #10b981; /* A slightly lighter green than your main accent for contrast */
   --pill-jp: #fb7185;
+
+  /* Semantic token overrides for dark mode */
+  --surface: #2d2d2d;
+  --border: #404040;
+  --border-strong: #555555;
+  --text-muted: #9ca3af;
+
+  --success-bg: rgba(5, 150, 105, 0.2);
+  --danger-bg: rgba(220, 38, 38, 0.2);
 }
 
 @font-face {
@@ -175,16 +239,16 @@ table {
 img {
   max-width: 100%;
   height: auto;
-  border-radius: 8px;
+  border-radius: var(--radius);
 }
 code {
   padding: 2px 5px;
   background-color: rgb(var(--gray-light));
-  border-radius: 2px;
+  border-radius: var(--radius-sm);
 }
 pre {
   padding: 1.5em;
-  border-radius: 8px;
+  border-radius: var(--radius);
 }
 pre > code {
   all: unset;
