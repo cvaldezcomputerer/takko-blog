@@ -2,5 +2,7 @@
   "typescript.validate.enable": false,
   "javascript.validate.enable": false,
   "typescript.tsserver.experimental.enableProjectDiagnostics": false,
-  "typescript.preferences.includePackageJsonAutoImports": "off"
+  "typescript.preferences.includePackageJsonAutoImports": "off",
+  "git.autofetch": true,
+  "git.autofetchPeriod": 180
 }
