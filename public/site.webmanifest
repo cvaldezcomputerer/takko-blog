@@ -1,11 +1,11 @@
 {
-    "name": "Takko Blog",
-    "short_name": "Takko Blog",
-    "description": "Life in rural Japan",
+    "name": "Bloggy Doggy",
+    "short_name": "Bloggy Doggy",
+    "description": "Life in the Japanese countryside: stories, photos, and observations in easy-to-understand English.",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#f5f1eb",
-    "theme_color": "#059669",
+    "theme_color": "#f5f1eb",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",

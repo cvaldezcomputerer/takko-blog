@@ -1,6 +1,6 @@
 ---
 import '../../styles/global.css';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
+import { SITE_TITLE, SITE_DESCRIPTION, SITE_AUTHOR } from '../../consts';
 import { ClientRouter } from "astro:transitions";
 
 
@@ -8,6 +8,11 @@ interface Props {
 	title: string;
 	description: string;
 	image?: string;
+	/** "article" on blog posts, "website" everywhere else */
+	type?: 'website' | 'article';
+	publishedDate?: Date;
+	updatedDate?: Date;
+	author?: string;
 }
 
 // Normalize canonical URL: ensure directory-style pages have a trailing slash
@@ -23,7 +28,70 @@ if (rawPath !== '/') {
 }
 const canonicalURL = new URL(normalizedPath, Astro.site);
 
-const { title, description, image = '/favicon_512.png' } = Astro.props;
+const {
+	title,
+	description,
+	image = '/favicon_512.png',
+	type = 'website',
+	publishedDate,
+	updatedDate,
+	author = SITE_AUTHOR,
+} = Astro.props;
+
+const isArticle = type === 'article';
+const imageURL = new URL(image, Astro.site);
+
+// JSON-LD: WebSite + BreadcrumbList on every page; add BlogPosting on articles.
+const jsonLdGraph: Record<string, unknown>[] = [
+	{
+		"@type": "WebSite",
+		"url": Astro.site,
+		"name": SITE_TITLE,
+		"description": SITE_DESCRIPTION,
+		"inLanguage": ["en", "ja"],
+		"logo": new URL('/favicon_512.png', Astro.site)
+	},
+	{
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{
+				"@type": "ListItem",
+				"position": 1,
+				"name": "Home",
+				"item": Astro.site
+			},
+			{
+				"@type": "ListItem",
+				"position": 2,
+				"name": title,
+				"item": canonicalURL
+			}
+		]
+	}
+];
+
+if (isArticle) {
+	jsonLdGraph.push({
+		"@type": "BlogPosting",
+		"headline": title,
+		"description": description,
+		"image": imageURL.toString(),
+		"url": canonicalURL.toString(),
+		"mainEntityOfPage": canonicalURL.toString(),
+		"inLanguage": "en",
+		...(publishedDate && { "datePublished": publishedDate.toISOString() }),
+		"dateModified": (updatedDate ?? publishedDate)?.toISOString(),
+		"author": { "@type": "Person", "name": author },
+		"publisher": {
+			"@type": "Organization",
+			"name": SITE_TITLE,
+			"logo": {
+				"@type": "ImageObject",
+				"url": new URL('/favicon_512.png', Astro.site).toString()
+			}
+		}
+	});
+}
 ---
 
 <meta charset="utf-8" />
@@ -55,15 +123,29 @@ const { title, description, image = '/favicon_512.png' } = Astro.props;
 <meta name="title" content={title} />
 <meta name="description" content={description} />
 
-<meta property="og:type" content="website" />
-<meta property="og:url" content={Astro.url} />
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={SITE_TITLE} />
+<meta property="og:url" content={canonicalURL} />
 <meta property="og:locale" content="en_US" />
 <meta property="og:locale:alternate" content="ja_JP" />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={new URL(image, Astro.url)} />
+<meta property="og:image" content={imageURL} />
+{isArticle && publishedDate && (
+	<meta property="article:published_time" content={publishedDate.toISOString()} />
+)}
+{isArticle && (updatedDate ?? publishedDate) && (
+	<meta property="article:modified_time" content={(updatedDate ?? publishedDate)?.toISOString()} />
+)}
+{isArticle && <meta property="article:author" content={author} />}
 
-<meta name="theme-color" content="#FAFAFA" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageURL} />
+
+<meta name="theme-color" content="#f5f1eb" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#2d2d2d" media="(prefers-color-scheme: dark)" />
 
 <script is:inline src="/scripts/settings-state.js"></script>
 <script is:inline src="/scripts/settings-panel-controller.js"></script>
@@ -96,31 +178,5 @@ const { title, description, image = '/favicon_512.png' } = Astro.props;
 
 <script is:inline type="application/ld+json" set:html={JSON.stringify({
   "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebSite",
-      "url": Astro.site,
-      "name": SITE_TITLE,
-      "description": SITE_DESCRIPTION,
-			"inLanguage": ["en", "ja"],
-      "logo": new URL('/favicon_512.png', Astro.site)
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": Astro.site
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": title,
-          "item": canonicalURL
-        }
-      ]
-    }
-  ]
+  "@graph": jsonLdGraph
 })} />

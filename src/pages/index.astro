@@ -227,6 +227,13 @@ function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 		<main>
 			<div class="background-pattern pattern-bg">
 				<section class="content-wrapper">
+					<h1 class="sr-only">
+						<T fluid>
+							<span slot="en">Bloggy Doggy: blog posts about life in rural Japan</span>
+							<span slot="ja">ブログ・ドギー：日本の田舎暮らしについての記事</span>
+							<span slot="en_simple">Bloggy Doggy: posts about life in rural Japan</span>
+						</T>
+					</h1>
 					<ul>
 						{
 							posts.map((post, index) => (
@@ -246,13 +253,13 @@ function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 											<div class="placeholder-image" />
 										)}
 										<div class="post-content">
-											<h4 class="title">
+											<h2 class="title">
 												<T fluid>
 												<span slot="en" lang="en">{post.data.title}</span>
 												<span slot="ja" lang="ja" set:html={post.data.title_ja || post.data.title}></span>
 												<span slot="en_simple" lang="en">{post.data.title_en_simple || post.data.title}</span>
 												</T>
-											</h4>
+											</h2>
 											<p class="date">
 												<FormattedDate date={post.data.pubDate} />
 											</p>
