@@ -34,11 +34,23 @@ function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 	const maybeImage = value as Partial<ImageMetadata>;
 	return typeof maybeImage.src === 'string';
 }
+
+// Resolve a shareable Open Graph image from the hero image (falls back to site default in BaseHead).
+const ogImage = isOptimizedImageSrc(heroImage)
+	? (typeof heroImage === 'string' ? heroImage : heroImage.src)
+	: undefined;
 ---
 
 <html lang="en">
 	<head>
-		<BaseHead title={title} description={description} />
+		<BaseHead
+			title={title}
+			description={description}
+			type="article"
+			publishedDate={pubDate}
+			updatedDate={updatedDate}
+			{...(ogImage && { image: ogImage })}
+		/>
 		<script is:inline>
 			const hue = Math.floor(Math.random() * 360);
 			document.documentElement.style.setProperty('--theme-hue', hue.toString());
