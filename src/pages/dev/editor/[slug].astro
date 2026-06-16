@@ -1,0 +1,401 @@
+---
+// Dev-only structured view of one post. See sibling index.astro for the
+// dev-gating / bundling rationale.
+// NOTE: static imports must stay above the DEV guard; the Astro compiler
+// mangles import statements that appear after top-level executable code.
+import { parsePost, slotFields, captionPlainField } from "../../../lib/dev/parse-post.js";
+import SlotEditor from "../../../components/dev/SlotEditor.astro";
+
+export const prerender = false;
+
+if (!import.meta.env.DEV) {
+  return new Response("Not found", { status: 404 });
+}
+
+const { readPost, assetFsUrl } = await import("../../../lib/dev/posts-fs.js");
+
+const { slug } = Astro.params;
+const raw = slug ? await readPost(slug) : null;
+if (!raw) {
+  return new Response("Post not found", { status: 404 });
+}
+
+const { fields, blocks } = parsePost(raw);
+const title = fields.title ?? slug;
+
+// Stable, visible reference IDs so edits can be requested by name
+// ("change cap-2", "swap img-3 and img-4"). Numbering follows parse order,
+// which is deterministic, so the same IDs map back to the same MDX spots.
+let nText = 0;
+let nImg = 0;
+let nHead = 0;
+const items = blocks.map((block) => {
+  if (block.type === "t") return { block, ref: `txt-${++nText}`, capRef: null };
+  if (block.type === "heading" && block.slots) return { block, ref: `head-${++nHead}`, capRef: null };
+  if (block.type === "figure" || block.type === "image") {
+    const n = ++nImg;
+    return { block, ref: `img-${n}`, capRef: `cap-${n}` };
+  }
+  return { block, ref: null, capRef: null };
+});
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>{title} - Dev Editor</title>
+    <!-- is:global so rules reach elements rendered inside child components
+         (SlotEditor); Astro scopes a plain <style> to this page only. Safe here
+         because this is a standalone, dev-only document. -->
+    <style is:global>
+      :root { color-scheme: dark; }
+      body {
+        margin: 0;
+        font: 16px/1.6 system-ui, sans-serif;
+        background: #14161a;
+        color: #e6e8eb;
+        padding: 2rem;
+      }
+      .wrap { max-width: min(1180px, 94vw); margin: 0 auto; }
+      a.back { color: #7aa7f7; text-decoration: none; font-size: 0.85rem; }
+      h1 { font-size: 1.5rem; margin: 0.5rem 0 0.25rem; }
+      .meta { color: #9aa0a6; font-size: 0.8rem; font-family: ui-monospace, monospace; margin-bottom: 1.5rem; }
+
+      .block {
+        border: 1px solid #2a2e35;
+        border-radius: 10px;
+        margin-bottom: 0.75rem;
+        overflow: hidden;
+        background: #1b1e24;
+      }
+      .block > .tag {
+        font: 0.7rem/1 ui-monospace, monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #8a909a;
+        padding: 0.5rem 0.85rem;
+        border-bottom: 1px solid #2a2e35;
+        background: #181b21;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .ref {
+        font-weight: 700;
+        text-transform: none;
+        letter-spacing: 0;
+        color: #cdd2d8;
+        background: #2b3340;
+        border: 1px solid #3a4452;
+        border-radius: 6px;
+        padding: 0.1rem 0.4rem;
+        user-select: all;
+      }
+      .ref.cap-ref { color: #f0d8a8; background: #34301f; border-color: #4a4327; }
+      .block > .body { padding: 0.85rem; }
+
+      .heading .body { font-weight: 700; }
+      .heading .body .lvl { color: #6b7280; margin-right: 0.4rem; font-family: ui-monospace, monospace; }
+
+      .langs { display: grid; gap: 0.55rem; }
+      .lang { display: grid; grid-template-columns: 4.5rem 1fr; gap: 0.6rem; align-items: start; }
+      .lang .k {
+        font: 0.7rem/1.6 ui-monospace, monospace;
+        color: #7aa7f7;
+        text-transform: uppercase;
+      }
+      .lang.ja .k { color: #f7a77a; }
+      .lang.ja { opacity: 0.5; } /* JP is generated last, rarely hand-edited */
+      .lang.en_simple .k { color: #8bd17c; }
+      .lang .v { white-space: pre-wrap; }
+      .missing { color: #c25b5b; font-style: italic; }
+
+      textarea.edit {
+        width: 100%;
+        box-sizing: border-box;
+        resize: vertical;
+        overflow: hidden;
+        font: inherit;
+        color: #e6e8eb;
+        background: #12151b;
+        border: 1px solid #2a2e35;
+        border-radius: 6px;
+        padding: 0.35rem 0.5rem;
+        min-height: 1.9rem;
+      }
+      textarea.edit:focus { outline: none; border-color: #4c8bf5; background: #151a22; }
+      .lang.ja textarea.edit { color: #c4c8cd; }
+
+      .img-move { margin-left: auto; display: inline-flex; gap: 0.25rem; }
+      .img-move button {
+        font: 0.8rem/1 system-ui, sans-serif;
+        color: #cdd2d8;
+        background: #2b3340;
+        border: 1px solid #3a4452;
+        border-radius: 5px;
+        padding: 0.05rem 0.4rem;
+        cursor: pointer;
+      }
+      .img-move button:hover { border-color: #4c8bf5; }
+      .fig-meta { flex: 1; min-width: 0; }
+
+      .savebar {
+        position: sticky;
+        bottom: 0;
+        max-width: min(1180px, 94vw);
+        margin: 1rem auto 0;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        justify-content: flex-end;
+        padding: 0.75rem 0;
+      }
+      .savebar #save {
+        font: 600 0.9rem system-ui, sans-serif;
+        color: #fff;
+        background: #2f6fed;
+        border: none;
+        border-radius: 8px;
+        padding: 0.5rem 1.1rem;
+        cursor: pointer;
+      }
+      .savebar #save:disabled { background: #2a2e35; color: #6b7280; cursor: default; }
+      .status { font-size: 0.85rem; color: #9aa0a6; }
+      .status.ok { color: #8bd17c; }
+      .status.err { color: #e08a8a; }
+
+      figure.fig { margin: 0; display: flex; gap: 0.85rem; align-items: flex-start; }
+      figure.fig img {
+        max-width: 180px; max-height: 130px; border-radius: 8px;
+        object-fit: cover; background: #0e1014;
+      }
+      figure.fig .cap { font-size: 0.85rem; color: #c4c8cd; }
+      figure.fig .src { font: 0.7rem ui-monospace, monospace; color: #8a909a; word-break: break-all; }
+
+      pre.raw {
+        margin: 0; white-space: pre-wrap; word-break: break-word;
+        font: 0.78rem/1.5 ui-monospace, monospace; color: #b9bec5;
+      }
+      .imports .tag, .component .tag { color: #b48bd1; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <a class="back" href="/dev/editor">&larr; all posts</a>
+      <h1>{title}</h1>
+      <div class="meta">{slug} - {blocks.length} blocks</div>
+
+      {
+        items.map(({ block, ref, capRef }) => {
+          if (block.type === "imports") {
+            return (
+              <div class="block imports">
+                <div class="tag">imports</div>
+                <div class="body"><pre class="raw">{block.raw}</pre></div>
+              </div>
+            );
+          }
+          if (block.type === "heading") {
+            const fields = block.slots ? slotFields(block.raw) : [];
+            return (
+              <div class="block heading">
+                <div class="tag">heading h{block.level}{ref && <span class="ref">{ref}</span>}</div>
+                <div class="body">
+                  <span class="lvl">{"#".repeat(block.level)}</span>
+                  {fields.length ? <SlotEditor fields={fields} /> : block.text}
+                </div>
+              </div>
+            );
+          }
+          if (block.type === "t") {
+            return (
+              <div class="block t">
+                <div class="tag">text{ref && <span class="ref">{ref}</span>}</div>
+                <div class="body"><SlotEditor fields={slotFields(block.raw)} /></div>
+              </div>
+            );
+          }
+          if (block.type === "figure" || block.type === "image") {
+            const caption = block.type === "figure" ? block.caption : undefined;
+            const captionText = block.type === "figure" ? block.captionText : undefined;
+            const hasCaption = Boolean(caption || captionText);
+            const captionFields = caption ? slotFields(block.raw) : [];
+            const plainCaption = captionText ? captionPlainField(block.raw) : null;
+            return (
+              <div class="block figure" data-img data-block-raw={block.raw}>
+                <div class="tag">
+                  image
+                  {ref && <span class="ref">{ref}</span>}
+                  {hasCaption && capRef && <span class="ref cap-ref">{capRef}</span>}
+                  <span class="img-move">
+                    <button type="button" class="move-up" title="Move image up">&uarr;</button>
+                    <button type="button" class="move-down" title="Move image down">&darr;</button>
+                  </span>
+                </div>
+                <div class="body">
+                  <figure class="fig">
+                    {block.src && <img src={assetFsUrl(block.src)} alt={block.alt ?? ""} />}
+                    <div class="fig-meta">
+                      <div class="src">{block.src}</div>
+                      {block.alt && <div class="cap">alt: {block.alt}</div>}
+                      {captionFields.length > 0 && <SlotEditor fields={captionFields} />}
+                      {plainCaption && (
+                        <div class="lang caption">
+                          <span class="k">caption</span>
+                          <textarea
+                            class="edit"
+                            rows="1"
+                            data-find={plainCaption.find}
+                            data-prefix={plainCaption.prefix}
+                            data-suffix={plainCaption.suffix}
+                            data-orig={plainCaption.core}
+                          >{plainCaption.core}</textarea>
+                        </div>
+                      )}
+                    </div>
+                  </figure>
+                </div>
+              </div>
+            );
+          }
+          if (block.type === "component") {
+            return (
+              <div class="block component">
+                <div class="tag">component - {block.name}</div>
+                <div class="body"><pre class="raw">{block.raw}</pre></div>
+              </div>
+            );
+          }
+          // paragraph / raw
+          return (
+            <div class="block">
+              <div class="tag">{block.type}</div>
+              <div class="body"><pre class="raw">{block.raw}</pre></div>
+            </div>
+          );
+        })
+      }
+    </div>
+
+    <div class="savebar">
+      <span class="status" id="status"></span>
+      <button type="button" id="save" disabled>Save changes</button>
+    </div>
+
+    <script is:inline define:vars={{ slug }}>
+      // @ts-nocheck — dev-only DOM glue; `slug` is injected via define:vars.
+      (() => {
+        const ENDPOINT = "/__dev/editor/save";
+        const saveBtn = document.getElementById("save");
+        const statusEl = document.getElementById("status");
+        const textareas = [...document.querySelectorAll("textarea.edit")];
+        const imgBlocks = [...document.querySelectorAll("[data-img]")];
+        // Original image order, captured once at load.
+        const originalOrder = imgBlocks.map((el) => el.dataset.blockRaw);
+
+        function autosize(el) {
+          el.style.height = "auto";
+          el.style.height = el.scrollHeight + "px";
+        }
+        textareas.forEach((el) => {
+          autosize(el);
+          el.addEventListener("input", () => {
+            autosize(el);
+            refresh();
+          });
+        });
+
+        function textEdits() {
+          const edits = [];
+          for (const el of textareas) {
+            if (el.value !== el.dataset.orig) {
+              edits.push({
+                find: el.dataset.find,
+                replace: el.dataset.prefix + el.value + el.dataset.suffix,
+              });
+            }
+          }
+          return edits;
+        }
+
+        function currentImageOrder() {
+          return [...document.querySelectorAll("[data-img]")].map((el) => el.dataset.blockRaw);
+        }
+
+        function reorderEdits() {
+          const current = currentImageOrder();
+          const changed = current.some((raw, i) => raw !== originalOrder[i]);
+          if (!changed) return [];
+          const edits = [];
+          // Phase A: park each original block under a unique placeholder.
+          originalOrder.forEach((raw, i) => {
+            edits.push({ find: raw, replace: "<<<DEVSWAP:" + i + ">>>" });
+          });
+          // Phase B: fill each original slot with whatever now sits there.
+          current.forEach((raw, i) => {
+            edits.push({ find: "<<<DEVSWAP:" + i + ">>>", replace: raw });
+          });
+          return edits;
+        }
+
+        function allEdits() {
+          // Reorder first (uses original block text), then text/caption edits.
+          return [...reorderEdits(), ...textEdits()];
+        }
+
+        function refresh() {
+          const n = allEdits().length;
+          saveBtn.disabled = n === 0;
+          if (n === 0 && statusEl.dataset.sticky !== "1") statusEl.textContent = "";
+        }
+
+        // Image move buttons reorder relative to other image blocks.
+        document.querySelectorAll(".move-up, .move-down").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const block = btn.closest("[data-img]");
+            const imgs = [...document.querySelectorAll("[data-img]")];
+            const idx = imgs.indexOf(block);
+            if (btn.classList.contains("move-up") && idx > 0) {
+              imgs[idx - 1].before(block);
+            } else if (btn.classList.contains("move-down") && idx < imgs.length - 1) {
+              imgs[idx + 1].after(block);
+            }
+            refresh();
+          });
+        });
+
+        saveBtn.addEventListener("click", async () => {
+          const edits = allEdits();
+          if (edits.length === 0) return;
+          saveBtn.disabled = true;
+          statusEl.dataset.sticky = "1";
+          statusEl.className = "status";
+          statusEl.textContent = "Saving " + edits.length + " edit(s)...";
+          try {
+            const res = await fetch(ENDPOINT, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ slug, edits }),
+            });
+            const data = await res.json();
+            if (res.ok && data.ok) {
+              statusEl.textContent = "Saved. Reloading...";
+              statusEl.classList.add("ok");
+              setTimeout(() => location.reload(), 500);
+            } else {
+              statusEl.textContent = "Error: " + (data.error || res.status);
+              statusEl.classList.add("err");
+              saveBtn.disabled = false;
+            }
+          } catch (err) {
+            statusEl.textContent = "Request failed: " + err;
+            statusEl.classList.add("err");
+            saveBtn.disabled = false;
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

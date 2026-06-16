@@ -1,0 +1,30 @@
+---
+// Editable language slots for the dev editor. Each textarea carries the exact
+// data needed to build a lossless find/replace edit on save (see the page
+// script): `data-find` is the original element verbatim, `data-prefix` /
+// `data-suffix` wrap the editable core, `data-orig` is the unedited core.
+/** @typedef {import('../../lib/dev/parse-post.js').EditField} EditField */
+/** @type {{ fields: EditField[] }} */
+const { fields } = Astro.props;
+/** @type {Record<string,string>} */
+const labels = { en: "en", ja: "ja", en_simple: "simple", caption: "caption" };
+---
+
+<div class="langs">
+  {
+    fields.map((f) => (
+      <div class={`lang ${f.key}`}>
+        <span class="k">{labels[f.key] ?? f.key}</span>
+        <textarea
+          class="edit"
+          rows="1"
+          spellcheck="true"
+          data-find={f.find}
+          data-prefix={f.prefix}
+          data-suffix={f.suffix}
+          data-orig={f.core}
+        >{f.core}</textarea>
+      </div>
+    ))
+  }
+</div>

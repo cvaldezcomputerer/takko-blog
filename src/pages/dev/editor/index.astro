@@ -1,0 +1,71 @@
+---
+// Dev-only post browser. Server-rendered so it always reflects the files on
+// disk. Returns 404 in any real build; the fs module is dynamically imported
+// only under import.meta.env.DEV so it never enters the production bundle.
+export const prerender = false;
+
+if (!import.meta.env.DEV) {
+  return new Response("Not found", { status: 404 });
+}
+
+const { listPosts } = await import("../../../lib/dev/posts-fs.js");
+const posts = await listPosts();
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Dev Editor</title>
+    <style>
+      :root { color-scheme: dark; }
+      body {
+        margin: 0;
+        font: 16px/1.5 system-ui, sans-serif;
+        background: #14161a;
+        color: #e6e8eb;
+        padding: 2rem;
+      }
+      .wrap { max-width: 720px; margin: 0 auto; }
+      h1 { font-size: 1.4rem; }
+      p.note { color: #9aa0a6; font-size: 0.85rem; }
+      ul { list-style: none; padding: 0; }
+      li { margin: 0; }
+      a.post {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.85rem 1rem;
+        border: 1px solid #2a2e35;
+        border-radius: 10px;
+        margin-bottom: 0.5rem;
+        color: inherit;
+        text-decoration: none;
+        background: #1b1e24;
+      }
+      a.post:hover { border-color: #4c8bf5; background: #20242b; }
+      a.post .slug { color: #9aa0a6; font-size: 0.8rem; font-family: ui-monospace, monospace; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>Dev Editor</h1>
+      <p class="note">
+        Read-only viewer (dev only). Pick a post to see its structure.
+      </p>
+      <ul>
+        {
+          posts.map((post) => (
+            <li>
+              <a class="post" href={`/dev/editor/${post.slug}`}>
+                <span>{post.title}</span>
+                <span class="slug">{post.slug}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </body>
+</html>

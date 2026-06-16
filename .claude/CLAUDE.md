@@ -53,9 +53,11 @@ All design tokens live in `:root` / `.dark` in `src/styles/global.css`. **New co
 All settings applied as classes on `<html>`. See `.claude/SETTINGS_ARCHITECTURE.md` for full detail.
 
 ## New Blog Posts
-Always follow `.claude/making-blog-post-checklist.md` when creating a new post. Key image step: run `node scripts/optimize-images.mjs src/assets/images/blog/<post-slug>/` before publishing. No manual webp conversion needed — Astro handles avif/webp at build time.
+Use the **new-post skill** (`.claude/skills/new-post/SKILL.md`) when creating a new post — it is the source of truth and scaffolds the MDX + image folder, then walks through drafting (English + Simple first, Japanese last), the dev editor, image optimization, and publishing. Trigger it for any "new/make/write a post" request, or run `/new-post <slug>` directly. Key image step: run `node scripts/optimize-images.mjs src/assets/images/blog/<post-slug>/` before publishing. No manual webp conversion needed — Astro handles avif/webp at build time.
+
+There is also a **dev editor** (dev only): `npm run dev`, then `http://localhost:4321/dev/editor` (port may differ) to edit post text, captions, and image order in a structured panel that writes back to the `.mdx`. See `src/pages/dev/editor/` and `scripts/dev-editor-integration.mjs`.
 
 ## Reference Docs
 - `.claude/PROJECT_MAP.md` — full file map, API routes, UI systems
 - `.claude/SETTINGS_ARCHITECTURE.md` — settings state, storage keys, panel events
-- `.claude/making-blog-post-checklist.md` — checklist for publishing a new post
+- `.claude/skills/new-post/SKILL.md` — authoritative process for creating a new post
