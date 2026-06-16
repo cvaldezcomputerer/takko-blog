@@ -10,6 +10,8 @@ import sentry from "@sentry/astro";
 
 import cloudflare from "@astrojs/cloudflare";
 
+import devEditor from "./scripts/dev-editor-integration.mjs";
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Build a map of "/blog/<slug>/" -> last-modified date by reading post frontmatter.
@@ -49,6 +51,7 @@ export default defineConfig({
     },
   }),
   integrations: [
+    devEditor(),
     mdx(),
     sitemap({
       serialize(item) {
