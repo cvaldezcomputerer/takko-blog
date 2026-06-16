@@ -41,7 +41,10 @@ http://localhost:4321/dev/editor/<slug>
 - Add more `<T>` blocks, headings, and `<figure>` images by editing the `.mdx`
   (the editor reads/writes existing structure; new blocks are added in the file).
 
-Keep `en_simple` short and clear. Keep `en` natural, not over-literal.
+Keep `en` natural, not over-literal. For the `en_simple` slot, **read
+`.claude/SIMPLE_ENGLISH_STYLE.md` first** — it is the source of truth for the
+author's Simple English voice (target reader, sentence rules, what to keep vs.
+cut, tone, annotated examples). Draft `en_simple` to match it.
 
 ## 3. Images
 
@@ -55,7 +58,13 @@ Keep `en_simple` short and clear. Keep `en` natural, not over-literal.
 4. Reference inline `<figure>` images by markdown path string directly — **no
    import needed**. Only `import` an image at the top of the MDX when it is
    passed as a **prop** to a component (`Gallery`, `TwoImages`, hero, etc.).
-5. Remove unused source files from the image folder. Crop the hero if needed.
+5. **Park leftover photos in a review `<Gallery>` at the end of the post.** Any
+   photos that don't get placed inline go into a single `<Gallery>` block at the
+   bottom, wrapped in an MDX comment that says to delete it before publishing.
+   This lets the author see every photo in context and pull keepers up into the
+   post. Remove the block (and any genuinely unused source files) before
+   publishing. See an existing post for the `<Gallery>` shape (e.g.
+   `badminton-tournament.mdx`).
 6. Add `heroImage: "../../assets/images/blog/<slug>/<slug>-header.webp"` to
    frontmatter once the image exists (omitted by the scaffold on purpose — the
    schema validates image paths and a missing file breaks the dev server).

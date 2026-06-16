@@ -20,16 +20,21 @@ function slugOf(pathKey) {
   return (pathKey.split("/").pop() ?? "").replace(/\.mdx?$/, "");
 }
 
-/** @returns {Promise<{ slug: string, title: string }[]>} */
+/** @returns {Promise<{ slug: string, title: string, pubDate: string }[]>} */
 export async function listPosts() {
   const posts = [];
   for (const pathKey of Object.keys(rawModules)) {
     const raw = await rawModules[pathKey]();
     const slug = slugOf(pathKey);
     const title = raw.match(/^title:\s*["']?(.+?)["']?\s*$/m)?.[1] ?? slug;
-    posts.push({ slug, title });
+    const pubDate = raw.match(/^pubDate:\s*["']?(.+?)["']?\s*$/m)?.[1] ?? "";
+    posts.push({ slug, title, pubDate });
   }
-  posts.sort((a, b) => a.title.localeCompare(b.title));
+  // Newest first by pubDate (the same field that orders the live site); fall
+  // back to title for any posts that share a date or lack one.
+  posts.sort(
+    (a, b) => b.pubDate.localeCompare(a.pubDate) || a.title.localeCompare(b.title),
+  );
   return posts;
 }
 

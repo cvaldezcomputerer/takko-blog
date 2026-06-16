@@ -60,7 +60,7 @@ const posts = await listPosts();
             <li>
               <a class="post" href={`/dev/editor/${post.slug}`}>
                 <span>{post.title}</span>
-                <span class="slug">{post.slug}</span>
+                <span class="slug">{post.pubDate} · {post.slug}</span>
               </a>
             </li>
           ))

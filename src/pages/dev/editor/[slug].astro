@@ -60,6 +60,13 @@ const items = blocks.map((block) => {
       }
       .wrap { max-width: min(1180px, 94vw); margin: 0 auto; }
       a.back { color: #7aa7f7; text-decoration: none; font-size: 0.85rem; }
+      .toolbar { display: flex; align-items: center; gap: 1rem; }
+      a.view {
+        margin-left: auto; color: #8ad6a0; text-decoration: none;
+        font-size: 0.85rem; border: 1px solid #2f5d3f; border-radius: 6px;
+        padding: 0.25rem 0.6rem;
+      }
+      a.view:hover { background: #1d2a22; }
       h1 { font-size: 1.5rem; margin: 0.5rem 0 0.25rem; }
       .meta { color: #9aa0a6; font-size: 0.8rem; font-family: ui-monospace, monospace; margin-bottom: 1.5rem; }
 
@@ -183,7 +190,10 @@ const items = blocks.map((block) => {
   </head>
   <body>
     <div class="wrap">
-      <a class="back" href="/dev/editor">&larr; all posts</a>
+      <div class="toolbar">
+        <a class="back" href="/dev/editor">&larr; all posts</a>
+        <a class="view" href={`/blog/${slug}`} target="_blank" rel="noopener">View post &#8599;</a>
+      </div>
       <h1>{title}</h1>
       <div class="meta">{slug} - {blocks.length} blocks</div>
 
