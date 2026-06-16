@@ -10,7 +10,7 @@ import sentry from "@sentry/astro";
 
 import cloudflare from "@astrojs/cloudflare";
 
-import devEditor from "./scripts/dev-editor-integration.mjs";
+import devEditor from "./tools/scripts/dev-editor-integration.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

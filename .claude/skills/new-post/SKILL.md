@@ -48,7 +48,7 @@ Keep `en_simple` short and clear. Keep `en` natural, not over-literal.
 1. Drop final photos/screenshots into `src/assets/images/blog/<slug>/`.
 2. Optimize in place (resize to max 1600px, strip GPS, bake EXIF orientation):
    ```
-   node scripts/optimize-images.mjs src/assets/images/blog/<slug>/
+   node tools/scripts/optimize-images.mjs src/assets/images/blog/<slug>/
    ```
 3. **No manual webp conversion** for camera photos — Astro builds avif/webp
    automatically. Only hand-make a `.webp` for screenshots or composites.
