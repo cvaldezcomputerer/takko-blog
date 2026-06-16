@@ -165,7 +165,7 @@ function parseFigure(raw) {
  * Extract en / ja / en_simple slot contents (cleaned to readable text).
  * @param {string} html @returns {Slots}
  */
-export function extractSlots(html) {
+function extractSlots(html) {
   /** @type {Slots} */
   const slots = {};
   const re = /<span slot="(en|ja|en_simple)">([\s\S]*?)<\/span>/g;
@@ -178,7 +178,7 @@ export function extractSlots(html) {
 }
 
 /** @param {Slots} s */
-export function hasSlots(s) {
+function hasSlots(s) {
   return Boolean(s.en || s.ja || s.en_simple);
 }
 
@@ -230,7 +230,7 @@ export function captionPlainField(raw) {
  * strip stray tags, and collapse whitespace.
  * @param {string} html
  */
-export function cleanInline(html) {
+function cleanInline(html) {
   return html
     .replace(/\{\s*["']\s*["']\s*\}/g, " ") // {" "} JSX spacers
     .replace(/<Explain[^>]*>/g, "")
