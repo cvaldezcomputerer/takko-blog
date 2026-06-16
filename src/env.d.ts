@@ -13,7 +13,6 @@ interface D1DatabaseLike {
 declare module "cloudflare:workers" {
   const env: {
     DB: D1DatabaseLike;
-    RESEND_API_KEY: string;
     SESSION: unknown;
   };
   export { env };

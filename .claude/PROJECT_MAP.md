@@ -42,13 +42,14 @@
 ## API Routes
 - Likes: `src/pages/api/likes/[slug].js`
 - Quiz: `src/pages/api/quiz/[id].js`
-- Contact: `src/pages/api/contact.js`
 - RSS: `src/pages/rss.xml.js`
+
+Contact form posts directly to Web3Forms (`https://api.web3forms.com/submit`) from `src/pages/contact.astro` — no server route or secret.
 
 ## Types / Declarations
 - Browser globals + settings API + `startViewTransition`:
   - `src/types/global.d.ts`
-- Cloudflare runtime bindings (`locals.runtime.env.DB`, `RESEND_API_KEY`):
+- Cloudflare runtime bindings (`locals.runtime.env.DB`):
   - `src/env.d.ts`
 
 ## Key UI Systems

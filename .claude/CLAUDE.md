@@ -40,7 +40,7 @@ All design tokens live in `:root` / `.dark` in `src/styles/global.css`. **New co
 
 ## Type Declarations
 - Browser globals + settings API: `src/types/global.d.ts`
-- Cloudflare runtime bindings (`locals.runtime.env.DB`, `RESEND_API_KEY`): `src/env.d.ts`
+- Cloudflare runtime bindings (`locals.runtime.env.DB`): `src/env.d.ts`
 
 ## Settings (localStorage)
 | Setting | Key | Values |
