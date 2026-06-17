@@ -79,6 +79,11 @@ prop shapes (e.g. `chili-con-carne-easy.mdx` for `RecipeIngredients`,
 
 ### Explain hints (tricky vocabulary)
 
+- **Who it's for:** picture a Japanese reader who can follow most of the English
+  on their own, but hits something tricky — an idiom, a colloquialism, a
+  figurative or culturally-loaded phrase that even an advanced English learner
+  wouldn't know from a dictionary. Those are what get an `<Explain>`. Plain
+  vocabulary they can look up does not.
 - Add `<Explain meaning="...">phrase</Explain>` only when meaning is still
   unclear after the `en_simple` version exists — avoid redundant hints.
 - For a **single word**, keep the meaning to 1–2 words (e.g.
@@ -98,7 +103,11 @@ prop shapes (e.g. `chili-con-carne-easy.mdx` for `RecipeIngredients`,
 ## 6. Japanese (generate last)
 
 - Fill the `ja` slot for every `<T>` block, heading, and caption, plus
-  `title_ja`. Keep the tone natural, not over-literal.
+  `title_ja`. The Japanese is a **comprehension aid**: an English learner flips
+  to it to understand what the English says. So translate **closely and fairly
+  literally**, tracking the English sentence-by-sentence so JA↔EN can be mapped.
+  The exception is **idioms and figurative expressions** — render those
+  **naturally**, since a word-for-word version would confuse.
 - The editor dims `ja` rows since they are generated last; they are still
   editable there.
 

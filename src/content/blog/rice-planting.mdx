@@ -1,15 +1,16 @@
 ---
 title: "Rice Planting Class!"
-title_ja: ""
+title_ja: "田植え体験！"
 title_en_simple: "Rice Planting Class!"
 description: "Planting rice by hand with 5th graders at a countryside elementary school in Takko-machi."
-pubDate: "2026-06-16"
-heroImage: "../../assets/images/blog/rice-planting/adult-holding-up-seedlings.png"
-draft: true
+pubDate: "2026-06-17"
+heroImage: "../../assets/images/blog/rice-planting/seedling-trays-with-labels.jpg"
 ---
 
 import T from "../../components/i18n/T.astro";
 import Gallery from "../../components/content/Gallery.astro";
+import Explain from "../../components/content/Explain.astro";
+import Quiz from "../../components/content/Quiz.astro";
 
 <T>
   <span slot="en">
@@ -17,20 +18,27 @@ import Gallery from "../../components/content/Gallery.astro";
     countryside elementary school where I work. It was an amazing experience
     that I will never forget, and today I would like to share it with you.
   </span>
+  <span slot="ja">
+    最近、私は、自分が働いている田舎の小学校で、日本の5年生たちと一緒にお米を植えてきました。それは一生忘れられない素晴らしい経験で、今日はそれを皆さんにお伝えしたいと思います。
+  </span>
   <span slot="en_simple">
     I planted rice with Japanese 5th graders! I work at their school. It was so
     much fun. I want to tell you about it!
   </span>
 </T>
 
-## <T><span slot="en">Not just garlic!</span><span slot="en_simple">Not just garlic!</span></T>
+## <T><span slot="en">Not just garlic!</span><span slot="ja">ニンニクだけじゃない！</span><span slot="en_simple">Not just garlic!</span></T>
 
 <T>
   <span slot="en">
     I live in Takko-machi, which is a mountain farming town. It's famous for
     garlic, but that isn't the only crop grown here. I've personally seen corn,
     onions, apples, potatoes, pumpkins, and of course, rice. I've heard tobacco
-    and mushrooms are also big here.
+    and mushrooms are also{" "}
+    <Explain meaning="popular, widely grown">big</Explain> here.
+  </span>
+  <span slot="ja">
+    私は田子町という山あいの農業の町に住んでいます。ニンニクで有名ですが、ここで育てられている作物はそれだけではありません。私は実際に、トウモロコシ、玉ねぎ、りんご、じゃがいも、かぼちゃ、そしてもちろんお米を見てきました。タバコやきのこも、この辺りでは盛んだと聞いています。
   </span>
   <span slot="en_simple">
     I live in Takko-machi. It is a farming town in the mountains. Takko is
@@ -38,14 +46,15 @@ import Gallery from "../../components/content/Gallery.astro";
   </span>
 </T>
 
-## <T><span slot="en">田植え: Rice Planting</span><span slot="en_simple">Planting Rice</span></T>
+## <T><span slot="en">田植え: Rice Planting</span><span slot="ja">田植え</span><span slot="en_simple">Planting Rice</span></T>
 
 <figure>
-  ![The rice plants the students grew](../../assets/images/blog/rice-planting/seedling-trays-with-labels.png)
+  ![Holding up the rice seedlings](../../assets/images/blog/rice-planting/adult-holding-up-seedlings.jpg)
   <figcaption>
     <T>
-      <span slot="en">The rice plants the students grew in class.</span>
-      <span slot="en_simple">The students' rice plants.</span>
+      <span slot="en">Do you like my hat?</span>
+      <span slot="ja">私の帽子、気に入った？</span>
+      <span slot="en_simple">Do you like my hat?</span>
     </T>
   </figcaption>
 </figure>
@@ -58,18 +67,34 @@ import Gallery from "../../components/content/Gallery.astro";
     planting, or "taue" (田植え), the harvesting, or "inekari" (稲刈り), and the
     final step of turning it into mochi!
   </span>
+  <span slot="ja">
+    おそらくそれが、毎年5年生が稲作体験をする理由なのでしょう。苗からお餅まで、生徒たちは自分のお米を育てます。私は幸運にも、この体験のうち3つの場面に参加させてもらいました。田植え（taue）、稲刈り（inekari）、そして最後にそれをお餅にする工程です！
+  </span>
   <span slot="en_simple">
-    Every year, the 5th graders grow rice. They grow it from a small plant all
-    the way to mochi! I get to help them three times: planting (taue),
+    Every year, the 5th graders grow rice. They plant it. Then they harvest it. Finally they make mochi! I can help them three times: planting (taue),
     harvesting (inekari), and making mochi!
   </span>
 </T>
 
+<figure>
+  ![Kids walking to the rice field](../../assets/images/blog/rice-planting/kids-walking-to-field-3.jpg)
+  <figcaption>
+    <T>
+      <span slot="en">Walking to the rice field.</span>
+      <span slot="ja">田んぼへ歩いています。</span>
+      <span slot="en_simple">Let's go!</span>
+    </T>
+  </figcaption>
+</figure>
+
 <T>
   <span slot="en">
     In this post, I want to share my experience planting rice with the students
-    in May. We set off in the morning directly from the school to the school's
-    own rice field, Takko Tanbo.
+    in May. We <Explain meaning="left, departed">set off</Explain> in the
+    morning directly from the school to the school's own rice field, Takko Tanbo.
+  </span>
+  <span slot="ja">
+    この記事では、5月に生徒たちと田植えをした体験を紹介したいと思います。私たちは朝、学校から直接、学校専用の田んぼである「田子田んぼ」へ出発しました。
   </span>
   <span slot="en_simple">
     In May, we planted the rice. We walked from school to the rice field. It is
@@ -78,11 +103,12 @@ import Gallery from "../../components/content/Gallery.astro";
 </T>
 
 <figure>
-  ![Learning how to plant the rice](../../assets/images/blog/rice-planting/farmer-demonstrating-planting.png)
+  ![Learning how to plant the rice](../../assets/images/blog/rice-planting/farmer-demonstrating-planting.jpg)
   <figcaption>
     <T>
       <span slot="en">Learning how to plant the rice.</span>
-      <span slot="en_simple">The lesson.</span>
+      <span slot="ja">お米の植え方を学んでいます。</span>
+      <span slot="en_simple">Watch and learn.</span>
     </T>
   </figcaption>
 </figure>
@@ -93,6 +119,9 @@ import Gallery from "../../components/content/Gallery.astro";
     very kind. This is a picture of the rice plants the students grew in class
     up until now. They look great!
   </span>
+  <span slot="ja">
+    この田んぼは、宇藤さんとそのご家族が準備し、世話をしてくださっています。皆さんとても親切です。これは、生徒たちがこれまで授業で育ててきた稲の写真です。とても立派ですね！
+  </span>
   <span slot="en_simple">
     Mr. Uto and his family take care of the field. They are very kind. The
     students grew these rice plants in class. They look great!
@@ -100,52 +129,61 @@ import Gallery from "../../components/content/Gallery.astro";
 </T>
 
 <figure>
-  ![Kids walking to the rice field](../../assets/images/blog/rice-planting/kids-walking-to-field-3.png)
+  ![Carrying the seedling trays to the field](../../assets/images/blog/rice-planting/kids-carrying-seedling-trays.jpg)
   <figcaption>
     <T>
-      <span slot="en">Walking to the rice field.</span>
-      <span slot="en_simple">Walking to the field.</span>
+      <span slot="en">Carrying the seedling trays to the field.</span>
+      <span slot="ja">苗のトレーを田んぼへ運んでいます。</span>
+      <span slot="en_simple">Carrying the trays.</span>
     </T>
   </figcaption>
 </figure>
 
 <T>
   <span slot="en">
-    Placeholder text. Add your writing here.
+    After the short lecture, the students took the plants to their designated row in the field.
+  </span>
+  <span slot="ja">
+    短い説明のあと、生徒たちは苗を、田んぼの中の自分の決められた列まで運びました。
   </span>
   <span slot="en_simple">
-    Placeholder text. Add your writing here.
+    The students carry the rice plants to the field.
   </span>
 </T>
 
 <figure>
-  ![Kids about to step into the muddy paddy](../../assets/images/blog/rice-planting/kids-just-before-stepping-into-mud.png)
+  ![Kids about to step into the muddy paddy](../../assets/images/blog/rice-planting/kids-just-before-stepping-into-mud.jpg)
   <figcaption>
     <T>
-      <span slot="en">Ready to step into the mud!</span>
-      <span slot="en_simple">Ready to jump in!</span>
+      <span slot="en">the students are hesitant to step in!</span>
+      <span slot="ja">生徒たちは足を踏み入れるのをためらっています！</span>
+      <span slot="en_simple">it's a little scary!</span>
     </T>
   </figcaption>
 </figure>
 
 <T>
   <span slot="en">
-    After a short lecture, the students take off their shoes and prepare to enter
+    The students take off their shoes and prepare to enter
     the muddy rice paddy in their assigned rows. They were hesitant at first,
     but once someone went in, everyone else followed.
   </span>
+  <span slot="ja">
+    生徒たちは靴を脱ぎ、割り当てられた列で、泥だらけの田んぼに入る準備をします。最初はためらっていましたが、誰か一人が入ると、他のみんなも続きました。
+  </span>
   <span slot="en_simple">
-    After a short lesson, the students took off their shoes. The rice paddy is
-    very muddy! They were scared at first. But once one student went in,
+    The students took off their shoes. The rice paddy is
+    very muddy. They were scared at first. But once one student went in,
     everyone followed!
   </span>
 </T>
 
 <figure>
-  ![The beginning of planting in rows](../../assets/images/blog/rice-planting/kids-planting-line-1.png)
+  ![The beginning of planting in rows](../../assets/images/blog/rice-planting/kids-planting-line-1.jpg)
   <figcaption>
     <T>
       <span slot="en">Starting to plant in neat rows.</span>
+      <span slot="ja">きれいな列に植え始めています。</span>
       <span slot="en_simple">Start planting!</span>
     </T>
   </figcaption>
@@ -158,6 +196,9 @@ import Gallery from "../../components/content/Gallery.astro";
     Walking through the mud is quite hard with my boots on. Maybe I should have
     gone barefoot too.
   </span>
+  <span slot="ja">
+    それから私たちは、お米の苗をきれいな列に地面へ植え始めました。数本ずつ手に取り、茎が外に出るように泥の中へ押し込みます。長靴を履いたまま泥の中を歩くのは、なかなか大変です。私も裸足になればよかったかもしれません。
+  </span>
   <span slot="en_simple">
     We put the rice plants into the mud in straight lines. You push them in, and
     the stems stick out. Walking in the mud was hard in my boots!
@@ -165,11 +206,12 @@ import Gallery from "../../components/content/Gallery.astro";
 </T>
 
 <figure>
-  ![Pushing the rice plants into the mud](../../assets/images/blog/rice-planting/kid-planting-seedling-closeup.png)
+  ![Pushing the rice plants into the mud](../../assets/images/blog/rice-planting/kid-planting-seedling-closeup.jpg)
   <figcaption>
     <T>
       <span slot="en">Pushing the plants into the mud.</span>
-      <span slot="en_simple">Into the mud!</span>
+      <span slot="ja">苗を泥の中へ押し込んでいます。</span>
+      <span slot="en_simple">Planting</span>
     </T>
   </figcaption>
 </figure>
@@ -177,7 +219,12 @@ import Gallery from "../../components/content/Gallery.astro";
 <T>
   <span slot="en">
     It was hard work but lots of fun. Luckily, I didn't fall in this time!
-    Though I can't say the same for the other kids.
+    Though I{" "}
+    <Explain meaning="the other kids did fall in">can't say the same for the
+    other kids</Explain>.
+  </span>
+  <span slot="ja">
+    大変な作業でしたが、とても楽しかったです。幸運にも、今回は転びませんでした！もっとも、他の子たちについては同じとは言えませんが。
   </span>
   <span slot="en_simple">
     It was hard work, but so much fun! This time, I did not fall in the mud! But
@@ -186,10 +233,11 @@ import Gallery from "../../components/content/Gallery.astro";
 </T>
 
 <figure>
-  ![The finished rows of rice](../../assets/images/blog/rice-planting/whole-group-planting-wide-shot.png)
+  ![The finished rows of rice](../../assets/images/blog/rice-planting/whole-group-planting-wide-shot.jpg)
   <figcaption>
     <T>
       <span slot="en">All the rows are planted!</span>
+      <span slot="ja">全ての列が植えられました！</span>
       <span slot="en_simple">All done!</span>
     </T>
   </figcaption>
@@ -201,6 +249,9 @@ import Gallery from "../../components/content/Gallery.astro";
     already had experience, so they finished quickly and cleaned up the other
     rows. How nice of them!
   </span>
+  <span slot="ja">
+    うまくいきました。みんなの列はとてもきれいに見えました。農業の町なので、すでに経験のある子もいて、早く終わらせて他の列まで片付けてくれました。なんて親切なんでしょう！
+  </span>
   <span slot="en_simple">
     Everyone did a great job! Some kids have planted rice before. They finished
     fast and helped the others. How kind!
@@ -208,11 +259,12 @@ import Gallery from "../../components/content/Gallery.astro";
 </T>
 
 <figure>
-  ![Kids washing the mud off in the water](../../assets/images/blog/rice-planting/kids-cleanup-in-water.png)
+  ![Kids washing the mud off in the water](../../assets/images/blog/rice-planting/kids-cleanup-in-water.jpg)
   <figcaption>
     <T>
       <span slot="en">Washing off the mud.</span>
-      <span slot="en_simple">Washing up!</span>
+      <span slot="ja">泥を洗い流しています。</span>
+      <span slot="en_simple">cleaning!</span>
     </T>
   </figcaption>
 </figure>
@@ -222,22 +274,42 @@ import Gallery from "../../components/content/Gallery.astro";
     The kids washed up in the aqueduct higher up, then we headed back to school
     to continue with the school day.
   </span>
+  <span slot="ja">
+    子どもたちは、少し上の方にある用水路で体を洗い、それから学校に戻って、一日の授業の続きをしました。
+  </span>
   <span slot="en_simple">
     The kids washed the mud off in the water. Then we walked back to school.
   </span>
 </T>
 
 <figure>
-  ![Kids walking back to school](../../assets/images/blog/rice-planting/kids-walking-back-to-school.png)
+  ![Kids walking back to school](../../assets/images/blog/rice-planting/kids-walking-back-to-school.jpg)
   <figcaption>
     <T>
       <span slot="en">Walking back to school.</span>
+      <span slot="ja">学校へ歩いて戻っています。</span>
       <span slot="en_simple">Going back to school.</span>
     </T>
   </figcaption>
 </figure>
 
-## <T><span slot="en">What's Next</span><span slot="en_simple">What's Next</span></T>
+<Quiz
+  id="rice-planting-duration"
+  correctAnswerIndex={0}
+  question={{
+    en: "Can you guess how long it took to plant the rice?",
+    ja: "田植えにどれくらい時間がかかったと思いますか？",
+    en_simple: "How long did it take to plant the rice?",
+  }}
+  options={[
+    { en: "1 hour", ja: "1時間" },
+    { en: "2 hours", ja: "2時間" },
+    { en: "3 hours", ja: "3時間" },
+    { en: "30 minutes", ja: "30分" },
+  ]}
+/>
+
+## <T><span slot="en">What's Next</span><span slot="ja">これから</span><span slot="en_simple">What's Next</span></T>
 
 <T>
   <span slot="en">
@@ -245,18 +317,22 @@ import Gallery from "../../components/content/Gallery.astro";
     winter, but for now that's it. The Uto family will watch over the field
     until then.
   </span>
+  <span slot="ja">
+    私たちは秋に収穫のために戻り、そして最後に冬にお餅を作りますが、今のところはここまでです。それまでは、宇藤さんご一家が田んぼを見守ってくれます。
+  </span>
   <span slot="en_simple">
     We will come back in fall to harvest the rice. In winter, we will make
-    mochi! The Uto family will take care of the field until then.
+    mochi! The Uto family will take care of the field.
   </span>
 </T>
 
 <figure>
-  ![The rice field after planting](../../assets/images/blog/rice-planting/adult-inspecting-planted-paddy.png)
+  ![The rice field after planting](../../assets/images/blog/rice-planting/adult-inspecting-planted-paddy.jpg)
   <figcaption>
     <T>
       <span slot="en">The field after planting.</span>
-      <span slot="en_simple">The field is done!</span>
+      <span slot="ja">田植え後の田んぼ。</span>
+      <span slot="en_simple">Finished.</span>
     </T>
   </figcaption>
 </figure>
@@ -267,6 +343,9 @@ import Gallery from "../../components/content/Gallery.astro";
     Japanese countryside. I never thought I would learn how to plant rice. It's
     an amazing part of Japanese culture that I'm glad I can share with everyone.
   </span>
+  <span slot="ja">
+    日本の田舎で、このような素晴らしい経験ができることを、私はとてもありがたく思っています。お米の植え方を学ぶことになるとは、思ってもみませんでした。これは日本文化の素晴らしい一部で、それを皆さんと分かち合えることを嬉しく思います。
+  </span>
   <span slot="en_simple">
     I am so happy I can do things like this in the countryside. I never thought
     I would learn to plant rice! It is a special part of Japanese culture.
@@ -274,10 +353,11 @@ import Gallery from "../../components/content/Gallery.astro";
 </T>
 
 <figure>
-  ![A rice-planting machine in the paddy](../../assets/images/blog/rice-planting/rice-planting-machine-in-paddy.png)
+  ![A rice-planting machine in the paddy](../../assets/images/blog/rice-planting/rice-planting-machine-in-paddy.jpg)
   <figcaption>
     <T>
       <span slot="en">A rice-planting machine.</span>
+      <span slot="ja">田植え機。</span>
       <span slot="en_simple">A rice machine!</span>
     </T>
   </figcaption>
@@ -288,102 +368,73 @@ import Gallery from "../../components/content/Gallery.astro";
     Actually, it seems most farmers these days use machines like this to plant
     the rice, though many still do it the old-fashioned way. It's hard work!
   </span>
+  <span slot="ja">
+    実は、最近ではほとんどの農家さんが、お米を植えるのにこのような機械を使うようです。とはいえ、今でも多くの人が昔ながらの方法でやっています。大変な作業です！
+  </span>
   <span slot="en_simple">
-    Today, most farmers use machines like this to plant rice. But some still do
+    Many farmers use machines like this to plant rice. But some still do
     it by hand. It is hard work!
   </span>
 </T>
 
-{/* REVIEW GALLERY — unused photos parked here so they're easy to look through.
-    Move keepers up into the post; delete this whole block before publishing. */}
 <Gallery>
   <figure>
-    ![Cover image option](../../assets/images/blog/rice-planting/cover-image.png)
+    ![Cover image option](../../assets/images/blog/rice-planting/cover-image.jpg)
     <figcaption>
       <T>
-        <span slot="en">Cover image option.</span>
-        <span slot="en_simple">Cover photo.</span>
+        <span slot="en">Almost there!</span>
+        <span slot="ja">もうすぐです！</span>
+        <span slot="en_simple">Almost there!</span>
       </T>
     </figcaption>
   </figure>
   <figure>
-    ![A boy carrying a tray of seedlings](../../assets/images/blog/rice-planting/boy-carrying-seedling-tray.png)
-    <figcaption>
-      <T>
-        <span slot="en">A boy carrying a tray of seedlings.</span>
-        <span slot="en_simple">Carrying seedlings.</span>
-      </T>
-    </figcaption>
-  </figure>
-  <figure>
-    ![Handing a tray of seedlings to an adult](../../assets/images/blog/rice-planting/girl-handing-seedling-tray-to-adult.png)
-    <figcaption>
-      <T>
-        <span slot="en">Handing over a tray of seedlings.</span>
-        <span slot="en_simple">Sharing the seedlings.</span>
-      </T>
-    </figcaption>
-  </figure>
-  <figure>
-    ![Carrying the seedling trays to the field](../../assets/images/blog/rice-planting/kids-carrying-seedling-trays.png)
-    <figcaption>
-      <T>
-        <span slot="en">Carrying the seedling trays to the field.</span>
-        <span slot="en_simple">Carrying the trays.</span>
-      </T>
-    </figcaption>
-  </figure>
-  <figure>
-    ![Walking with the seedlings](../../assets/images/blog/rice-planting/kids-walking-with-seedlings.png)
+    ![Walking with the seedlings](../../assets/images/blog/rice-planting/kids-walking-with-seedlings.jpg)
     <figcaption>
       <T>
         <span slot="en">Walking with the seedlings.</span>
+        <span slot="ja">苗を持って歩いています。</span>
         <span slot="en_simple">Walking with seedlings.</span>
       </T>
     </figcaption>
   </figure>
   <figure>
-    ![The sign for the school's rice field](../../assets/images/blog/rice-planting/tanbo-no-gakko-sign-1.png)
+    ![The sign for the school's rice field](../../assets/images/blog/rice-planting/tanbo-no-gakko-sign-1.jpg)
     <figcaption>
       <T>
-        <span slot="en">The sign for the school's rice field.</span>
-        <span slot="en_simple">The rice field sign.</span>
+        <span slot="en">Tanbo no Gakkou.</span>
+        <span slot="ja">田んぼの学校。</span>
+        <span slot="en_simple">Tanbo no Gakkou.</span>
       </T>
     </figcaption>
   </figure>
   <figure>
-    ![Group photo in the paddy](../../assets/images/blog/rice-planting/group-photo-in-paddy.png)
+    ![Group photo in the paddy](../../assets/images/blog/rice-planting/group-photo-in-paddy.jpg)
     <figcaption>
       <T>
         <span slot="en">Group photo in the paddy.</span>
+        <span slot="ja">田んぼでの集合写真。</span>
         <span slot="en_simple">Group photo!</span>
       </T>
     </figcaption>
   </figure>
   <figure>
-    ![A farmer holding a crab from the paddy](../../assets/images/blog/rice-planting/farmer-holding-crab.png)
-    <figcaption>
-      <T>
-        <span slot="en">A farmer holding a crab from the paddy.</span>
-        <span slot="en_simple">A crab!</span>
-      </T>
-    </figcaption>
-  </figure>
-  <figure>
-    ![Giving a thank-you gift to the farmer](../../assets/images/blog/rice-planting/kid-presenting-gift-to-farmer.png)
+    ![Giving a thank-you gift to the farmer](../../assets/images/blog/rice-planting/kid-presenting-gift-to-farmer.jpg)
     <figcaption>
       <T>
         <span slot="en">Giving a thank-you gift to the farmer.</span>
+        <span slot="ja">農家さんへお礼の贈り物を渡しています。</span>
         <span slot="en_simple">A gift for the farmer!</span>
       </T>
     </figcaption>
   </figure>
   <figure>
-    ![Another shot of the field sign](../../assets/images/blog/rice-planting/tanbo-no-gakko-sign-2.png)
+    ![Another shot of the field sign](../../assets/images/blog/rice-planting/tanbo-no-gakko-sign-2.jpg)
     <figcaption>
       <T>
-        <span slot="en">Another shot of the field sign.</span>
-        <span slot="en_simple">The field sign.</span>
+        <span slot="en">What is that character?</span>
+        <span slot="ja">あの字は何だろう？</span>
+        <span slot="en_simple">What is that character?</span>
       </T>
     </figcaption>
   </figure>
