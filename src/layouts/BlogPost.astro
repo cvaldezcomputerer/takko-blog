@@ -57,14 +57,21 @@ const ogImage = isOptimizedImageSrc(heroImage)
 		</script>
 		<style>
 			main {
-				width: calc(100% - 2em);
+				width: 100%;
 				max-width: 100%;
 				margin: 0 auto;
+				padding-left: 0;
+				padding-right: 0;
 			}
 			.hero-image {
 				width: 100%;
 				max-width: 1080px;
 				margin: 0 auto 2rem auto;
+			}
+			@media (max-width: 720px) {
+				.hero-image {
+					padding: 0 1em;
+				}
 			}
 			.hero-image :global(img) {
 				display: block;
@@ -75,8 +82,8 @@ const ogImage = isOptimizedImageSrc(heroImage)
     			object-fit: cover;  
 			}
 			.prose {
-				width: 720px;
-				max-width: calc(100% - 2em);
+				width: 100%;
+				max-width: 720px;
 				margin: auto;
 				padding: 1em;
 				color: rgb(var(--gray-dark));
