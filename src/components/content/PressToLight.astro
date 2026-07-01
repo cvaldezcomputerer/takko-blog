@@ -1,0 +1,154 @@
+---
+import OptimizedImage from '../media/OptimizedImage.astro';
+
+interface Props {
+  /** The "off" frame (LED not lit) */
+  off: ImageMetadata | string;
+  /** The "on" frame (LED lit up) */
+  on: ImageMetadata | string;
+  altOff?: string;
+  altOn?: string;
+}
+
+const { off, on, altOff = "", altOn = "" } = Astro.props as Props;
+---
+
+<figure class="ptl">
+  <div class="ptl-stage">
+    <span class="ptl-img ptl-off">
+      <OptimizedImage src={off} alt={altOff} sizes="(max-width: 720px) 92vw, 480px" />
+    </span>
+    <span class="ptl-img ptl-on" aria-hidden="true">
+      <OptimizedImage src={on} alt="" sizes="(max-width: 720px) 92vw, 480px" />
+    </span>
+  </div>
+
+  <button type="button" class="ptl-btn" aria-pressed="false" aria-label={altOn || "Hold the button to light up the LED"}>
+    <span class="ptl-btn-cap"></span>
+  </button>
+
+  <figcaption class="ptl-caption">
+    <slot name="caption" />
+  </figcaption>
+</figure>
+
+<script>
+  // Tap the button to switch the image between off and lit.
+  // Delegated on document so it survives Astro view transitions.
+  document.addEventListener('click', (e) => {
+    const target = e.target;
+    if (!(target instanceof Element)) return;
+    const btn = target.closest('.ptl-btn');
+    if (!btn) return;
+    const root = btn.closest('.ptl');
+    if (!root) return;
+    const lit = root.classList.toggle('lit');
+    btn.setAttribute('aria-pressed', String(lit));
+  });
+</script>
+
+<style>
+  .ptl {
+    margin: 3rem auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  /* Plain image stage: the two frames swap instantly, no card, no animation */
+  .ptl-stage {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .ptl-off :global(picture img) {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* The lit frame sits exactly over the off frame and appears instantly */
+  .ptl-on {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+  }
+
+  .ptl-on :global(picture img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .ptl.lit .ptl-on {
+    opacity: 1;
+  }
+
+  /* ---- The electronics pushbutton (flat tactile switch) ---- */
+  .ptl-btn {
+    position: relative;
+    width: 76px;
+    height: 76px;
+    padding: 0;
+    border: 1px solid #8a8a90;
+    border-radius: 12px;
+    background: #c2c2c7;
+    /* flat hard bottom edge, gives it a body without a gradient */
+    box-shadow: 0 5px 0 #8f8f95;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  /* Two metal legs poking out the sides, so it reads as a real component */
+  .ptl-btn::before,
+  .ptl-btn::after {
+    content: "";
+    position: absolute;
+    top: 22px;
+    bottom: 22px;
+    width: 9px;
+    background: #b0b0b5;
+    border-radius: 2px;
+    z-index: -1;
+  }
+  .ptl-btn::before { left: -7px; }
+  .ptl-btn::after { right: -7px; }
+
+  /* The black round cap you press */
+  .ptl-btn-cap {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #1c1c1c;
+  }
+
+  .ptl-btn:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 5px;
+  }
+
+  /* Pressed (lit): only the black cap pushes down; the grey body stays put */
+  .ptl.lit .ptl-btn-cap {
+    background: #000;
+    transform: translateY(5px);
+  }
+
+  .ptl-caption {
+    text-align: center;
+    font-family: "Patrick Hand", "Bradley Hand", "Comic Sans MS", cursive;
+    font-size: 1.05rem;
+    line-height: 1.2;
+    color: var(--text-muted);
+  }
+
+  .ptl-caption :global([data-lang-content="ja"]) {
+    font-family: "Atkinson", sans-serif;
+    font-size: 0.9rem;
+  }
+</style>

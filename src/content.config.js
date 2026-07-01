@@ -14,6 +14,7 @@ const blog = defineCollection({
       draft: z.boolean().optional(),
       heroImage: image().optional(),
       heroImageFit: z.string().optional(),
+      heroImageMaxWidth: z.string().optional(),
       cameraUsedName: z.string().optional(),
       cameraUsedImage: z.string().optional(),
       cameraUsedImageAlt: z.string().optional(),

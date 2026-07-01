@@ -5,11 +5,13 @@ title_en_simple: "3D Printing at the Culture Festival"
 description: "Running a hands-on electronics and 3D printing booth at my town's culture festival in Takko."
 pubDate: "2026-07-01"
 heroImage: "../../assets/images/blog/3d-printing-culture-festival/cover-image.jpg"
+heroImageFit: "contain"
+heroImageMaxWidth: "720px"
 draft: true
 ---
 
 import T from "../../components/i18n/T.astro";
-import TwoImages from "../../components/content/TwoImages.astro";
+import PressToLight from "../../components/content/PressToLight.astro";
 import Explain from "../../components/content/Explain.astro";
 import buttonBefore from "../../assets/images/blog/3d-printing-culture-festival/button-before.jpg";
 import buttonLit from "../../assets/images/blog/3d-printing-culture-festival/button-lit.jpg";
@@ -98,8 +100,8 @@ import buttonLit from "../../assets/images/blog/3d-printing-culture-festival/but
     Getting the experience ready took a lot of planning. I had to pick the
     projects, decide on the parts, write the instructions, and arrange everything
     on the day. It was tough! Even though I'd made my own projects before, making
-    something that elementary schoolers could understand was a real challenge —
-    and it had to be short and fun, too.
+    something that elementary schoolers could understand was a real challenge.
+    It also had to be short and fun.
   </span>
   <span slot="ja">
     体験の準備にはかなりの計画が必要でした。プロジェクトを選び、部品を決め、説明書を作り、当日にすべてを並べなければなりませんでした。大変でした！以前に自分で工作をした経験はありましたが、小学生が理解できるように作るのはなかなかの挑戦でした。しかも、短くて楽しいものにしないといけないのですから。
@@ -115,11 +117,11 @@ import buttonLit from "../../assets/images/blog/3d-printing-culture-festival/but
 
 <T>
   <span slot="en">
-    But I figured it out in the end. For the MCU — the{" "}
-    <Explain meaning="most important part">heart of the project</Explain> — I
+    But I figured it out in the end. For the MCU, the{" "}
+    <Explain meaning="most important part">heart of the project</Explain>, I
     used the cheap XIAO ESP32-C6 board. It's small, cheap, and had all the
     capabilities I needed. On top of that were parts like wires, sensors,
-    buzzers, and LEDs — all easy to find and cheap. I ordered everything well in
+    buzzers, and LEDs. All easy to find and cheap. I ordered everything well in
     advance from AliExpress to keep the price as low as possible!
   </span>
   <span slot="ja">
@@ -152,7 +154,7 @@ import buttonLit from "../../assets/images/blog/3d-printing-culture-festival/but
     <Explain meaning="became useful">came into play</Explain>. I made three
     instruction booklets showing exactly where to place each component and wire.
     I knew that if I made them too vague, they'd be too hard for the students.
-    Even with precise instructions, many kids struggled — but most got there in
+    Even with precise instructions, many kids struggled, but most got there in
     the end.
   </span>
   <span slot="ja">
@@ -221,8 +223,8 @@ import buttonLit from "../../assets/images/blog/3d-printing-culture-festival/but
 
 <T>
   <span slot="en">
-    After a lot of testing — by myself and with my friend Kuriki — I finally got
-    everything working, with instructions that actually made sense. With the
+    After a lot of testing, both by myself and with my friend Kuriki, I finally
+    got everything working, with instructions that actually made sense. With the
     circuits done, I turned my attention to the other, more showcase-y side of
     the booth.
   </span>
@@ -251,7 +253,7 @@ import buttonLit from "../../assets/images/blog/3d-printing-culture-festival/but
 <T>
   <span slot="en">
     The circuit experience wasn't the only thing I was showing off. I'd also
-    recently gotten an A1 mini — a small, fairly cheap 3D printer — and this was
+    recently gotten an A1 mini, a small, fairly cheap 3D printer, and this was
     the perfect chance to show it off! Back in America, it's common to find 3D
     printers at a library or a university, but out here in the countryside, many
     people have never seen one in person. Quite a few told me they'd only seen
@@ -275,7 +277,7 @@ import buttonLit from "../../assets/images/blog/3d-printing-culture-festival/but
     I decided to show three kinds of 3D prints at the festival: useful prints
     like the containers I used all over the booth, simple toys the kids loved,
     and a custom model I made of the town's mascot. I wanted to show that you can
-    make useful things, fun things, and things you design yourself — whether
+    make useful things, fun things, and things you design yourself, whether
     that's art or something practical.
   </span>
   <span slot="ja">
@@ -289,7 +291,7 @@ import buttonLit from "../../assets/images/blog/3d-printing-culture-festival/but
 </T>
 
 <figure>
-  ![Me holding a 3D-printed Zoro sword](../../assets/images/blog/3d-printing-culture-festival/me-with-zoro-sword.jpg)
+  ![Me holding a 3D-printed Zoro sword](../../assets/images/blog/3d-printing-culture-festival/me-with-zoro-sword.png)
   <figcaption>
     <T>
       <span slot="en">Holding Zoro's sword from One Piece.</span>
@@ -305,7 +307,7 @@ import buttonLit from "../../assets/images/blog/3d-printing-culture-festival/but
     <Explain meaning="very popular">hit</Explain>. I was surprised myself to
     learn you can easily print the expanding swords that were so common in my
     childhood. They were cool and fun, but there were also models for more
-    realistic swords — like Zoro's sword from One Piece, which I'm holding in the
+    realistic swords, like Zoro's sword from One Piece, which I'm holding in the
     picture above! Instead of a collapsible sword printed in one piece, you print
     the separate parts and snap them together. It came out way better than I
     expected, and it was a huge hit!
@@ -420,12 +422,18 @@ import buttonLit from "../../assets/images/blog/3d-printing-culture-festival/but
   </span>
 </T>
 
-<TwoImages
-  src1={buttonBefore}
-  alt1="A student pressing the button, LED off"
-  src2={buttonLit}
-  alt2="The LED strip lighting up"
-/>
+<PressToLight
+  off={buttonBefore}
+  on={buttonLit}
+  altOff="A student pressing the button, LED off"
+  altOn="The LED strip lighting up"
+>
+  <T slot="caption">
+    <span slot="en">Tap the button and watch it light up!</span>
+    <span slot="ja">ボタンをタップすると光ります！</span>
+    <span slot="en_simple">Tap the button. It lights up!</span>
+  </T>
+</PressToLight>
 
 <figure>
   ![A young visitor watching the 3D printer](../../assets/images/blog/3d-printing-culture-festival/kid-watching-printer.jpg)
@@ -440,8 +448,8 @@ import buttonLit from "../../assets/images/blog/3d-printing-culture-festival/but
 
 <T>
   <span slot="en">
-    The 3D printer was an even bigger hit. It was such a strange sight in my town
-    — especially with it printing live. Most people were shocked at how cheap it
+    The 3D printer was an even bigger hit. It was such a strange sight in my town,
+    especially with it printing live. Most people were shocked at how cheap it
     was! I'm glad 3D printers have become so much more accessible. You really can
     make some amazing things.
   </span>
@@ -468,12 +476,12 @@ import buttonLit from "../../assets/images/blog/3d-printing-culture-festival/but
 
 <T>
   <span slot="en">
-    Speaking of amazing things — this was my model of the town's mascot, Takko
+    Speaking of amazing things, this was my model of the town's mascot, Takko
     Oji. If you can't tell, I messed up the face a little, but most people
     recognized him right away anyway! He's covered in tentacles in the picture,
-    but those are just supports to hold him up while printing — they come right
-    off. I also made plenty of mini versions that kids could pick as prizes for
-    finishing the experience.
+    but those are just supports to hold him up while printing, and they come
+    right off. I also made plenty of mini versions that kids could pick as prizes
+    for finishing the experience.
   </span>
   <span slot="ja">
     すごいものといえば——これは町のマスコット、たっこ王子の私のモデルです。わかるかもしれませんが、顔を少し失敗してしまいました。それでも、ほとんどの人はすぐに彼だとわかってくれました！写真では触手に覆われていますが、これは印刷中に支えておくためのサポートで、簡単に取れます。体験を終えた子が景品として選べるように、ミニサイズもたくさん作りました。
@@ -489,7 +497,7 @@ import buttonLit from "../../assets/images/blog/3d-printing-culture-festival/but
   ![Some of the 3D prints on display](../../assets/images/blog/3d-printing-culture-festival/3d-print-showcase.jpg)
   <figcaption>
     <T>
-      <span slot="en">Some of the prints on display — including a gold Takko Oji and a few surprises.</span>
+      <span slot="en">Some of the prints on display, including a gold Takko Oji and a few surprises.</span>
       <span slot="ja">展示したプリントの一部——ゴールドのたっこ王子や、ちょっとした驚きの品も。</span>
       <span slot="en_simple">Some of my 3D prints.</span>
     </T>
@@ -500,7 +508,7 @@ import buttonLit from "../../assets/images/blog/3d-printing-culture-festival/but
 
 <T>
   <span slot="en">
-    All in all, it was a ton of work to set up, and it wasn't perfect — but
+    All in all, it was a ton of work to set up, and it wasn't perfect, but
     showing off my hobbies at the town culture festival was wonderful, and it's
     easily become one of my{" "}
     <Explain meaning="most important memories">core memories</Explain>. I'm

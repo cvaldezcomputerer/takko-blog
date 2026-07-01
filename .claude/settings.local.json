@@ -28,7 +28,16 @@
       "Bash(node scripts/optimize-images.mjs src/assets/images/blog/golden-week-2026/blog-header-image.jpg)",
       "Bash(python3)",
       "Bash(node scripts/optimize-images.mjs src/assets/images/blog/bread-festival/)",
-      "Bash(node scripts/optimize-images.mjs src/assets/images/blog/bread-festival/venue-map.JPG)"
+      "Bash(node scripts/optimize-images.mjs src/assets/images/blog/bread-festival/venue-map.JPG)",
+      "Bash(npm view *)",
+      "Bash(ffmpeg -y -i 'C:/Users/babyo/Downloads/Circuits class pics from phone_/IMG_8732.MOV' -vf fps=2 -q:v 3 C:/Users/babyo/AppData/Local/Temp/claude/c--Users-babyo-OneDrive-Desktop-projects-blog-takko-blog/e3c73a01-9e8a-4cc2-901b-a13ab37a748e/scratchpad/btn/f-%02d.jpg)",
+      "Bash(ffmpeg -y -framerate 1 -start_number 1 -i C:/Users/babyo/AppData/Local/Temp/claude/c--Users-babyo-OneDrive-Desktop-projects-blog-takko-blog/e3c73a01-9e8a-4cc2-901b-a13ab37a748e/scratchpad/btn/f-%02d.jpg -frames:v 1 -vf 'scale=220:-1,drawtext=text='\\\\''%{n}'\\\\'':x=5:y=5:fontsize=28:fontcolor=yellow:box=1:boxcolor=black,tile=6x3:margin=4:padding=4' C:/Users/babyo/AppData/Local/Temp/claude/c--Users-babyo-OneDrive-Desktop-projects-blog-takko-blog/e3c73a01-9e8a-4cc2-901b-a13ab37a748e/scratchpad/btn/sheet.jpg)",
+      "Bash(ffmpeg -y -framerate 1 -start_number 1 -i C:/Users/babyo/AppData/Local/Temp/claude/c--Users-babyo-OneDrive-Desktop-projects-blog-takko-blog/e3c73a01-9e8a-4cc2-901b-a13ab37a748e/scratchpad/btn/f-%02d.jpg -frames:v 1 -vf scale=220:-1,tile=6x3:margin=6:padding=6:color=white C:/Users/babyo/AppData/Local/Temp/claude/c--Users-babyo-OneDrive-Desktop-projects-blog-takko-blog/e3c73a01-9e8a-4cc2-901b-a13ab37a748e/scratchpad/btn/sheet.jpg)",
+      "Bash(rm -f C:/Users/babyo/AppData/Local/Temp/claude/c--Users-babyo-OneDrive-Desktop-projects-blog-takko-blog/e3c73a01-9e8a-4cc2-901b-a13ab37a748e/scratchpad/btn/w*.jpg)",
+      "Bash(rm -f C:/Users/babyo/AppData/Local/Temp/claude/c--Users-babyo-OneDrive-Desktop-projects-blog-takko-blog/e3c73a01-9e8a-4cc2-901b-a13ab37a748e/scratchpad/btn/win/*.jpg)",
+      "Bash(ffmpeg -y -ss 0.3 -i 'C:/Users/babyo/Downloads/Circuits class pics from phone_/IMG_8732.MOV' -t 1.8 -vf fps=30 -q:v 2 C:/Users/babyo/AppData/Local/Temp/claude/c--Users-babyo-OneDrive-Desktop-projects-blog-takko-blog/e3c73a01-9e8a-4cc2-901b-a13ab37a748e/scratchpad/btn/win/w-%02d.jpg)",
+      "Bash(ffmpeg -y -framerate 1 -start_number 13 -i C:/Users/babyo/AppData/Local/Temp/claude/c--Users-babyo-OneDrive-Desktop-projects-blog-takko-blog/e3c73a01-9e8a-4cc2-901b-a13ab37a748e/scratchpad/btn/win/w-%02d.jpg -frames:v 1 -vf scale=340:-1,tile=6x3:margin=5:padding=5:color=white C:/Users/babyo/AppData/Local/Temp/claude/c--Users-babyo-OneDrive-Desktop-projects-blog-takko-blog/e3c73a01-9e8a-4cc2-901b-a13ab37a748e/scratchpad/btn/trans.jpg)",
+      "Bash(ffmpeg -y -i C:/Users/babyo/AppData/Local/Temp/claude/c--Users-babyo-OneDrive-Desktop-projects-blog-takko-blog/e3c73a01-9e8a-4cc2-901b-a13ab37a748e/scratchpad/btn/win/w-16.jpg -i C:/Users/babyo/AppData/Local/Temp/claude/c--Users-babyo-OneDrive-Desktop-projects-blog-takko-blog/e3c73a01-9e8a-4cc2-901b-a13ab37a748e/scratchpad/btn/win/w-28.jpg -filter_complex '[0:v]scale=440:-1[a];[1:v]scale=440:-1[b];[a][b]hstack=inputs=2:shortest=1' C:/Users/babyo/AppData/Local/Temp/claude/c--Users-babyo-OneDrive-Desktop-projects-blog-takko-blog/e3c73a01-9e8a-4cc2-901b-a13ab37a748e/scratchpad/btn/pair.jpg)"
     ]
   }
 }

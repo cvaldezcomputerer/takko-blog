@@ -21,6 +21,7 @@ const {
 	heroImage,
 	slug,
 	heroImageFit,
+	heroImageMaxWidth,
 	cameraUsedName,
 	cameraUsedImage,
 	cameraUsedImageAlt,
@@ -384,7 +385,7 @@ const ogImage = isOptimizedImageSrc(heroImage)
 					</div>
 				</div>
 						{heroImage && isOptimizedImageSrc(heroImage) &&
-							<div class="hero-image">
+							<div class="hero-image" style={heroImageMaxWidth ? `max-width: ${heroImageMaxWidth}` : undefined}>
 							<OptimizedImage
 							  src={heroImage}
 					  sizes="(max-width: 960px) 100vw, 960px"
