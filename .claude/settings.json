@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e ' *)",
+      "Edit(/.claude/skills/new-post/**)",
+      "Bash(grep -rnA6 \"\\\\.main-title\\\\b\\\\|\\\\.contact-title\\\\b\" src/pages/about.astro src/pages/contact.astro)"
+    ]
+  }
+}

@@ -39,6 +39,28 @@ new-post skill loads.
   - "without breaking the bank" → "The price was low."
   - "paid off / sigh of relief" → "I was happy."
 
+## How much to cut (calibration)
+
+Default to **fewer, shorter sentences than feels natural**. Most `en` paragraphs
+should land at **1–2 short sentences** in `en_simple`; 3 is already on the long
+side. If a simple paragraph has 4+ sentences, you are almost certainly mirroring
+the `en` sentence-by-sentence — cut again.
+
+- **Drop the framing/transition opener.** Setup and connective sentences ("This
+  is where my teaching really came into play", "The circuits weren't the only
+  thing I showed off", "Speaking of amazing things…") carry no fact a learner
+  needs. Start straight at the concrete point.
+- **Keep the single most concrete beat, drop the rest** — reasons, lists of
+  goals, second examples, opinions, asides.
+- Don't try to represent every sentence of the `en`. One clear fact plus an
+  optional short reaction is already a complete simple paragraph.
+
+**Anti-pattern — mirroring the `en` instead of retelling it**
+> en: "Getting ready took a lot of planning. I had to pick the projects, decide on the parts, write the instructions, and arrange everything on the day… making something elementary schoolers could understand was a real challenge."
+> ❌ too close: "Getting ready was a lot of work. I picked the projects. I chose the parts. I wrote the instructions. It was tough! Making it easy for kids was hard."
+> ✅ retold: "Getting ready was a lot of work. Making it easy for kids was hard."
+*Why: the middle list just walks through the `en` step by step. Keep the opening fact and the hardest part; cut the list.*
+
 ## Keep vs. cut
 
 - **Keep:** proper nouns that are the learning anchors — place names, food

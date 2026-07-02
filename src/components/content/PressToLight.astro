@@ -23,17 +23,14 @@ const { off, on, altOff = "", altOn = "" } = Astro.props as Props;
     </span>
   </div>
 
-  <button type="button" class="ptl-btn" aria-pressed="false" aria-label={altOn || "Hold the button to light up the LED"}>
+  <button type="button" class="ptl-btn" aria-label={altOn || "Press the button to light up the LED"}>
     <span class="ptl-btn-cap"></span>
   </button>
-
-  <figcaption class="ptl-caption">
-    <slot name="caption" />
-  </figcaption>
 </figure>
 
 <script>
-  // Tap the button to switch the image between off and lit.
+  // Each press switches the photo between LED-off and LED-on, and replays the
+  // little squish-and-bounce on the black cap.
   // Delegated on document so it survives Astro view transitions.
   document.addEventListener('click', (e) => {
     const target = e.target;
@@ -42,8 +39,13 @@ const { off, on, altOff = "", altOn = "" } = Astro.props as Props;
     if (!btn) return;
     const root = btn.closest('.ptl');
     if (!root) return;
-    const lit = root.classList.toggle('lit');
-    btn.setAttribute('aria-pressed', String(lit));
+    root.classList.toggle('lit');
+    // Restart the cap's press animation from the top on every click.
+    const cap = btn.querySelector('.ptl-btn-cap');
+    if (!cap) return;
+    cap.classList.remove('is-pressing');
+    void (cap as HTMLElement).offsetWidth;
+    cap.classList.add('is-pressing');
   });
 </script>
 
@@ -133,22 +135,20 @@ const { off, on, altOff = "", altOn = "" } = Astro.props as Props;
     outline-offset: 5px;
   }
 
-  /* Pressed (lit): only the black cap pushes down; the grey body stays put */
-  .ptl.lit .ptl-btn-cap {
-    background: #000;
-    transform: translateY(5px);
+  /* Press: squish down a touch, then spring back a little past full size.
+     Momentary — the button never latches in a pressed state. */
+  @keyframes ptl-press {
+    0%   { transform: scale(1); }
+    35%  { transform: scale(0.9); }
+    70%  { transform: scale(1.06); }
+    100% { transform: scale(1); }
   }
 
-  .ptl-caption {
-    text-align: center;
-    font-family: "Patrick Hand", "Bradley Hand", "Comic Sans MS", cursive;
-    font-size: 1.05rem;
-    line-height: 1.2;
-    color: var(--text-muted);
+  .ptl-btn-cap.is-pressing {
+    animation: ptl-press 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
-  .ptl-caption :global([data-lang-content="ja"]) {
-    font-family: "Atkinson", sans-serif;
-    font-size: 0.9rem;
+  @media (prefers-reduced-motion: reduce) {
+    .ptl-btn-cap.is-pressing { animation: none; }
   }
 </style>

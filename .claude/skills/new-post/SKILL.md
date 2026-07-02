@@ -77,6 +77,14 @@ Import each at the top of the MDX next to the `T` import. See existing posts for
 prop shapes (e.g. `chili-con-carne-easy.mdx` for `RecipeIngredients`,
 `camera-c840.mdx` for `Quiz` + `Gallery`).
 
+### Optional extras (author-driven)
+
+Components like `Quiz` — and other showcase pieces the author likes to drop in —
+are **optional extras**. The author decides whether a given post gets one and
+writes/designs the content themselves, so **don't add or fill these in on your
+own**. Whether to include them is **confirmed with the author near the end**, as
+one of the last steps before publishing (see step 7).
+
 ### Explain hints (tricky vocabulary)
 
 - **Who it's for:** picture a Japanese reader who can follow most of the English
@@ -120,4 +128,6 @@ prop shapes (e.g. `chili-con-carne-easy.mdx` for `RecipeIngredients`,
 - Fill remaining frontmatter: `title_ja`, `title_en_simple`, `description`,
   `heroImage`.
 - Verify only intended files changed.
+- **Confirm optional extras with the author** — ask whether this post should get
+  a `Quiz` or other author-driven extra (see step 4) before finishing.
 - **Remove `draft: true`** to publish.
