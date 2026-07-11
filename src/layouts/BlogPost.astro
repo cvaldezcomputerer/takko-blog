@@ -6,6 +6,7 @@ import FormattedDate from '../components/content/FormattedDate.astro';
 import LikeButton from '../components/content/LikeButton.astro';
 import OptimizedImage from '../components/media/OptimizedImage.astro';
 import T from '../components/i18n/T.astro';
+import { getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import type { CollectionEntry } from 'astro:content';
 
@@ -36,9 +37,13 @@ function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 	return typeof maybeImage.src === 'string';
 }
 
-// Resolve a shareable Open Graph image from the hero image (falls back to site default in BaseHead).
+// Resolve a shareable Open Graph image from the hero image (falls back to site default
+// in BaseHead). Local images are resized at build time so scrapers don't fetch the
+// full-size original; jpg keeps compatibility with every OG consumer.
 const ogImage = isOptimizedImageSrc(heroImage)
-	? (typeof heroImage === 'string' ? heroImage : heroImage.src)
+	? (typeof heroImage === 'string'
+		? heroImage
+		: (await getImage({ src: heroImage, width: 1200, format: 'jpeg' })).src)
 	: undefined;
 ---
 
@@ -252,7 +257,7 @@ const ogImage = isOptimizedImageSrc(heroImage)
 				padding: 0.95rem 0.95rem 0.85rem;
 				border-radius: var(--radius-lg);
 				border: 1px solid rgba(var(--gray), 0.18);
-				border-top: 2px solid rgba(var(--accent), 0.5);
+				border-top: 2px solid color-mix(in srgb, var(--accent) 50%, transparent);
 				background: rgba(var(--gray-light), 0.28);
 				text-align: center;
 				box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
@@ -295,7 +300,7 @@ const ogImage = isOptimizedImageSrc(heroImage)
 			:global(.dark) .post-outro {
 				background: rgba(255,255,255,0.04);
 				border-color: rgba(255,255,255,0.12);
-				border-top-color: rgba(var(--accent), 0.6);
+				border-top-color: color-mix(in srgb, var(--accent) 60%, transparent);
 				box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14);
 			}
 			@media (max-width: 640px) {

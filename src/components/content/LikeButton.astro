@@ -88,11 +88,20 @@ const { slug } = Astro.props as Props;
       window.addEventListener('scroll', handleScroll, { passive: true });
       handleScroll(); 
 
-      this.addEventListener('click', () => {
+      const triggerLike = () => {
         this.sendLike(slug, countSpan);
         this.isFlying = true;
         this.classList.add('fly-away');
         window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      this.addEventListener('click', triggerLike);
+      // The visible control is a div[role="button"], so Enter/Space must be wired up manually.
+      this.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          triggerLike();
+        }
       });
 
       fetch(`/api/likes/${slug}`)

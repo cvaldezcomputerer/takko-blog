@@ -69,6 +69,7 @@ html {
   --danger-strong: #b91c1c;
   --danger-bg: #fef2f2;
   --info: #3b82f6;
+  --info-bg: #eff6ff;
 
   /* ----- Spacing scale -----
      rem-based steps. Use for padding/margin/gap on NEW work and wherever a
@@ -119,6 +120,7 @@ html {
 
   --success-bg: rgba(5, 150, 105, 0.2);
   --danger-bg: rgba(220, 38, 38, 0.2);
+  --info-bg: rgba(59, 130, 246, 0.2);
 }
 
 @font-face {

@@ -6,7 +6,10 @@ type Props = HTMLAttributes<'a'>;
 const { href, class: className, ...props } = Astro.props;
 const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 const subpath = pathname.match(/[^\/]+/g);
-const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
+// Compare with trailing slashes stripped so "/about" and "/about/" both match
+const normalize = (path: string) => (path.length > 1 ? path.replace(/\/+$/, '') : path);
+const linkPath = normalize(String(href ?? ''));
+const isActive = linkPath === normalize(pathname) || linkPath === '/' + (subpath?.[0] || '');
 ---
 
 <a href={href} class:list={[className, { active: isActive }]} {...props}>

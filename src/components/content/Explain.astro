@@ -38,7 +38,7 @@ const id = `explain-${Math.random().toString(36).slice(2, 11)}`;
 	.explain-trigger:focus,
 	.explain-wrapper:hover .explain-trigger {
 		color: var(--accent);
-		background-color: rgba(var(--accent-dark), 0.1); 
+		background-color: color-mix(in srgb, var(--accent-dark) 10%, transparent);
 		border-bottom-style: solid;
 	}
 

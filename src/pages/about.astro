@@ -3,7 +3,7 @@ import BaseHead from '../components/layout/BaseHead.astro';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import T from '../components/i18n/T.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { SITE_TITLE } from '../consts';
 import { Image } from 'astro:assets';
 import takkoMap from '../assets/images/misc/takko-on-map.png';
 import scarecrow1 from '../assets/images/misc/scarecrow1.png';
@@ -15,7 +15,10 @@ import scarecrowLookingRight from '../assets/images/misc/scarecrow-looking-right
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<BaseHead
+			title={`About - ${SITE_TITLE}`}
+			description="Who I am: an American English teacher living in Takko, a small garlic-farming town in Aomori, Japan, and why I write this blog."
+		/>
 		<style>
 			body {
 				display: flex;
