@@ -55,6 +55,22 @@ export default defineConfig({
       enabled: true,
     },
   }),
+  image: {
+    // `effort` is libaom's search depth. It does NOT affect image quality --
+    // `quality` (set per-component in OptimizedImage.astro) still governs that.
+    // It only trades encode time against compression efficiency, and AVIF
+    // encoding is essentially the entire build: 234 sources x 4 widths.
+    // Measured on a 1440px source, quality 80: effort 4 (sharp's default) takes
+    // 662ms, effort 3 takes 173ms and is marginally *smaller*.
+    // See tools/image-service.mjs for why the entrypoint is not the built-in
+    // "astro/assets/services/sharp" string.
+    service: {
+      entrypoint: "./tools/image-service.mjs",
+      config: {
+        avif: { effort: 3 },
+      },
+    },
+  },
   integrations: [
     devEditor(),
     mdx(),
