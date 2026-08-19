@@ -6,8 +6,6 @@ import { fileURLToPath } from "url";
 import path from "path";
 import fs from "fs";
 
-import sentry from "@sentry/astro";
-
 import cloudflare from "@astrojs/cloudflare";
 
 import devEditor from "./tools/scripts/dev-editor-integration.mjs";
@@ -61,7 +59,6 @@ export default defineConfig({
         return item;
       },
     }),
-    sentry(),
   ],
 
   vite: {
@@ -72,7 +69,6 @@ export default defineConfig({
     },
     optimizeDeps: {
       exclude: [
-        "@sentry/astro",
         "astro/virtual-modules/transitions-router.js",
         "astro/virtual-modules/transitions-types.js",
         "astro/virtual-modules/transitions-events.js",

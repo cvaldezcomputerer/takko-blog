@@ -37,7 +37,26 @@
       "Bash(rm -f C:/Users/babyo/AppData/Local/Temp/claude/c--Users-babyo-OneDrive-Desktop-projects-blog-takko-blog/e3c73a01-9e8a-4cc2-901b-a13ab37a748e/scratchpad/btn/win/*.jpg)",
       "Bash(ffmpeg -y -ss 0.3 -i 'C:/Users/babyo/Downloads/Circuits class pics from phone_/IMG_8732.MOV' -t 1.8 -vf fps=30 -q:v 2 C:/Users/babyo/AppData/Local/Temp/claude/c--Users-babyo-OneDrive-Desktop-projects-blog-takko-blog/e3c73a01-9e8a-4cc2-901b-a13ab37a748e/scratchpad/btn/win/w-%02d.jpg)",
       "Bash(ffmpeg -y -framerate 1 -start_number 13 -i C:/Users/babyo/AppData/Local/Temp/claude/c--Users-babyo-OneDrive-Desktop-projects-blog-takko-blog/e3c73a01-9e8a-4cc2-901b-a13ab37a748e/scratchpad/btn/win/w-%02d.jpg -frames:v 1 -vf scale=340:-1,tile=6x3:margin=5:padding=5:color=white C:/Users/babyo/AppData/Local/Temp/claude/c--Users-babyo-OneDrive-Desktop-projects-blog-takko-blog/e3c73a01-9e8a-4cc2-901b-a13ab37a748e/scratchpad/btn/trans.jpg)",
-      "Bash(ffmpeg -y -i C:/Users/babyo/AppData/Local/Temp/claude/c--Users-babyo-OneDrive-Desktop-projects-blog-takko-blog/e3c73a01-9e8a-4cc2-901b-a13ab37a748e/scratchpad/btn/win/w-16.jpg -i C:/Users/babyo/AppData/Local/Temp/claude/c--Users-babyo-OneDrive-Desktop-projects-blog-takko-blog/e3c73a01-9e8a-4cc2-901b-a13ab37a748e/scratchpad/btn/win/w-28.jpg -filter_complex '[0:v]scale=440:-1[a];[1:v]scale=440:-1[b];[a][b]hstack=inputs=2:shortest=1' C:/Users/babyo/AppData/Local/Temp/claude/c--Users-babyo-OneDrive-Desktop-projects-blog-takko-blog/e3c73a01-9e8a-4cc2-901b-a13ab37a748e/scratchpad/btn/pair.jpg)"
+      "Bash(ffmpeg -y -i C:/Users/babyo/AppData/Local/Temp/claude/c--Users-babyo-OneDrive-Desktop-projects-blog-takko-blog/e3c73a01-9e8a-4cc2-901b-a13ab37a748e/scratchpad/btn/win/w-16.jpg -i C:/Users/babyo/AppData/Local/Temp/claude/c--Users-babyo-OneDrive-Desktop-projects-blog-takko-blog/e3c73a01-9e8a-4cc2-901b-a13ab37a748e/scratchpad/btn/win/w-28.jpg -filter_complex '[0:v]scale=440:-1[a];[1:v]scale=440:-1[b];[a][b]hstack=inputs=2:shortest=1' C:/Users/babyo/AppData/Local/Temp/claude/c--Users-babyo-OneDrive-Desktop-projects-blog-takko-blog/e3c73a01-9e8a-4cc2-901b-a13ab37a748e/scratchpad/btn/pair.jpg)",
+      "PowerShell(wrangler whoami)",
+      "PowerShell(winget install --id RustDesk.RustDesk --silent --accept-package-agreements --accept-source-agreements)",
+      "PowerShell(winget search rustdesk --accept-source-agreements 2>$null)",
+      "Bash(powershell.exe -NoProfile -Command \"Get-Process rustdesk*,rustdesk-setup* -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue; 'stopped any running rustdesk processes'\")",
+      "Bash(powershell.exe -NoProfile -Command ' *)",
+      "mcp__claude_ai_Cloudflare_Developer_Platform__workers_list",
+      "mcp__claude_ai_Cloudflare_Developer_Platform__kv_namespaces_list",
+      "mcp__claude_ai_Cloudflare_Developer_Platform__d1_databases_list",
+      "mcp__claude_ai_Cloudflare_Developer_Platform__workers_get_worker_code",
+      "Bash(awk '{print $5, $9}')",
+      "Bash(file .fallow/*.bin)",
+      "Bash(git pull *)",
+      "Bash(npm uninstall *)",
+      "Bash(grep -o '--stagger: [0-9.]*s' dist/client/index.html)",
+      "Bash(python -)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\babyo\\OneDrive\\Desktop\\projects\\wol-relay\\src",
+      "c:\\Users\\babyo\\OneDrive\\Desktop\\projects\\wol-relay"
     ]
   }
 }

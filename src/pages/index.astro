@@ -68,17 +68,15 @@ function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 				width: 100%;
 				opacity: 0;
 				animation: fade-up 0.6s ease forwards;
+				/* Stagger set inline per card (capped), so every card gets a delay,
+				   not just the first four. */
+				animation-delay: var(--stagger, 0.1s);
 			}
 
 			ul li:first-child {
 				grid-column: 1 / -1;
 				margin-bottom: 0.5rem;
 			}
-			
-			ul li:nth-child(1) { animation-delay: 0.1s; }
-			ul li:nth-child(2) { animation-delay: 0.2s; }
-			ul li:nth-child(3) { animation-delay: 0.3s; }
-			ul li:nth-child(4) { animation-delay: 0.4s; }
 
 			ul li:first-child a {
 				display: grid;
@@ -237,7 +235,7 @@ function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 					<ul>
 						{
 							posts.map((post, index) => (
-								<li>
+								<li style={`--stagger: ${Math.min(0.1 + index * 0.1, 0.6).toFixed(1)}s`}>
 									<a href={`/blog/${post.id.replace(/\.mdx?$/, '')}/`}>
 											{post.data.heroImage && isOptimizedImageSrc(post.data.heroImage) ? (
 												<OptimizedImage
