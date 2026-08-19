@@ -62,6 +62,10 @@ html {
   --border-strong: #999999; /* hover / emphasized borders */
   --text-muted: #666666;    /* secondary / caption text */
 
+  /* accent tuned for *text* on the current background — --accent-dark is too
+     dark to read once the surface goes dark, so .dark lightens it instead */
+  --accent-text: var(--accent-dark);
+
   --success: var(--accent);
   --success-strong: var(--accent-dark);
   --success-bg: #ecfdf5;
@@ -111,6 +115,8 @@ html {
   --pill-en: #38bdf8;
   --pill-ez: #10b981; /* A slightly lighter green than your main accent for contrast */
   --pill-jp: #fb7185;
+
+  --accent-text: #10b981;
 
   /* Semantic token overrides for dark mode */
   --surface: #2d2d2d;
