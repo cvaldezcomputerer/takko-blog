@@ -42,6 +42,13 @@ const blogLastmod = getBlogLastmodMap();
 export default defineConfig({
   site: "https://bloggydoggy.com",
   output: "static",
+  // Astro 7 defaults this to 'jsx' (strips newline-containing whitespace between
+  // inline elements rather than collapsing it to a space). Pinned to the v6
+  // behaviour so the v7 upgrade is byte-identical in rendered text.
+  // Worth revisiting: 'jsx' actually *fixes* the stray space before punctuation
+  // that <Explain> leaves behind ("hiccups , I" -> "hiccups, I") across the
+  // posts. Switch it after a visual check of the recipe cards.
+  compressHTML: true,
   adapter: cloudflare({
     imageService: "compile",
     platformProxy: {

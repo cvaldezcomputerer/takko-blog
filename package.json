@@ -9,21 +9,22 @@
     "postbuild": "node -e \"const fs=require('fs'),p='dist/server/wrangler.json',c=JSON.parse(fs.readFileSync(p));c.kv_namespaces=c.kv_namespaces?.filter(k=>k.id);fs.writeFileSync(p,JSON.stringify(c));\"",
     "preview": "wrangler dev --config dist/server/wrangler.json",
     "deploy": "npm run build && wrangler deploy --config dist/server/wrangler.json",
-    "db:migrate": "wrangler d1 migrations apply takko-blog-likes --local",
-    "db:migrate:prod": "wrangler d1 migrations apply takko-blog-likes --remote",
+    "db:migrate": "wrangler d1 migrations apply DB --local",
+    "db:migrate:prod": "wrangler d1 migrations apply DB --remote",
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^13.7.0",
-    "@astrojs/mdx": "^6.0.3",
+    "@astrojs/cloudflare": "^14.2.2",
+    "@astrojs/markdown-satteri": "^0.3.6",
+    "@astrojs/mdx": "^7.0.6",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
-    "astro": "^6.4.8"
+    "astro": "^7.2.3"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "exif-reader": "^2.0.3",
-    "sharp": "^0.34.5",
+    "sharp": "^0.35.3",
     "typescript": "^5.9.3",
     "wrangler": "^4.124.0"
   },
