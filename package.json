@@ -16,20 +16,21 @@
   "dependencies": {
     "@astrojs/cloudflare": "^13.7.0",
     "@astrojs/mdx": "^6.0.3",
-    "@astrojs/rss": "^4.0.18",
+    "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
-    "@sentry/astro": "^10.32.1",
-    "astro": "^6.4.6"
+    "@sentry/astro": "^10.70.0",
+    "astro": "^6.4.8"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.9",
+    "@astrojs/check": "^0.9.10",
+    "@sentry/cloudflare": "^10.70.0",
     "exif-reader": "^2.0.3",
     "sharp": "^0.34.5",
     "typescript": "^5.9.3",
-    "wrangler": "^4.97.0"
+    "wrangler": "^4.124.0"
   },
   "overrides": {
     "undici": "^7.18.2",
-    "wrangler": "^4.97.0"
+    "wrangler": "^4.124.0"
   }
 }
