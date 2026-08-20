@@ -12,6 +12,7 @@ Astro blog for English learners. Content served in English, Simple English, and 
 ```
 npm run dev           # local Astro dev
 npm run check         # Astro + JS/TS type checks
+npm run check:post    # verify a blog post (<slug> or -- --all)
 npm run build         # full production build check
 npm run preview       # wrangler dev preview
 npm run db:migrate    # local D1 migrations
@@ -53,7 +54,11 @@ All design tokens live in `:root` / `.dark` in `src/styles/global.css`. **New co
 All settings applied as classes on `<html>`. See `.claude/SETTINGS_ARCHITECTURE.md` for full detail.
 
 ## New Blog Posts
-Use the **new-post skill** (`.claude/skills/new-post/SKILL.md`) when creating a new post — it is the source of truth and scaffolds the MDX + image folder, then walks through drafting (English + Simple first, Japanese last), the dev editor, image optimization, and publishing. Trigger it for any "new/make/write a post" request, or run `/new-post <slug>` directly. Key image step: run `node tools/scripts/optimize-images.mjs src/assets/images/blog/<post-slug>/` before publishing. No manual webp conversion needed — Astro handles avif/webp at build time.
+Use the **new-post skill** (`.claude/skills/new-post/SKILL.md`) when creating a new post — it is the source of truth and scaffolds the MDX + image folder, then walks through image optimization, drafting (English + Simple first, Japanese last), the dev editor, and publishing. Trigger it for any "new/make/write a post" request, or run `/new-post <slug>` directly.
+
+Key steps:
+- **Images first**, as soon as they are dropped in (you need the filenames to write `<figure>` blocks): `node tools/scripts/optimize-images.mjs src/assets/images/blog/<post-slug>/`. Safe to re-run; also takes individual files. Converts iPhone HEIC to `.jpg`. No manual webp conversion needed — Astro handles avif/webp at build time.
+- **Verify before publishing**: `npm run check:post <slug>` reports empty translation slots, missing frontmatter, unreferenced/oversized/GPS-bearing images, mojibake, and leftover placeholders. Warnings while `draft: true`, errors once it is removed.
 
 There is also a **dev editor** (dev only): `npm run dev`, then `http://localhost:4321/dev/editor` (port may differ) to edit post text, captions, and image order in a structured panel that writes back to the `.mdx`. See `src/pages/dev/editor/` and `tools/scripts/dev-editor-integration.mjs`.
 

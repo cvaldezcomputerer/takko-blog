@@ -55,9 +55,10 @@ import T from "../../components/i18n/T.astro";
 </T>
 `;
 
+// No .gitkeep: photos land here within minutes and git picks the folder up
+// then, so the placeholder only ever survived as litter that had to be found
+// and deleted later (check-post.mjs used to flag four of them).
 fs.mkdirSync(imageDir, { recursive: true });
-const keep = path.join(imageDir, ".gitkeep");
-if (!fs.existsSync(keep)) fs.writeFileSync(keep, "");
 fs.writeFileSync(postPath, mdx, "utf-8");
 
 console.log(`Created  ${path.relative(root, postPath).replace(/\\/g, "/")}`);
@@ -65,9 +66,14 @@ console.log(`Created  ${path.relative(root, imageDir).replace(/\\/g, "/")}/`);
 console.log("");
 console.log("Next steps:");
 console.log("  1. Start the dev server:  npm run dev");
-console.log(`  2. Write English + Simple English in the editor:`);
-console.log(`       http://localhost:4321/dev/editor/${slug}   (port may differ; check dev output)`);
-console.log(`  3. Drop photos into src/assets/images/blog/${slug}/ then optimize:`);
+console.log(`  2. Drop photos into src/assets/images/blog/${slug}/ then optimize:`);
 console.log(`       node tools/scripts/optimize-images.mjs src/assets/images/blog/${slug}/`);
+console.log("     (do this first — you need the filenames to write <figure> blocks)");
+console.log(`  3. Write English + Simple English in the editor:`);
+console.log(`       http://localhost:4321/dev/editor/${slug}   (port may differ; check dev output)`);
+console.log(`     Preview the real page at http://localhost:4321/blog/${slug}/`);
 console.log("  4. Add heroImage + title_ja + title_en_simple + description to frontmatter.");
-console.log("  5. Generate the Japanese (ja) slots last. Remove `draft: true` to publish.");
+console.log("  5. Generate the Japanese (ja) slots last.");
+console.log(`  6. Check, then publish by removing \`draft: true\`:`);
+console.log(`       npm run check:post ${slug}`);
+console.log(`     pubDate is set to today (${pubDate}) — refresh it if publishing later.`);
