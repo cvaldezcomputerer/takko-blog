@@ -61,6 +61,15 @@ Contact form posts directly to Web3Forms (`https://api.web3forms.com/submit`) fr
   - `islandVisibility` controls root `html.island-hidden` class
 - Text size setting:
   - `textSize` controls root classes `html.text-size-sm|md|lg` and global font size vars
+- Letterboxed heroes: a tall or off-ratio hero gets `heroImageFit: "contain"` in post
+  frontmatter so the whole photo shows. `src/layouts/BlogPost.astro` then fills the
+  leftover space with a blurred, hue-tinted copy of the photo. That is the standard
+  treatment for every post: set the frontmatter and add nothing else, no per-post CSS and
+  no bars baked into the image. Local `heroImage` only, since the backdrop is a
+  build-time `getImage()` derivative.
+- `--theme-hue`: one random hue per page load, set by an inline script in
+  `BlogPost.astro`. Shared by the like balloon, the scrapbook tape (`Quiz`, `Gallery`,
+  `RecipeIngredients`), and the hero backdrop tint. Key new per-post accents to it.
 
 ## Notes For Edits
 - Changes to global preferences usually touch:

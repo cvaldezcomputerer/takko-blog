@@ -57,6 +57,12 @@ blocks, so images-first avoids a second pass over the text.
    the image exists (omitted by the scaffold on purpose — the schema validates
    image paths and a missing file breaks the dev server). No naming convention;
    use whatever the photo is called.
+7. If the hero is tall or otherwise gets clipped at the top and bottom, add
+   `heroImageFit: "contain"` and `heroImageMaxWidth: "720px"` to frontmatter.
+   The layout fills the leftover space with a blurred, hue-tinted copy of the
+   photo, so the frontmatter is the whole fix. Cropping to soften a very
+   extreme ratio is fine, but crop the original file, not the optimized JPEG.
+   See `.claude/PROJECT_MAP.md` under Key UI Systems.
 
 ## 3. Draft text in the dev editor
 

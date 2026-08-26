@@ -1,0 +1,103 @@
+---
+title: "New Chips in Japan?"
+title_ja: "日本の新しいチップス？"
+title_en_simple: "New Chips in Japan?"
+description: "Plain silver snack bags started showing up next to the colorful ones at my grocery store. I bought one to find out why."
+pubDate: "2026-08-26"
+heroImage: "../../assets/images/blog/new-chips-in-japan/header.jpg"
+heroImageFit: "contain"
+heroImageMaxWidth: "720px"
+---
+
+import T from "../../components/i18n/T.astro";
+import Explain from "../../components/content/Explain.astro";
+import Quiz from "../../components/content/Quiz.astro";
+
+<T>
+  <span slot="en">Have you seen this kind of bag in Japan before? I first noticed it at my local grocery store. I thought it was a new brand trying to <Explain meaning="get noticed">stand out from the others</Explain>.</span>
+  <span slot="ja">日本でこういう袋を見たことがありますか。私は近所のスーパーで初めて気づきました。他と差をつけようとしている新しいブランドだと思いました。</span>
+  <span slot="en_simple">Have you seen this bag in Japan? I saw it at my grocery store. I thought it was a new brand.</span>
+</T>
+
+<figure>
+  ![A silver Calbee bag on the shelf next to a normal yellow bag](../../assets/images/blog/new-chips-in-japan/side-by-side.jpg)
+  <figcaption>
+    <T>
+      <span slot="en">Have you seen Calbee? It’s very popular!</span>
+      <span slot="ja">カルビーを見たことがありますか。とても人気です！</span>
+      <span slot="en_simple">Calbee is popular!</span>
+    </T>
+  </figcaption>
+</figure>
+
+<T>
+  <span slot="en">However, I noticed it wasn’t just one brand; in fact, various brands of snacks have similar packaging right next to normally colored packaging.</span>
+  <span slot="ja">しかし、それが一つのブランドだけではないことに気づきました。実際、いろいろなお菓子のブランドが、普通の色の袋のすぐ隣で、似たような包装を使っています。</span>
+  <span slot="en_simple">But it was not only one brand. Many snack brands have this bag now. They sit next to the colorful bags.</span>
+</T>
+
+<figure>
+  ![Kappa Ebisen in the same plain silver package](../../assets/images/blog/new-chips-in-japan/other-brand.jpg)
+  <figcaption>
+    <T>
+      <span slot="en">Shrimp flavor.</span>
+      <span slot="ja">えび味です。</span>
+      <span slot="en_simple">Shrimp.</span>
+    </T>
+  </figcaption>
+</figure>
+
+<T>
+  <span slot="en">I bought some out of curiosity, thinking maybe there was a new collaboration or flavor, only to find they were exactly the same as the normal colored bags.</span>
+  <span slot="ja">新しいコラボか新しい味かもしれないと思って、興味本位でいくつか買ってみました。ところが、中身は普通の色の袋とまったく同じでした。</span>
+  <span slot="en_simple">I bought some. I thought it was a new flavor. But it was the same snack inside.</span>
+</T>
+
+<figure>
+  ![Looking inside the open bag of chips](../../assets/images/blog/new-chips-in-japan/inside.jpg)
+  <figcaption>
+    <T>
+      <span slot="en">I didn’t eat any yet! Why so few?</span>
+      <span slot="ja">まだ一枚も食べていません！どうしてこんなに少ないの？</span>
+      <span slot="en_simple">Big bag, few chips :(</span>
+    </T>
+  </figcaption>
+</figure>
+
+<T>
+  <span slot="en">I was a little disappointed! However, it was at that point that I finally decided to read the label at the top right. It says something like "Crude Oil plain packaging," which, if I understand correctly, means that it's packaging being used to save on costs related to the situation in the Middle East.</span>
+  <span slot="ja">少しがっかりしました！でも、そのときになってようやく右上のラベルを読んでみる気になりました。「石油原料節約パッケージ」というようなことが書いてあり、私の理解が正しければ、中東の情勢に関わるコストを抑えるために使われている包装だという意味です。</span>
+  <span slot="en_simple">I was a little sad! Then I read the small label at the top right. It says "crude oil plain packaging." I think it means the company is saving money. Oil costs more now because of the Middle East.</span>
+</T>
+
+<figure>
+  ![The opened bag next to a black bowl full of chips](../../assets/images/blog/new-chips-in-japan/last.jpg)
+  <figcaption>
+    <T>
+      <span slot="en">Yummy chips.</span>
+      <span slot="ja">おいしいチップス。</span>
+      <span slot="en_simple">Yummy chips.</span>
+    </T>
+  </figcaption>
+</figure>
+
+<T>
+  <span slot="en">It was interesting to see the effects of the crisis in ways beyond higher prices. I hope companies can keep coming up with ways like this to <Explain meaning="cut costs">trim costs</Explain> that don’t affect the price and product as much. I wonder, are other countries taking measures like this too?</span>
+  <span slot="ja">値上がり以外の形でも危機の影響が見られるのは興味深かったです。企業がこうやって、価格や商品にあまり影響しない形でコストを削る方法をこれからも考えてくれたらいいなと思います。他の国でもこういう対策をしているのでしょうか。</span>
+  <span slot="en_simple">The oil problem changes more than prices. I hope companies keep saving money this way. Then the price and the snack stay the same. Do other countries do this too?</span>
+</T>
+
+<Quiz
+  id="shrimp-chips"
+  question={{
+    en: "Have you tried shrimp flavored chips?",
+    ja: "えび味のチップスを食べたことがありますか。",
+    en_simple: "Have you tried shrimp chips?",
+  }}
+  options={[
+    { en: "Yes, they were good!", ja: "はい、おいしかったです！" },
+    { en: "Yes, but they were not good!", ja: "はい、でもおいしくなかったです！" },
+    { en: "No, but I want to try.", ja: "いいえ、でも食べてみたいです。" },
+    { en: "No.", ja: "いいえ。" },
+  ]}
+/>

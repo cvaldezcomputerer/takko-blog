@@ -45,6 +45,20 @@ const ogImage = isOptimizedImageSrc(heroImage)
 		? heroImage
 		: (await getImage({ src: heroImage, width: 1200, format: 'jpeg' })).src)
 	: undefined;
+
+// A hero set to object-fit: contain leaves empty space beside the image. Instead of
+// flat bars, fill it with a tiny, heavily blurred copy of the photo itself. Only for
+// local images — a remote/public string src has no build-time resize, so it would mean
+// downloading the full-size original a second time just to blur it.
+const heroBackdrop =
+	heroImageFit === 'contain' && heroImage && typeof heroImage !== 'string' && isOptimizedImageSrc(heroImage)
+		? (await getImage({ src: heroImage, width: 160, format: 'webp', quality: 60 })).src
+		: undefined;
+
+const heroStyle = [
+	heroImageMaxWidth ? `max-width: ${heroImageMaxWidth}` : '',
+	heroBackdrop ? `--hero-backdrop: url(${heroBackdrop})` : '',
+].filter(Boolean).join('; ') || undefined;
 ---
 
 <html lang="en">
@@ -79,13 +93,55 @@ const ogImage = isOptimizedImageSrc(heroImage)
 					padding: 0 1em;
 				}
 			}
+			/* The <picture> shrink-wraps the img, so it is the frame the backdrop fills. */
+			.hero-image :global(picture) {
+				display: block;
+				width: fit-content;
+				margin: 0 auto;
+				position: relative;
+				overflow: hidden;
+				border-radius: var(--radius-md);
+				box-shadow: var(--box-shadow);
+				background-color: var(--surface);
+			}
 			.hero-image :global(img) {
 				display: block;
 				margin: 0 auto;
 				border-radius: var(--radius-md);
-				box-shadow: var(--box-shadow);
-				max-height: 510px;  
-    			object-fit: cover;  
+				max-height: 510px;
+				object-fit: cover;
+				position: relative;
+				z-index: 1;
+			}
+			/* Blurred fill behind a letterboxed hero. Scaled up so the blur's soft edge
+			   never reaches the frame. */
+			.hero-image.has-backdrop :global(picture)::before {
+				content: '';
+				position: absolute;
+				inset: 0;
+				background-image: var(--hero-backdrop);
+				background-size: cover;
+				background-position: center;
+				filter: blur(28px) saturate(1.15);
+				transform: scale(1.25);
+			}
+			/* Knock the blur back so it reads as a surface, not a second photo, and
+			   wash it with the page's random --theme-hue so the bars belong to the
+			   same palette as the like balloon and the scrapbook tape. */
+			.hero-image.has-backdrop :global(picture)::after {
+				content: '';
+				position: absolute;
+				inset: 0;
+				background-color: var(--hero-scrim);
+				background-image: linear-gradient(var(--hero-tint), var(--hero-tint));
+			}
+			.hero-image {
+				--hero-scrim: rgba(255, 255, 255, 0.14);
+				--hero-tint: hsla(var(--theme-hue, 45), 85%, 88%, 0.42);
+			}
+			:global(.dark) .hero-image {
+				--hero-scrim: rgba(0, 0, 0, 0.28);
+				--hero-tint: hsla(var(--theme-hue, 45), 60%, 42%, 0.32);
 			}
 			.prose {
 				width: 100%;
@@ -390,7 +446,7 @@ const ogImage = isOptimizedImageSrc(heroImage)
 					</div>
 				</div>
 						{heroImage && isOptimizedImageSrc(heroImage) &&
-							<div class="hero-image" style={heroImageMaxWidth ? `max-width: ${heroImageMaxWidth}` : undefined}>
+							<div class:list={['hero-image', heroBackdrop && 'has-backdrop']} style={heroStyle}>
 							<OptimizedImage
 							  src={heroImage}
 					  sizes="(max-width: 960px) 100vw, 960px"
@@ -398,7 +454,7 @@ const ogImage = isOptimizedImageSrc(heroImage)
 						  loading="eager"
 					  fetchpriority="high"
 
-					  style={heroImageFit && `object-fit: ${heroImageFit}; background-color: ${heroImageFit === 'contain' ? 'black' : 'transparent'}`} />
+					  style={heroImageFit && `object-fit: ${heroImageFit}`} />
 					</div>
 				}
 				<div class="prose" data-blog-content>

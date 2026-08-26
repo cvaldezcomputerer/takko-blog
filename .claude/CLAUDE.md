@@ -62,7 +62,23 @@ Key steps:
 
 There is also a **dev editor** (dev only): `npm run dev`, then `http://localhost:4321/dev/editor` (port may differ) to edit post text, captions, and image order in a structured panel that writes back to the `.mdx`. See `src/pages/dev/editor/` and `tools/scripts/dev-editor-integration.mjs`.
 
+## Skills
+
+All in `.claude/skills/<name>/SKILL.md`. Several are meant to fire on their own; load them by name when they do not.
+
+- **`grilling`**: before building any new feature, component, or page, interview the user until every branch of the decision is settled. Run it *before* scaffolding, not after. `/grill-me` invokes it on demand.
+- **`writing-fragments`**, then **`writing-shape`** or **`writing-beats`**: the drafting process for post prose. Fragments first to explore, then shape or beats to commit. Reader-facing writing only.
+- **`prototype`**: when the answer is "show me a few options", build the variants instead of describing them. The UI branch renders several takes on one route; the logic branch is a single clickable HTML file.
+- **`diagnosing-bugs`**: for anything broken, throwing, failing, slow, or silently not applying. Starts from this repo's known silent failure modes, then insists on a feedback loop that goes red before any hypothesis.
+- **`writing-for-agents`**: for editing this file, the reference docs, or any `SKILL.md`. It pulls the opposite way from `SIMPLE_ENGLISH_STYLE.md`, which governs post copy; keep the two apart.
+- **`new-post`**: see the section above.
+
+## Git
+
+Cristian writes his own commit messages and runs version control himself. At a natural stopping point, say it is a good time to save the work and stop there.
+
 ## Reference Docs
 - `.claude/PROJECT_MAP.md` — full file map, API routes, UI systems
 - `.claude/SETTINGS_ARCHITECTURE.md` — settings state, storage keys, panel events
+- `.claude/SIMPLE_ENGLISH_STYLE.md` — how Simple English copy is written
 - `.claude/skills/new-post/SKILL.md` — authoritative process for creating a new post
