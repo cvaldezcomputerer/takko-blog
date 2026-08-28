@@ -6,6 +6,7 @@ import FormattedDate from '../components/content/FormattedDate.astro';
 import LikeButton from '../components/content/LikeButton.astro';
 import OptimizedImage from '../components/media/OptimizedImage.astro';
 import T from '../components/i18n/T.astro';
+import cameraManifest from '../data/camera-manifest.json';
 import { getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import type { CollectionEntry } from 'astro:content';
@@ -28,7 +29,33 @@ const {
 	cameraUsedImageAlt,
 	cameraUsedLink,
 	cameraUsedLinkLabel,
+	cameraFallback,
 } = Astro.props as Props;
+
+/*
+ * The camera model shown beside the lightbox photo.
+ *
+ * Astro's sharp service strips EXIF when it generates the avif/webp variants,
+ * so the model can never be read in the browser. tools/scripts/build-camera-manifest.mjs
+ * reads it from the source images at build time instead, keyed by file stem —
+ * the one part of the source filename that survives into `<stem>.<hash>.avif`.
+ *
+ * Images with no EXIF fall back to the post's own `cameraFallback` (or
+ * `cameraUsedName`, for the one post whose header card names the same camera);
+ * a photo with neither shows nothing at all and reserves no space.
+ */
+const cameraStickers: Record<string, string> = {
+	'Olympus Camedia C-840L': '/images/cameras/olympus-c840-sticker-128.webp',
+};
+const manifest: Record<string, Record<string, { model: string; lens?: string }>> = cameraManifest;
+const camerasByStem = manifest[slug] ?? {};
+const lightboxCameras = {
+	byStem: camerasByStem,
+	fallback: cameraFallback ?? cameraUsedName ?? '',
+	stickers: cameraStickers,
+};
+const hasLightboxCameras =
+	Boolean(lightboxCameras.fallback) || Object.keys(camerasByStem).length > 0;
 
 function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 	if (typeof value === 'string') return true;
@@ -262,6 +289,9 @@ const heroStyle = [
 			}
 			.lightbox-dialog {
 				border: 0;
+				/* the UA sheet makes a modal dialog a scroll container; without this
+				   the camera rail hanging off the left edge is clipped away */
+				overflow: visible;
 				padding: 0;
 				margin: auto;
 				max-width: min(88vw, 1000px);
@@ -278,7 +308,7 @@ const heroStyle = [
 				border-radius: var(--radius-md);
 				padding: 1rem;
 			}
-			.lightbox-dialog img {
+			.lightbox-content img {
 				display: block;
 				max-width: min(80vw, 900px);
 				max-height: 68vh;
@@ -307,6 +337,94 @@ const heroStyle = [
 			.lightbox-close:hover {
 				background: #fff;
 				transform: scale(1.04);
+			}
+
+			/* ── the camera rail ─────────────────────────────────────────────
+			   A sticky note hung in the empty backdrop gutter to the LEFT of the
+			   panel, so the photo never moves off centre. A modal dialog is
+			   `position: fixed; inset: 0` from the UA sheet and so is already the
+			   containing block — do NOT add `position: relative` here, it would
+			   override that and break the centring.
+			   The ::backdrop is rgba(0, 0, 0, 0.75) in BOTH themes, so this is
+			   always a light object on a dark ground: no .dark branch on purpose. */
+			.lightbox-camera {
+				position: absolute;
+				bottom: 1rem;
+				right: calc(100% + 1rem);
+				display: flex;
+				flex-direction: column;
+				align-items: flex-end;
+				gap: 0.3rem;
+				width: 9rem;
+				font-size: 0.82rem;
+				line-height: 1.35;
+			}
+			.lightbox-camera[hidden] {
+				display: none;
+			}
+			/* its own object, close to the note but not pasted on it, and the same
+			   width so the two read as one stacked column */
+			.lightbox-camera__sticker {
+				width: 100%;
+				height: auto;
+				transform: rotate(-4deg);
+			}
+			.lightbox-camera__sticker[hidden] {
+				display: none;
+			}
+			/* #fbd0d0 is the like button's balloon: .heart-path is
+			   hsl(var(--theme-hue, 0), 85%, 90%), and --theme-hue is defined nowhere
+			   in global.css, so it has always painted that fallback pink. Hard-coded
+			   here rather than copied as a var() so the note can't drift if that
+			   token is ever actually defined.
+			   No border — a sticky note has a cut edge, not a drawn one. */
+			.lightbox-camera__note {
+				width: 100%;
+				min-height: 7.25rem;
+				padding: 0.85rem 0.7rem 0.7rem;
+				display: flex;
+				flex-direction: column;
+				gap: 0.15rem;
+				background-color: #fbd0d0;
+				color: #4a3636;
+				text-align: left;
+				transform: rotate(-2.5deg);
+				box-shadow:
+					4px 4px 0 rgba(0, 0, 0, 0.4),
+					0 12px 22px rgba(0, 0, 0, 0.35);
+			}
+			.lightbox-camera__label {
+				opacity: 0.62;
+				letter-spacing: 0.02em;
+			}
+			.lightbox-camera__name {
+				font-family: 'Courier New', Courier, monospace;
+				font-weight: 700;
+			}
+			/* below ~1280px the gutter beside the panel is narrower than the rail,
+			   so it drops under the photo and lies down flat */
+			@media (max-width: 1280px) {
+				.lightbox-camera {
+					position: static;
+					width: auto;
+					margin-top: 0.6rem;
+					flex-direction: row;
+					align-items: center;
+					justify-content: center;
+					gap: 0.5rem;
+				}
+				.lightbox-camera__sticker {
+					width: 46px;
+				}
+				.lightbox-camera__note {
+					width: auto;
+					min-height: 0;
+					flex-direction: row;
+					align-items: baseline;
+					gap: 0.35rem;
+					padding: 0.45rem 0.7rem;
+					transform: rotate(-1.5deg);
+				}
 			}
 			.post-outro {
 				margin-top: 2.25rem;
@@ -509,6 +627,32 @@ const heroStyle = [
 				<button class="lightbox-close" type="button" aria-label="Close image viewer">&times;</button>
 				<img alt="" />
 			</div>
+			{
+				hasLightboxCameras && (
+					<Fragment>
+						<div class="lightbox-camera" hidden>
+							<img class="lightbox-camera__sticker" alt="" hidden />
+							<div class="lightbox-camera__note">
+								<span class="lightbox-camera__label">
+									<T>
+										<span slot="en" lang="en">Shot with:</span>
+										<span slot="ja" lang="ja">撮影機材:</span>
+										<span slot="en_simple" lang="en">Camera:</span>
+									</T>
+								</span>
+								<span class="lightbox-camera__name" data-camera-name />
+							</div>
+						</div>
+						{/* is:inline so Astro leaves it alone instead of trying to bundle it as JS */}
+						<script
+							is:inline
+							type="application/json"
+							data-camera-manifest
+							set:html={JSON.stringify(lightboxCameras).replace(/</g, '\\u003c')}
+						/>
+					</Fragment>
+				)
+			}
 		</dialog>
 		<Footer />
 			<script>
@@ -516,10 +660,55 @@ const heroStyle = [
 					const content = document.querySelector('.prose[data-blog-content]');
 					const dialogEl = document.getElementById('post-image-lightbox');
 					const dialog = dialogEl instanceof HTMLDialogElement ? dialogEl : null;
-					const dialogImg = dialog?.querySelector('img');
+					const dialogImg = dialog?.querySelector<HTMLImageElement>('.lightbox-content img');
 					const dialogCloseBtn = dialog?.querySelector<HTMLButtonElement>('.lightbox-close');
 
 					if (!content || !dialog || !dialogImg) return;
+
+					type CameraData = {
+						byStem: Record<string, { model: string; lens?: string }>;
+						fallback: string;
+						stickers: Record<string, string>;
+					};
+					const cameraEl = dialog.querySelector<HTMLElement>('.lightbox-camera');
+					const cameraNameEl = dialog.querySelector<HTMLElement>('[data-camera-name]');
+					const cameraStickerEl = dialog.querySelector<HTMLImageElement>('.lightbox-camera__sticker');
+					const cameraJson = dialog.querySelector('[data-camera-manifest]')?.textContent;
+					let cameraData: CameraData | null = null;
+					try {
+						cameraData = cameraJson ? (JSON.parse(cameraJson) as CameraData) : null;
+					} catch {
+						cameraData = null;
+					}
+
+					/* Built images are `<stem>.<contenthash>_<hash>.avif`; in dev the same
+					   picture comes from `/_image?href=<source path>`. Either way the stem
+					   is what the manifest is keyed on. */
+					function stemFromSrc(src: string) {
+						let path = src;
+						try {
+							const url = new URL(src, location.href);
+							const href = url.searchParams.get('href');
+							path = href ? href.split('?')[0] : url.pathname;
+						} catch {
+							/* not a parseable URL; fall through to the raw string */
+						}
+						return path.slice(path.lastIndexOf('/') + 1).split('.')[0];
+					}
+
+					function showCamera(src: string) {
+						if (!cameraData || !cameraEl || !cameraNameEl) return;
+						const model = cameraData.byStem[stemFromSrc(src)]?.model || cameraData.fallback;
+						cameraEl.hidden = !model;
+						if (!model) return;
+						cameraNameEl.textContent = model;
+						// only some cameras have sticker art; the rest show the note alone
+						const sticker = cameraData.stickers[model];
+						if (cameraStickerEl) {
+							cameraStickerEl.hidden = !sticker;
+							if (sticker) cameraStickerEl.src = sticker;
+						}
+					}
 
 					const excludedSelector = [
 						'a',
@@ -534,8 +723,10 @@ const heroStyle = [
 						if (!(target instanceof HTMLImageElement)) return;
 						if (target.closest(excludedSelector)) return;
 
-						dialogImg.src = target.currentSrc || target.src;
+						const src = target.currentSrc || target.src;
+						dialogImg.src = src;
 						dialogImg.alt = target.alt || '';
+						showCamera(src);
 						dialog.showModal();
 					});
 

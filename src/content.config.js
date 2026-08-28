@@ -20,6 +20,10 @@ const blog = defineCollection({
       cameraUsedImageAlt: z.string().optional(),
       cameraUsedLink: z.string().optional(),
       cameraUsedLinkLabel: z.string().optional(),
+      // Camera to name in the lightbox for photos whose EXIF was stripped.
+      // Deliberately separate from `cameraUsedName`, which also renders the
+      // "Shot with:" card under the post title.
+      cameraFallback: z.string().optional(),
     }),
 });
 

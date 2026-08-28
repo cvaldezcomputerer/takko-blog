@@ -72,12 +72,16 @@ function needsWork(metadata) {
 
 function formatExifDate(value) {
   if (value instanceof Date && !Number.isNaN(value.getTime())) {
-    const yyyy = String(value.getFullYear()).padStart(4, '0');
-    const mm = String(value.getMonth() + 1).padStart(2, '0');
-    const dd = String(value.getDate()).padStart(2, '0');
-    const hh = String(value.getHours()).padStart(2, '0');
-    const min = String(value.getMinutes()).padStart(2, '0');
-    const sec = String(value.getSeconds()).padStart(2, '0');
+    // EXIF DateTimeOriginal is a zone-less wall clock, and exif-reader parses
+    // its digits into a Date as if they were UTC. Reading them back with UTC
+    // getters round-trips the digits exactly; local getters would silently add
+    // the machine's offset (+9h here) every time a file was re-encoded.
+    const yyyy = String(value.getUTCFullYear()).padStart(4, '0');
+    const mm = String(value.getUTCMonth() + 1).padStart(2, '0');
+    const dd = String(value.getUTCDate()).padStart(2, '0');
+    const hh = String(value.getUTCHours()).padStart(2, '0');
+    const min = String(value.getUTCMinutes()).padStart(2, '0');
+    const sec = String(value.getUTCSeconds()).padStart(2, '0');
     return `${yyyy}:${mm}:${dd} ${hh}:${min}:${sec}`;
   }
   return typeof value === 'string' && value.trim() ? value.trim() : null;
@@ -85,8 +89,8 @@ function formatExifDate(value) {
 
 /**
  * Rebuild EXIF from scratch with only the tags worth keeping (camera make and
- * model, capture date). Everything else -- crucially the GPS IFD -- is dropped
- * by omission rather than by deletion.
+ * model, lens, capture date). Everything else -- crucially the GPS IFD -- is
+ * dropped by omission rather than by deletion.
  */
 function buildSelectedExif(metadata) {
   if (!metadata.exif) return null;
@@ -114,6 +118,15 @@ function buildSelectedExif(metadata) {
   const dateTimeOriginal = formatExifDate(photo?.DateTimeOriginal);
   if (dateTimeOriginal) {
     ifd2.DateTimeOriginal = dateTimeOriginal;
+  }
+
+  // Lens is only ever present on photos that still carry their original EXIF,
+  // so this fills in going forward and cannot recover already-optimized images.
+  if (typeof photo?.LensModel === 'string' && photo.LensModel.trim()) {
+    ifd2.LensModel = photo.LensModel.trim();
+  }
+  if (typeof photo?.LensMake === 'string' && photo.LensMake.trim()) {
+    ifd2.LensMake = photo.LensMake.trim();
   }
 
   const exif = {};
