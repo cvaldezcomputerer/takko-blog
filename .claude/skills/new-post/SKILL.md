@@ -29,7 +29,12 @@ Do this before writing, not after: you need the filenames to write `<figure>`
 blocks, so images-first avoids a second pass over the text.
 
 1. Drop final photos/screenshots into `src/assets/images/blog/<slug>/`. The
-   folder name must match the slug.
+   folder name must match the slug. Pull them out of macOS Photos with
+   **File → Export → Export Unmodified Original**, which hands over the raw
+   camera file. Dragging an image straight out of Photos re-compresses it to
+   roughly JPEG quality 85 first, and that loss is already baked in by the time
+   the optimizer runs. When a post's images look blurry or show artifacts, ask
+   whether they came from a drag-out.
 2. Optimize in place (resize to max 1600px, strip GPS, bake EXIF orientation,
    convert HEIC to JPEG):
    ```

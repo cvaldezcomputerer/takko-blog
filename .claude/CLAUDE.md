@@ -75,7 +75,14 @@ All in `.claude/skills/<name>/SKILL.md`. Several are meant to fire on their own;
 
 ## Git
 
-Cristian writes his own commit messages and runs version control himself. At a natural stopping point, say it is a good time to save the work and stop there.
+Cristian writes his own commit messages and runs version control himself. Make the
+edits, run checks, then stop at a natural point and say it is a good time to save
+the work. Stage nothing by default; act only when the current message explicitly
+asks for a commit or push.
+
+Commit messages end at the body text: leave out the `Co-Authored-By: Claude`
+trailer the harness adds by default, which lists Claude as a contributor on the
+public GitHub repo.
 
 ## Reference Docs
 - `.claude/PROJECT_MAP.md` — full file map, API routes, UI systems
