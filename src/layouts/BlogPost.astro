@@ -30,6 +30,7 @@ const {
 	cameraUsedLink,
 	cameraUsedLinkLabel,
 	cameraFallback,
+	cameraExclude,
 } = Astro.props as Props;
 
 /*
@@ -43,9 +44,15 @@ const {
  * Images with no EXIF fall back to the post's own `cameraFallback` (or
  * `cameraUsedName`, for the one post whose header card names the same camera);
  * a photo with neither shows nothing at all and reserves no space.
+ *
+ * That fallback is why `cameraExclude` exists. Screenshots, diagrams, logos and
+ * collages also carry no EXIF, so they are indistinguishable from a photo the
+ * optimizer stripped -- and would inherit the fallback and claim to be shot on
+ * a camera. Listing their stems in the post's frontmatter opts them out.
  */
 const cameraStickers: Record<string, string> = {
 	'Olympus Camedia C-840L': '/images/cameras/olympus-c840-sticker-128.webp',
+	'Canon PowerShot S90': '/images/cameras/canon-s90-sticker-192.webp',
 };
 const manifest: Record<string, Record<string, { model: string; lens?: string }>> = cameraManifest;
 const camerasByStem = manifest[slug] ?? {};
@@ -53,6 +60,7 @@ const lightboxCameras = {
 	byStem: camerasByStem,
 	fallback: cameraFallback ?? cameraUsedName ?? '',
 	stickers: cameraStickers,
+	exclude: cameraExclude ?? [],
 };
 const hasLightboxCameras =
 	Boolean(lightboxCameras.fallback) || Object.keys(camerasByStem).length > 0;
@@ -669,6 +677,7 @@ const heroStyle = [
 						byStem: Record<string, { model: string; lens?: string }>;
 						fallback: string;
 						stickers: Record<string, string>;
+						exclude: string[];
 					};
 					const cameraEl = dialog.querySelector<HTMLElement>('.lightbox-camera');
 					const cameraNameEl = dialog.querySelector<HTMLElement>('[data-camera-name]');
@@ -698,7 +707,11 @@ const heroStyle = [
 
 					function showCamera(src: string) {
 						if (!cameraData || !cameraEl || !cameraNameEl) return;
-						const model = cameraData.byStem[stemFromSrc(src)]?.model || cameraData.fallback;
+						const stem = stemFromSrc(src);
+						// checked before the fallback, so an opted-out image shows nothing
+						// even on the posts where every other picture names a camera
+						const excluded = cameraData.exclude?.includes(stem);
+						const model = excluded ? '' : cameraData.byStem[stem]?.model || cameraData.fallback;
 						cameraEl.hidden = !model;
 						if (!model) return;
 						cameraNameEl.textContent = model;

@@ -24,6 +24,10 @@ const blog = defineCollection({
       // Deliberately separate from `cameraUsedName`, which also renders the
       // "Shot with:" card under the post title.
       cameraFallback: z.string().optional(),
+      // File stems that must never show a camera at all: screenshots, diagrams,
+      // logos, posters, collages. They have no EXIF, so without this they would
+      // silently inherit `cameraFallback` and claim to be photos.
+      cameraExclude: z.array(z.string()).optional(),
     }),
 });
 
