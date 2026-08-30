@@ -17,6 +17,6 @@ Posts are written for English learners — each one comes in regular English, Si
 
 ## Built with
 - Astro
-- Cloudflare Pages for hosting and deployment
+- Cloudflare Workers for hosting and deployment
 - Cloudflare D1 for likes and quiz data
 - TypeScript

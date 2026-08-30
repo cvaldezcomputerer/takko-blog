@@ -49,7 +49,7 @@ Contact form posts directly to Web3Forms (`https://api.web3forms.com/submit`) fr
 ## Types / Declarations
 - Browser globals + settings API + `startViewTransition`:
   - `src/types/global.d.ts`
-- Cloudflare runtime bindings (`locals.runtime.env.DB`):
+- Cloudflare runtime bindings (`import { env } from "cloudflare:workers"`):
   - `src/env.d.ts`
 
 ## Key UI Systems

@@ -3,7 +3,7 @@
 Astro blog for English learners. Content served in English, Simple English, and Japanese via `T.astro` slots.
 
 ## Stack
-- Astro v5 + Cloudflare Pages/Workers adapter (`@astrojs/cloudflare`, static output)
+- Astro 7 + `@astrojs/cloudflare` v14, deployed on Cloudflare Workers (static output)
 - MDX blog posts in `src/content/blog/`
 - Cloudflare D1 for likes + quiz endpoints
 - TypeScript + `@astrojs/check` with `checkJs: true`
@@ -41,7 +41,7 @@ All design tokens live in `:root` / `.dark` in `src/styles/global.css`. **New co
 
 ## Type Declarations
 - Browser globals + settings API: `src/types/global.d.ts`
-- Cloudflare runtime bindings (`locals.runtime.env.DB`): `src/env.d.ts`
+- Cloudflare runtime bindings (`import { env } from "cloudflare:workers"`): `src/env.d.ts`
 
 ## Settings (localStorage)
 | Setting | Key | Values |
