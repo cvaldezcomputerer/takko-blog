@@ -58,6 +58,7 @@ Use the **new-post skill** (`.claude/skills/new-post/SKILL.md`) when creating a 
 
 Key steps:
 - **Images first**, as soon as they are dropped in (you need the filenames to write `<figure>` blocks): `node tools/scripts/optimize-images.mjs src/assets/images/blog/<post-slug>/`. Safe to re-run; also takes individual files. Converts iPhone HEIC to `.jpg`. No manual webp conversion needed — Astro handles avif/webp at build time.
+- **Sony a6300 photos** from `~/Pictures/<folder>/` are converted from raw by the user-level `convert-photos` skill (`~/bin/convert-raws`). Each shot is `DSC00401-1raw.ARW` (the original), `DSC00401-3new.jpg` (the converted JPEG) and sometimes `DSC00401-2cam.JPG` (the camera JPEG). **Use the `-3new.jpg`**: the optimizer can't read .ARW, and the camera JPEG blows out highlights. The -3new is an HDR gain-map JPEG, and sharp/Astro drop the HDR layer, so the site shows its normal render. That is expected, not a bug. EXIF (camera model) is copied over from the raw, so the camera manifest still works.
 - **Verify before publishing**: `npm run check:post <slug>` reports empty translation slots, missing frontmatter, unreferenced/oversized/GPS-bearing images, mojibake, and leftover placeholders. Warnings while `draft: true`, errors once it is removed.
 
 There is also a **dev editor** (dev only): `npm run dev`, then `http://localhost:4321/dev/editor` (port may differ) to edit post text, captions, and image order in a structured panel that writes back to the `.mdx`. See `src/pages/dev/editor/` and `tools/scripts/dev-editor-integration.mjs`.

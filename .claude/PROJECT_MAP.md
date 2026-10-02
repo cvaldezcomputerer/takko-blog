@@ -34,9 +34,8 @@
   - Ignores clicks inside `.language-controls` so settings can stay open while switching language
 
 ## Content / Pages
-- Blog listing: `src/pages/blog/index.astro`
 - Blog post route: `src/pages/blog/[...slug].astro`
-- Home: `src/pages/index.astro`
+- Home + post listing: `src/pages/index.astro` (there is no separate `/blog/` index)
 - Additional: `src/pages/about.astro`, `src/pages/contact.astro`, `src/pages/404.astro`
 
 ## API Routes

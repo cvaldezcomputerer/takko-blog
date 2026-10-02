@@ -45,6 +45,10 @@ blocks, so images-first avoids a second pass over the text.
    accepts individual files, and `--dry-run` reports without writing.
    **iPhone HEIC files are converted to `.jpg`** (Astro cannot process HEIC);
    reference the new `.jpg` name.
+   **Sony a6300 shots** from `~/Pictures/<folder>/` come as sets: `DSC00401-1raw.ARW`, `DSC00401-3new.jpg` and sometimes `DSC00401-2cam.JPG`.
+   They are made by the user-level `convert-photos` skill. Use the `-3new.jpg`: the optimizer can't read .ARW, and the
+   camera JPEG blows out highlights. Its HDR gain map (bright clouds on XDR screens) is dropped by
+   the optimizer and Astro, so the site shows the normal render. Renaming it to something descriptive is fine.
 3. **No manual webp conversion** for camera photos — Astro builds avif/webp
    automatically. Only hand-make a `.webp` for screenshots or composites.
 4. Reference inline `<figure>` images by markdown path string directly — **no
