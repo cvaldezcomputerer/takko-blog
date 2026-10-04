@@ -1,7 +1,7 @@
 # .claude reference docs
 
 Detailed reference for the takko blog project. Shared project instructions live
-in `.claude/CLAUDE.md`; the root `AGENTS.md` and `CLAUDE.md` link to it.
+in `.claude/CLAUDE.md`; the root `CLAUDE.md` links to it.
 
 - `PROJECT_MAP.md` — architecture, key files, API routes, UI systems
 - `SETTINGS_ARCHITECTURE.md` — settings state model, storage keys, panel-controller events
