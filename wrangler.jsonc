@@ -12,5 +12,14 @@
       "database_id": "2dbfa341-2ba6-4fda-a9bc-9165a74b275a",
       "migrations_dir": "migrations"
     }
+  ],
+  // Per-IP cap on like / quiz-vote writes (src/lib/api.js). namespace_id is
+  // any account-unique integer you pick; the period can only be 10 or 60.
+  "ratelimits": [
+    {
+      "name": "API_RATE_LIMITER",
+      "namespace_id": "1001",
+      "simple": { "limit": 10, "period": 60 }
+    }
   ]
 }

@@ -21,7 +21,7 @@ import { SITE_TITLE } from '../consts';
 			.logo-wrap {
 				display: flex;
 				justify-content: center;
-				margin-bottom: 1rem;
+				margin-bottom: var(--space-4);
 			}
 			.logo-404 {
 				width: 140px;
@@ -49,9 +49,9 @@ import { SITE_TITLE } from '../consts';
 			}
 			.home-btn {
 				display: inline-block;
-				padding: 0.75em 1.5em;
+				padding: var(--space-3) var(--space-5);
 				background: var(--accent);
-				color: white;
+				color: var(--on-pill);
 				text-decoration: none;
 				border-radius: var(--radius);
 				font-weight: bold;
@@ -76,7 +76,7 @@ import { SITE_TITLE } from '../consts';
 			}
 			.error-cards {
 				display: flex;
-				gap: 0.75rem;
+				gap: var(--space-3);
 				justify-content: center;
 				flex-wrap: wrap;
 			}
@@ -86,8 +86,8 @@ import { SITE_TITLE } from '../consts';
 				max-width: 220px;
 				background: var(--secondary);
 				border: 1.5px solid transparent;
-				border-radius: 10px;
-				padding: 1em;
+				border-radius: var(--radius-md);
+				padding: var(--space-4);
 				text-align: left;
 			}
 			.error-card.is-current {
@@ -186,7 +186,13 @@ import { SITE_TITLE } from '../consts';
 				<div class="error-cards">
 					<div class="error-card">
 						<div class="error-code">403</div>
-						<div class="error-name">Forbidden</div>
+						<div class="error-name">
+							<T>
+								<span slot="en">Forbidden</span>
+								<span slot="ja">アクセス禁止</span>
+								<span slot="en_simple">Not allowed</span>
+							</T>
+						</div>
 						<p class="error-desc">
 							<T>
 								<span slot="en">The page exists, but you don't have permission to see it.</span>
@@ -197,7 +203,13 @@ import { SITE_TITLE } from '../consts';
 					</div>
 					<div class="error-card is-current">
 						<div class="error-code">404</div>
-						<div class="error-name">Not Found</div>
+						<div class="error-name">
+							<T>
+								<span slot="en">Not Found</span>
+								<span slot="ja">見つかりません</span>
+								<span slot="en_simple">Not found</span>
+							</T>
+						</div>
 						<p class="error-desc">
 							<T>
 								<span slot="en">The page you're looking for doesn't exist — you're here now!</span>
@@ -208,7 +220,13 @@ import { SITE_TITLE } from '../consts';
 					</div>
 					<div class="error-card">
 						<div class="error-code">500</div>
-						<div class="error-name">Server Error</div>
+						<div class="error-name">
+							<T>
+								<span slot="en">Server Error</span>
+								<span slot="ja">サーバーエラー</span>
+								<span slot="en_simple">Server problem</span>
+							</T>
+						</div>
 						<p class="error-desc">
 							<T>
 								<span slot="en">Something went wrong on the server's side. Not your fault!</span>

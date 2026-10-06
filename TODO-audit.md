@@ -114,7 +114,7 @@ preloaded, `.gitignore` sane. Analytics is handled at the platform level
   `src/pages/rss.xml.js` before mapping. While in there, consider setting
   `trailingSlash`-consistent `link` (already fine) and adding `<language>`.
 
-- [ ] **ThemeToggle is fully hardcoded colors** (`ThemeToggle.astro:22-57`:
+- [x] **ThemeToggle is fully hardcoded colors** (`ThemeToggle.astro:22-57`:
   `#bae6fd`, `#7dd3fc`, `#ea580c`, `#1e293b`, etc.). Plausibly intentional
   (sky/sun/moon look), but it predates the token system - decide: either bless it
   with a comment like the scrapbook components have, or tokenize it. Same decision
@@ -220,3 +220,57 @@ preloaded, `.gitignore` sane. Analytics is handled at the platform level
   load-bearing browser code on the site) get no `checkJs`. Options: add `public`
   to tsconfig include (with `// @ts-check` semantics via JSDoc, both files are
   clean-ish already) or accept and note it. Low urgency; they're stable.
+
+---
+
+# Follow-up Audit (2026-10-06)
+
+Site-wide pass for bugs and design-token violations. Worked through in order.
+**[input]** marks items that need a decision from Cristian before or during the fix.
+
+## Bugs
+
+- [x] **1. Browser bar color wrong after theme switch.** `settings-state.js`
+  `applyTheme` sets only the first `theme-color` meta, to `#212121`/`#FAFAFA`;
+  BaseHead uses the header color (`--secondary`: `#f5f1eb`/`#2d2d2d`) and the
+  dark-media meta is never updated.
+- [x] **2. Settings panel theme switch goes stale** when the header ThemeToggle
+  is used; it only catches up on the next page load.
+- [x] **3. LikeButton scroll listener leaks** across view-transition navigations
+  (added in the constructor, never removed).
+- [x] **4. SettingsCog CSS typo:** `.settings-value` should be `.setting-value`.
+- [x] **5. `--theme-hue`** (kept random, now survives navigation). BlogPost picks a random hue per post (like
+  balloon, Quiz/Recipe/Gallery highlights). The comment at BlogPost ~384 wrongly
+  says it is defined nowhere. Probably resets after client-side navigation
+  (unverified). Decide: keep random, fix one hue, or drop it.
+- [x] **6. Reduced motion:** homepage `fade-up` cards, LikeButton sway/fly-away.
+- [x] **7. Settings sheet keyboard access:** focusable while closed, no focus
+  move on open / return on close, `<details>` always announced "collapsed".
+- [x] **8. LikeButton focusable while invisible** on desktop (`tabindex=0`).
+- [x] **9. Contact form messages:** no `aria-live`, errors vanish after 5s,
+  English only [input: JA/Simple wording review].
+- [x] **10. Untranslated text [input: wording review]:** "Last updated on",
+  404 card names (Forbidden/Not Found/Server Error), footer copyright;
+  `aria-label` on plain div `.post-outro` is ignored.
+- [x] **11. API hardening [input].** Likes/quiz accept any slug/id/option, no rate
+  limit, unlimited likes per visitor, JSON parse errors return 500 with the
+  internal message, `console.log` on every request. Per-visitor limits would
+  need a D1 migration.
+
+## Token violations
+
+- [x] **12. SettingsCog:** `16px 0 0 16px` radius, `rgba(255,255,255,.7)`,
+  `#fff` knob, raw rgba dark overrides.
+- [x] **13. BlogPost:** camera-used radius 14px, `rgba(255,255,255,.75)`,
+  lightbox close `#fff`/`#222`, dark post-outro raw rgba, focus radius 4px.
+- [x] **14. Header:** raw shadow rgba, `transition: all` x5.
+- [x] **15. LikeButton:** `#888`, `#333`.
+- [x] **16. 404:** `color: white`, card radius 10px, `em` spacing.
+- [x] **17. contact, Footer, Explain:** `transition: all`, raw text-shadow,
+  `padding: 4px`.
+- [x] **18. ThemeToggle + about comic bubbles [input]:** ~15 raw colors; tied to
+  the still-open colors decision above.
+
+Left alone on purpose: dev editor (dev only), Quiz/Recipe/Gallery/TwoImages
+(scrapbook exception), YouTubePreview red and PressToLight hardware colors
+(imitate real objects).

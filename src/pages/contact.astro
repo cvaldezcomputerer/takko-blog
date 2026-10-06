@@ -62,7 +62,7 @@ import { SITE_TITLE } from '../consts';
 				border-radius: var(--radius);
 				font-size: 1rem;
 				font-family: inherit;
-				transition: all 0.2s ease;
+				transition: border-color 0.2s ease, box-shadow 0.2s ease;
 				background-color: var(--background);
 				color: var(--text);
 				box-sizing: border-box;
@@ -82,14 +82,14 @@ import { SITE_TITLE } from '../consts';
 			
 			.submit-button {
 				background: var(--accent);
-				color: white;
+				color: var(--on-pill);
 				border: none;
 				padding: 0.8rem 2rem;
 				font-size: 1.1rem;
 				font-weight: 600;
 				border-radius: var(--radius);
 				cursor: pointer;
-				transition: all 0.2s ease;
+				transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 				width: fit-content;
 				display: inline-flex;
 				align-items: center;
@@ -199,6 +199,46 @@ import { SITE_TITLE } from '../consts';
 					</T>
 				</p>
 				
+				<!-- Form feedback. All messages are rendered up front so the language
+				     switcher translates them; the script only toggles [hidden]. -->
+				<div class="form-status" role="status" aria-live="polite">
+					<div class="form-message error" data-form-message={"required"} hidden>
+						<T>
+							<span slot="en">Please fill in all required fields.</span>
+							<span slot="ja">必須項目をすべて入力してください。</span>
+							<span slot="en_simple">Please fill in every box.</span>
+						</T>
+					</div>
+					<div class="form-message error" data-form-message={"email"} hidden>
+						<T>
+							<span slot="en">Please enter a valid email address.</span>
+							<span slot="ja">正しいメールアドレスを入力してください。</span>
+							<span slot="en_simple">Please check your email.</span>
+						</T>
+					</div>
+					<div class="form-message success" data-form-message={"sent"} hidden>
+						<T>
+							<span slot="en">Message sent! I'll get back to you soon.</span>
+							<span slot="ja">メッセージを送信しました！近いうちにお返事します。</span>
+							<span slot="en_simple">Your message was sent! I'll write back soon.</span>
+						</T>
+					</div>
+					<div class="form-message error" data-form-message={"failed"} hidden>
+						<T>
+							<span slot="en">Your message didn't send. Please try again.</span>
+							<span slot="ja">送信できませんでした。もう一度お試しください。</span>
+							<span slot="en_simple">It didn't send. Please try again.</span>
+						</T>
+					</div>
+					<div class="form-message error" data-form-message={"network"} hidden>
+						<T>
+							<span slot="en">Couldn't connect. Check your internet and try again.</span>
+							<span slot="ja">接続できませんでした。インターネット接続を確認して、もう一度お試しください。</span>
+							<span slot="en_simple">No internet? Please try again.</span>
+						</T>
+					</div>
+				</div>
+
 				<form class="contact-form" id="contactForm">
 					<!-- Web3Forms access key (public by design) -->
 					<input type="hidden" name="access_key" value="c276c80a-1816-4287-b0e9-5a7810b1d42d" />
@@ -219,6 +259,8 @@ import { SITE_TITLE } from '../consts';
 							class="form-input" 
 							required
 							placeholder="Your name"
+							data-placeholder-ja="お名前"
+							data-placeholder-en_simple="Your name"
 						>
 					</div>
 					
@@ -255,6 +297,8 @@ import { SITE_TITLE } from '../consts';
 							class="form-input" 
 							required
 							placeholder="What's this about?"
+							data-placeholder-ja="どんな内容ですか？"
+							data-placeholder-en_simple="What is it about?"
 						>
 					</div>
 					
@@ -272,6 +316,8 @@ import { SITE_TITLE } from '../consts';
 							class="form-textarea" 
 							required
 							placeholder="Tell me what's on your mind..."
+							data-placeholder-ja="メッセージをどうぞ…"
+							data-placeholder-en_simple="Write your message here."
 						></textarea>
 					</div>
 					
@@ -293,41 +339,65 @@ import { SITE_TITLE } from '../consts';
 		<Footer />
 		
 		<script>
-			// Contact form handling
+			type FormMessage = 'required' | 'email' | 'sent' | 'failed' | 'network';
+
+			let hideMessageTimer: number | undefined;
+
+			// Placeholders are attributes, so T slots can't hold them. Inputs keep
+			// their English placeholder and carry data-placeholder-ja / -en_simple.
+			function applyPlaceholders(lang: string) {
+				for (const field of document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('#contactForm [placeholder]')) {
+					field.dataset.placeholderEn ??= field.placeholder;
+					field.placeholder = field.dataset[lang === 'ja' ? 'placeholderJa' : lang === 'en_simple' ? 'placeholderEn_simple' : 'placeholderEn'] ?? field.dataset.placeholderEn;
+				}
+			}
+
+			function currentLanguage() {
+				try {
+					return localStorage.getItem('takko-blog-lang') ?? 'en';
+				} catch {
+					return 'en';
+				}
+			}
+
+			document.addEventListener('takko:language-changed', (event) => {
+				applyPlaceholders((event as CustomEvent<{ lang: string }>).detail?.lang ?? currentLanguage());
+			});
+
 			document.addEventListener('astro:page-load', function() {
 				const contactForm = document.getElementById('contactForm') as HTMLFormElement | null;
 				const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement | null;
-				
-				if (contactForm && submitBtn) {
-					contactForm.addEventListener('submit', handleFormSubmit);
-				}
-				
+				if (!contactForm || !submitBtn) return;
+
+				applyPlaceholders(currentLanguage());
+				contactForm.addEventListener('submit', handleFormSubmit);
+
 				async function handleFormSubmit(e: SubmitEvent) {
 					e.preventDefault();
-					
+
 					if (!contactForm || !submitBtn) return;
-					
+
 					// Get form data
 					const formData = new FormData(contactForm);
 					const data = {
-						name: String(formData.get('name') || ''),
-						email: String(formData.get('email') || ''),
-						subject: String(formData.get('subject') || ''),
-						message: String(formData.get('message') || ''),
+						name: String(formData.get('name') || '').trim(),
+						email: String(formData.get('email') || '').trim(),
+						subject: String(formData.get('subject') || '').trim(),
+						message: String(formData.get('message') || '').trim(),
 					};
 
 					// Basic validation
 					if (!data.name || !data.email || !data.subject || !data.message) {
-						showMessage('Please fill in all required fields.', 'error');
+						showMessage('required');
 						return;
 					}
 
 					if (!isValidEmail(data.email)) {
-						showMessage('Please enter a valid email address.', 'error');
+						showMessage('email');
 						return;
 					}
 
-					// Show loading state
+					showMessage(null);
 					setLoading(true);
 
 					try {
@@ -343,55 +413,40 @@ import { SITE_TITLE } from '../consts';
 
 						const result = await response.json() as { success: boolean; message?: string };
 						if (result.success) {
-							showMessage('Message sent successfully! I\'ll get back to you soon.', 'success');
+							showMessage('sent');
 							contactForm.reset();
 						} else {
-							showMessage(result.message || 'Failed to send message. Please try again.', 'error');
+							// Web3Forms' own message is English-only; log it, show ours.
+							console.error('Web3Forms error:', result.message);
+							showMessage('failed');
 						}
 					} catch (error) {
 						console.error('Error:', error);
-						showMessage('Network error. Please check your connection and try again.', 'error');
+						showMessage('network');
 					} finally {
 						setLoading(false);
 					}
 				}
-				
-				function showMessage(message: string, type: 'success' | 'error' | 'loading') {
-					if (!contactForm) return;
-					
-					// Remove existing messages
-					const existingMessage = document.querySelector('.form-message');
-					if (existingMessage) {
-						existingMessage.remove();
+
+				// Errors stay until the next submit; success fades after 5 seconds.
+				function showMessage(key: FormMessage | null) {
+					window.clearTimeout(hideMessageTimer);
+					for (const el of document.querySelectorAll<HTMLElement>('[data-form-message]')) {
+						el.hidden = el.dataset.formMessage !== key;
 					}
-					
-					// Create new message
-					const messageDiv = document.createElement('div');
-					messageDiv.className = `form-message ${type}`;
-					messageDiv.textContent = message;
-					
-					// Insert before form
-					const parent = contactForm.parentNode;
-					if (parent) {
-						parent.insertBefore(messageDiv, contactForm);
+					if (key === 'sent') {
+						hideMessageTimer = window.setTimeout(() => showMessage(null), 5000);
 					}
-					
-					// Auto-remove after 5 seconds
-					setTimeout(() => {
-						if (messageDiv.parentNode) {
-							messageDiv.remove();
-						}
-					}, 5000);
 				}
-				
+
 				function setLoading(loading: boolean) {
 					if (!submitBtn) return;
-					
+
 					submitBtn.disabled = loading;
 					submitBtn.setAttribute('aria-busy', String(loading));
 					submitBtn.classList.toggle('is-loading', loading);
 				}
-				
+
 				function isValidEmail(email: string) {
 					const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 					return emailRegex.test(email);

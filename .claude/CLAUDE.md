@@ -36,7 +36,7 @@ All design tokens live in `:root` / `.dark` in `src/styles/global.css`. **New co
 - **Radius**: `--radius-sm` (2px), `--radius` (8px), `--radius-md` (12px, cards), `--radius-lg` (16px), `--radius-pill`.
 - **Spacing**: `--space-1`…`--space-8` (0.25rem→4rem) for padding/margin/gap.
 - Each token has a `.dark` override where needed, so prefer tokens over writing your own `:global(.dark)` rule.
-- **Exceptions are intentional**: the scrapbook/polaroid components (Quiz, Recipe, Gallery, TwoImages) deliberately use fixed hex and off-scale spacing for their paper aesthetic — don't "tokenize" those.
+- **Exceptions are intentional**: the scrapbook/polaroid components (Quiz, Recipe, Gallery, TwoImages) deliberately use fixed hex and off-scale spacing for their paper aesthetic — don't "tokenize" those. Same for ThemeToggle (day/night sky) and the comic bubbles on the about page.
 - `box-sizing: border-box` is reset globally; don't re-declare per component.
 
 ## Type Declarations

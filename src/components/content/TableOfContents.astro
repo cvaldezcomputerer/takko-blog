@@ -1,0 +1,397 @@
+---
+// Table of contents: a torn notebook to-do list, fixed bottom-left (the like
+// button owns bottom-right). Starts minimized as a stitched sticker button whose
+// ring fills with reading progress; opens a checklist that ticks off sections
+// as they are passed. Becomes a bottom sheet under 768px.
+//
+// Scrapbook family (like Quiz, Recipe, Gallery): fixed hex for the paper look
+// is intentional, don't tokenize it.
+//
+// Entries are built in the browser from `[data-blog-content] > h2, > h3` by
+// cloning each heading's <T> spans, so they follow the language switcher with
+// no extra wiring. Heading ids come from the English slot at build time
+// (tools/heading-ids.mjs). Nothing is persisted. Hidden on posts with fewer
+// than 3 headings, and until the reader reaches the first one.
+import T from '../i18n/T.astro';
+---
+
+<nav id="toc" class="toc" data-open="false" data-shown="false" aria-label="Table of contents" hidden>
+	<div class="toc-sheet" id="toc-sheet">
+		<div class="toc-panel">
+			<div class="toc-head">
+				<T>
+					<span slot="en">contents</span>
+					<span slot="en_simple">In this post</span>
+					<span slot="ja">目次</span>
+				</T>
+			</div>
+			<ol class="toc-list"></ol>
+		</div>
+	</div>
+	<button
+		class="toc-btn"
+		type="button"
+		aria-expanded="false"
+		aria-controls="toc-sheet"
+		aria-label="Table of contents"
+	>
+		<svg class="toc-ring" viewBox="0 0 56 56" aria-hidden="true">
+			<circle cx="28" cy="28" r="25" pathLength="100"></circle>
+		</svg>
+		<!-- hand-drawn mini checklist: two ticked rows, one to go -->
+		<svg class="toc-ico toc-closed" viewBox="0 0 26 26" aria-hidden="true">
+			<g class="toc-ico-box">
+				<path d="M2.6 2.4 L8.3 2.9 L8 8.4 L2.3 8 Z" />
+				<path d="M2.4 10.6 L8.2 10.3 L8.5 15.8 L2.7 16.1 Z" />
+				<path d="M2.7 18.6 L8.4 18.9 L8.1 24.2 L2.4 23.9 Z" />
+			</g>
+			<g class="toc-ico-line">
+				<path d="M11.5 5.6 Q17 4.9 23.6 5.8" />
+				<path d="M11.4 13.4 Q16 13.9 21 13.1" />
+				<path d="M11.6 21.4 Q17.5 20.8 23.4 21.6" />
+			</g>
+			<g class="toc-ico-tick">
+				<path d="M3.4 4.6 L5.4 6.9 L9.6 0.8" />
+				<path d="M3.3 12.8 L5.3 15 L9.4 8.9" />
+			</g>
+		</svg>
+		<span class="toc-ico toc-opened" aria-hidden="true">✕</span>
+	</button>
+</nav>
+
+<style is:global>
+	[data-blog-content] > :is(h2, h3) { scroll-margin-top: 5rem; }
+
+	.toc {
+		--ink: #2f8f5b;
+		--pencil: #e07a3a;
+		--paper: #fdfcf8;
+		--paper-text: #333;
+		position: fixed;
+		left: var(--space-5);
+		bottom: var(--space-6);
+		/* below the like button (100) and the island (101) */
+		z-index: 99;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: var(--space-4);
+		opacity: 0;
+		visibility: hidden;
+		transform: translateY(8px);
+		transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s linear 0.25s;
+	}
+	.toc[hidden] { display: none; }
+	.toc[data-shown='true'] {
+		opacity: 1;
+		visibility: visible;
+		transform: none;
+		transition: opacity 0.25s ease, transform 0.25s ease;
+	}
+	.dark .toc { --paper: #e9e4d8; }
+
+	/* ---------- the torn notebook page ---------- */
+	.toc-sheet {
+		display: none;
+		position: relative;
+		transform: rotate(1deg);
+		transform-origin: bottom left;
+		filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.2));
+	}
+	.toc[data-open='true'] .toc-sheet { display: block; }
+	.toc-panel {
+		display: flex;
+		flex-direction: column;
+		width: 17rem;
+		/* keeps the top edge below the island when it is docked left at mid-screen */
+		max-height: calc(50vh - 11rem);
+		min-height: 10rem;
+		padding: 1.4rem var(--space-3) var(--space-3) 2.2rem;
+		color: var(--paper-text);
+		font-family: 'Patrick Hand', 'Bradley Hand', cursive;
+		background-color: var(--paper);
+		/* punched holes, then ruled lines every 26px; offset by the top padding so rows sit on them */
+		background-image:
+			radial-gradient(circle at 0.9rem 50%, var(--background) 5px, transparent 5.5px),
+			repeating-linear-gradient(transparent 0 25px, #d6e4f2 25px 26px);
+		background-size: 100% 26px, 100% 100%;
+		background-position: 0 1.4rem, 0 1.4rem;
+		/* the paper itself scrolls, so the lines move with the text */
+		background-attachment: local;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		scrollbar-width: thin;
+		scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+		clip-path: polygon(0 6px, 5% 1px, 11% 7px, 17% 2px, 24% 8px, 31% 3px, 37% 7px, 44% 0, 51% 6px, 58% 2px, 64% 8px, 71% 1px, 78% 6px, 85% 2px, 92% 7px, 100% 3px, 100% 100%, 0 100%);
+	}
+	.toc-head {
+		flex: none;
+		font-size: 1.3rem;
+		line-height: 26px;
+		text-decoration: underline wavy #e9a46b;
+		text-underline-offset: 4px;
+	}
+
+	/* ---------- checklist rows ---------- */
+	.toc-list { list-style: none; margin: 0; padding: 0 0 0 1.1rem; }
+	.toc-list li { margin: 0; }
+	.toc-list li.toc-h3 { padding-left: var(--space-4); }
+	.toc-list a {
+		position: relative;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		height: 26px;
+		color: inherit;
+		font-size: 1.02rem;
+		text-decoration: none;
+	}
+	.toc-list a:hover .toc-label,
+	.toc-list a:focus-visible .toc-label { color: var(--ink); }
+	.toc-label {
+		flex: 1;
+		min-width: 0;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		/* pen strike, drawn in once the section has been passed */
+		background: linear-gradient(currentColor, currentColor) no-repeat 0 58% / 0% 1.5px;
+		transition: background-size 0.35s ease, color 0.35s;
+	}
+	.toc-box {
+		flex: none;
+		position: relative;
+		width: 13px;
+		height: 13px;
+		border: 1.5px solid currentColor;
+		border-radius: 2px 4px 3px 4px;
+		transform: rotate(-4deg);
+		opacity: 0.75;
+	}
+	.toc-list li:nth-child(3n) .toc-box { transform: rotate(3deg); border-radius: 4px 2px 4px 3px; }
+	.toc-list li:nth-child(3n + 1) .toc-box { transform: rotate(-1deg); }
+	.toc-box svg { position: absolute; left: -1px; top: -7px; width: 20px; height: 20px; overflow: visible; }
+	.toc-box path {
+		fill: none;
+		stroke: var(--ink);
+		stroke-width: 2.6;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		stroke-dasharray: 30;
+		stroke-dashoffset: 30;
+		transition: stroke-dashoffset 0.35s ease;
+	}
+	.toc-list li.is-read .toc-box path { stroke-dashoffset: 0; }
+	.toc-list li.is-read .toc-label { background-size: 100% 1.5px; color: #8a8a8a; }
+	.toc-list li.is-active a::before {
+		content: '✎';
+		position: absolute;
+		left: -1.15rem;
+		color: var(--pencil);
+		font-size: 1rem;
+	}
+	.toc-list li.is-active .toc-label { color: #111; }
+
+	/* ---------- stitched sticker button ---------- */
+	.toc-btn {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: 56px;
+		height: 56px;
+		padding: 0;
+		border-radius: 50%;
+		color: var(--ink);
+		background: var(--paper);
+		border: 2px dashed #c9c2b2;
+		outline: 4px solid var(--paper);
+		box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.06), 0 4px 10px rgba(0, 0, 0, 0.2);
+		transform: rotate(-8deg);
+		font: inherit;
+		cursor: pointer;
+	}
+	.toc-btn:focus-visible { box-shadow: 0 0 0 5px var(--ink), 0 4px 10px rgba(0, 0, 0, 0.2); }
+	.toc-ring {
+		position: absolute;
+		inset: -6px;
+		width: calc(100% + 12px);
+		height: calc(100% + 12px);
+		transform: rotate(-90deg);
+		pointer-events: none;
+	}
+	.toc-ring circle {
+		fill: none;
+		stroke: var(--ink);
+		stroke-width: 3;
+		stroke-linecap: round;
+		stroke-dasharray: 100;
+		stroke-dashoffset: calc(100 - var(--toc-progress, 0) * 100);
+		transition: stroke-dashoffset 0.15s linear;
+	}
+	.toc-ico { position: relative; }
+	svg.toc-ico { width: 26px; height: 26px; overflow: visible; }
+	.toc-ico path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+	.toc-ico-box path { stroke: #6b665c; stroke-width: 1.4; }
+	.toc-ico-line path { stroke: #9a9488; stroke-width: 1.6; }
+	.toc-ico-tick path { stroke: var(--ink); stroke-width: 2.2; }
+	.toc-opened { display: none; font-family: 'Patrick Hand', cursive; font-size: 1.5rem; line-height: 1; }
+	.toc[data-open='true'] .toc-opened { display: inline; }
+	.toc[data-open='true'] .toc-closed { display: none; }
+
+	/* ---------- phones: the page becomes a bottom sheet ---------- */
+	@media (max-width: 767px) {
+		.toc { left: var(--space-4); bottom: var(--space-4); }
+		.toc[data-open='true'] .toc-sheet {
+			position: fixed;
+			left: var(--space-2);
+			right: var(--space-2);
+			bottom: 5.5rem;
+			transform: none;
+		}
+		.toc[data-open='true'] .toc-panel { width: auto; max-height: 60vh; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.toc,
+		.toc[data-shown='true'],
+		.toc-label,
+		.toc-box path,
+		.toc-ring circle { transition: none; }
+	}
+</style>
+
+<script>
+	const CHECK_SVG =
+		'<svg viewBox="0 0 20 20" aria-hidden="true"><path pathLength="30" d="M2 11 L7.5 16 L19 1"/></svg>';
+
+	let ac: AbortController | null = null;
+
+	function init() {
+		ac?.abort();
+		ac = new AbortController();
+		const { signal } = ac;
+
+		const root = document.getElementById('toc');
+		const content = document.querySelector('[data-blog-content]');
+		if (!root || !content) return;
+		const list = root.querySelector<HTMLOListElement>('.toc-list')!;
+		const btn = root.querySelector<HTMLButtonElement>('.toc-btn')!;
+		const panel = root.querySelector<HTMLElement>('.toc-panel')!;
+
+		const headings = Array.from(content.querySelectorAll<HTMLElement>(':scope > h2, :scope > h3'));
+		if (headings.length < 3) {
+			root.hidden = true;
+			return;
+		}
+		root.hidden = false;
+		const hasH2 = headings.some((h) => h.tagName === 'H2');
+		const isPhone = () => window.matchMedia('(max-width: 767px)').matches;
+		const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		function setOpen(open: boolean) {
+			root!.dataset.open = String(open);
+			btn.setAttribute('aria-expanded', String(open));
+			if (open) {
+				manualUntil = 0;
+				follow(false);
+			}
+		}
+
+		// The paper follows the reader: it keeps the active row centred as the
+		// page scrolls. Scrolling the paper yourself pauses that for a few
+		// seconds after your last touch, so it never fights you.
+		const MANUAL_PAUSE_MS = 3000;
+		let manualUntil = 0;
+		const markManual = () => (manualUntil = Date.now() + MANUAL_PAUSE_MS);
+		for (const type of ['wheel', 'touchmove', 'pointerdown', 'keydown'] as const) {
+			panel.addEventListener(type, markManual, { passive: true, signal });
+		}
+		function follow(smooth: boolean) {
+			if (root!.dataset.open !== 'true' || Date.now() < manualUntil) return;
+			const row = list.querySelector<HTMLElement>('li.is-active') ?? list.firstElementChild;
+			if (!(row instanceof HTMLElement)) return;
+			const rowBox = row.getBoundingClientRect();
+			const panelBox = panel.getBoundingClientRect();
+			const top = panel.scrollTop + rowBox.top - panelBox.top - (panel.clientHeight - rowBox.height) / 2;
+			panel.scrollTo({ top, behavior: smooth && !reduceMotion() ? 'smooth' : 'auto' });
+		}
+		setOpen(false);
+
+		list.replaceChildren();
+		headings.forEach((h, i) => {
+			if (!h.id) h.id = `section-${i + 1}`;
+			const li = document.createElement('li');
+			if (h.tagName === 'H3' && hasH2) li.className = 'toc-h3';
+			const a = document.createElement('a');
+			a.href = `#${h.id}`;
+			const box = document.createElement('span');
+			box.className = 'toc-box';
+			box.innerHTML = CHECK_SVG;
+			const label = document.createElement('span');
+			label.className = 'toc-label';
+			// Cloning the <T> spans keeps all three languages; the language
+			// switcher toggles these clones along with everything else.
+			h.childNodes.forEach((n) => label.appendChild(n.cloneNode(true)));
+			a.append(box, label);
+			a.addEventListener(
+				'click',
+				(e) => {
+					e.preventDefault();
+					h.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' });
+					history.replaceState(history.state, '', `#${h.id}`);
+					if (isPhone()) setOpen(false);
+				},
+				{ signal }
+			);
+			li.appendChild(a);
+			list.appendChild(li);
+		});
+
+		btn.addEventListener('click', () => setOpen(root!.dataset.open !== 'true'), { signal });
+		document.addEventListener(
+			'keydown',
+			(e) => {
+				if (e.key !== 'Escape' || root!.dataset.open !== 'true') return;
+				const hadFocus = root!.contains(document.activeElement);
+				setOpen(false);
+				if (hadFocus) btn.focus();
+			},
+			{ signal }
+		);
+
+		let lastActive = -2;
+		function onScroll() {
+			const line = window.innerHeight * 0.3;
+			let active = -1;
+			headings.forEach((h, i) => {
+				if (h.getBoundingClientRect().top <= line) active = i;
+			});
+
+			// Appears once the reader reaches the first heading, hides above it.
+			const shown = active >= 0;
+			if (root!.dataset.shown !== String(shown)) {
+				root!.dataset.shown = String(shown);
+				root!.inert = !shown;
+			}
+
+			const max = document.documentElement.scrollHeight - window.innerHeight;
+			const progress = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+			root!.style.setProperty('--toc-progress', progress.toFixed(3));
+
+			if (active === lastActive) return;
+			lastActive = active;
+			Array.from(list.children).forEach((li, i) => {
+				li.classList.toggle('is-active', i === active);
+				li.classList.toggle('is-read', i < active);
+				if (i === active) li.querySelector('a')?.setAttribute('aria-current', 'location');
+				else li.querySelector('a')?.removeAttribute('aria-current');
+			});
+			follow(true);
+		}
+		window.addEventListener('scroll', onScroll, { passive: true, signal });
+		window.addEventListener('resize', onScroll, { passive: true, signal });
+		onScroll();
+	}
+
+	document.addEventListener('astro:page-load', init);
+</script>

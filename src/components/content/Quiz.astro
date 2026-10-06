@@ -139,6 +139,9 @@ const { id, question, options, correctAnswerIndex } = Astro.props;
 					this.currentVotes[index] = currentCount + 1;
 					this.updateUI(this.currentVotes);
 					this.disableInteraction();
+				} else {
+					// Not counted (e.g. 429 rate limit): let them pick again.
+					this.buttons.forEach(b => b.disabled = false);
 				}
 			} catch (err) {
 				console.error('Vote failed', err);

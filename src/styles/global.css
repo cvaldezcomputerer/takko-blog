@@ -39,16 +39,16 @@ html {
   --box-shadow: 0 2px 6px rgba(var(--gray), 25%),
     0 8px 24px rgba(var(--gray), 33%), 0 16px 32px rgba(var(--gray), 33%);
 
-  /* PILL SPECIFIC COLORS */
-  
-  /* English: A slate-ish Ocean Blue (Matches your --gray tones but saturated) */
-  --pill-en: #0ea5e9; 
-  
-  /* Ez English: Your brand accent (already defined, but aliased here for clarity) */
-  --pill-ez: var(--accent); 
-  
-  /* Japanese: A warm Camellia/Rose (Not neon pink, more organic) */
-  --pill-jp: #f43f5e; 
+  /* Language pill colors. --pill-* is the active pill's fill (white text on
+     it must clear 4.5:1); --pill-*-text is the inactive label on --secondary.
+     In light mode one shade does both; dark mode splits them. */
+  --pill-en: #0369a1; /* ocean blue */
+  --pill-ez: #047857; /* deep green, a shade under --accent */
+  --pill-jp: #be123c; /* camellia rose */
+  --pill-en-text: var(--pill-en);
+  --pill-ez-text: var(--pill-ez);
+  --pill-jp-text: var(--pill-jp);
+  --on-pill: #ffffff;
 
   --base-font-size-desktop: 20px;
   --base-font-size-mobile: 18px;
@@ -112,9 +112,10 @@ html {
   --highlight: #404040; /* Dark highlight */
   --box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), 0 8px 24px rgba(0, 0, 0, 0.5), 0 16px 32px rgba(0, 0, 0, 0.5);
 
-  --pill-en: #38bdf8;
-  --pill-ez: #10b981; /* A slightly lighter green than your main accent for contrast */
-  --pill-jp: #fb7185;
+  /* Fills stay dark enough for white text; labels go light for the dark header. */
+  --pill-en-text: #38bdf8;
+  --pill-ez-text: #10b981;
+  --pill-jp-text: #fb7185;
 
   --accent-text: #10b981;
 

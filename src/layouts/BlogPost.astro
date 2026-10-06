@@ -4,6 +4,7 @@ import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import FormattedDate from '../components/content/FormattedDate.astro';
 import LikeButton from '../components/content/LikeButton.astro';
+import TableOfContents from '../components/content/TableOfContents.astro';
 import OptimizedImage from '../components/media/OptimizedImage.astro';
 import T from '../components/i18n/T.astro';
 import cameraManifest from '../data/camera-manifest.json';
@@ -96,7 +97,7 @@ const heroStyle = [
 ].filter(Boolean).join('; ') || undefined;
 ---
 
-<html lang="en">
+<html lang="en" data-random-hue>
 	<head>
 		<BaseHead
 			title={title}
@@ -106,10 +107,6 @@ const heroStyle = [
 			updatedDate={updatedDate}
 			{...(ogImage && { image: ogImage })}
 		/>
-		<script is:inline>
-			const hue = Math.floor(Math.random() * 360);
-			document.documentElement.style.setProperty('--theme-hue', hue.toString());
-		</script>
 		<style>
 			main {
 				width: 100%;
@@ -208,7 +205,7 @@ const heroStyle = [
 				align-items: center;
 				gap: 0.7rem;
 				padding: 0.6rem 0.9rem;
-				border-radius: 14px;
+				border-radius: var(--radius-md);
 				background: rgba(var(--gray-light), 0.5);
 				border: 1px solid rgba(var(--gray), 0.18);
 				color: rgb(var(--gray-dark));
@@ -223,6 +220,8 @@ const heroStyle = [
 				object-fit: cover;
 				border-radius: var(--radius-md);
 				flex-shrink: 0;
+				/* Light in both themes on purpose: the thumb is a transparent
+				   sticker of a (usually black) camera, which a dark chip would hide. */
 				background: rgba(255, 255, 255, 0.75);
 				border: 1px solid rgba(var(--gray), 0.18);
 			}
@@ -325,6 +324,8 @@ const heroStyle = [
 				border-radius: var(--radius);
 				box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
 			}
+			/* Fixed light pill, no .dark branch: it sits on the photo over the
+			   always-dark ::backdrop (see the camera rail note below). */
 			.lightbox-close {
 				position: absolute;
 				top: 0.5rem;
@@ -380,11 +381,9 @@ const heroStyle = [
 			.lightbox-camera__sticker[hidden] {
 				display: none;
 			}
-			/* #fbd0d0 is the like button's balloon: .heart-path is
-			   hsl(var(--theme-hue, 0), 85%, 90%), and --theme-hue is defined nowhere
-			   in global.css, so it has always painted that fallback pink. Hard-coded
-			   here rather than copied as a var() so the note can't drift if that
-			   token is ever actually defined.
+			/* #fbd0d0 is the like balloon's fallback pink, hsl(0, 85%, 90%). The
+			   balloon itself uses a random --theme-hue per visit (data-random-hue,
+			   set in BaseHead), so the note stays on the fixed pink on purpose.
 			   No border — a sticky note has a cut edge, not a drawn one. */
 			.lightbox-camera__note {
 				width: 100%;
@@ -409,6 +408,16 @@ const heroStyle = [
 				font-family: 'Courier New', Courier, monospace;
 				font-weight: 700;
 			}
+			/* only photos that kept their lens EXIF get this second label/name pair */
+			.lightbox-camera__lens {
+				display: flex;
+				flex-direction: column;
+				gap: 0.15rem;
+				margin-top: 0.35rem;
+			}
+			.lightbox-camera__lens[hidden] {
+				display: none;
+			}
 			/* below ~1280px the gutter beside the panel is narrower than the rail,
 			   so it drops under the photo and lies down flat */
 			@media (max-width: 1280px) {
@@ -428,10 +437,19 @@ const heroStyle = [
 					width: auto;
 					min-height: 0;
 					flex-direction: row;
+					flex-wrap: wrap;
 					align-items: baseline;
 					gap: 0.35rem;
 					padding: 0.45rem 0.7rem;
 					transform: rotate(-1.5deg);
+				}
+				/* a line of its own, so a phone never gets one long run-on note */
+				.lightbox-camera__lens {
+					flex-basis: 100%;
+					flex-direction: row;
+					align-items: baseline;
+					gap: 0.35rem;
+					margin-top: 0;
 				}
 			}
 			.post-outro {
@@ -477,11 +495,10 @@ const heroStyle = [
 			.post-outro__link:focus-visible {
 				outline: 2px solid var(--accent);
 				outline-offset: 2px;
-				border-radius: 4px;
+				border-radius: var(--radius-sm);
 			}
+			/* Background and border follow --gray-light / --gray, which flip in .dark. */
 			:global(.dark) .post-outro {
-				background: rgba(255,255,255,0.04);
-				border-color: rgba(255,255,255,0.12);
 				border-top-color: color-mix(in srgb, var(--accent) 60%, transparent);
 				box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14);
 			}
@@ -523,7 +540,12 @@ const heroStyle = [
 							{
 								updatedDate && (
 									<div class="last-updated-on">
-										Last updated on <FormattedDate date={updatedDate} />
+										<T fluid>
+											<span slot="en" lang="en">Last updated on</span>
+											<span slot="ja" lang="ja">最終更新：</span>
+											<span slot="en_simple" lang="en">Updated:</span>
+										</T>
+										<FormattedDate date={updatedDate} />
 									</div>
 								)
 							}
@@ -585,7 +607,7 @@ const heroStyle = [
 				}
 				<div class="prose" data-blog-content>
 					<slot />
-					<div class="post-outro" aria-label="Post ending actions">
+					<div class="post-outro">
 						<h3 class="post-outro__title">
 							<T fluid>
 								<span slot="en" lang="en">Thank you!</span>
@@ -629,6 +651,7 @@ const heroStyle = [
 				</div>
 			</article>
 			{slug && <LikeButton slug={slug} />}
+			<TableOfContents />
 		</main>
 		<dialog class="lightbox-dialog" id="post-image-lightbox" aria-label="Expanded image">
 			<div class="lightbox-content">
@@ -649,6 +672,16 @@ const heroStyle = [
 									</T>
 								</span>
 								<span class="lightbox-camera__name" data-camera-name />
+								<span class="lightbox-camera__lens" data-camera-lens hidden>
+									<span class="lightbox-camera__label">
+										<T>
+											<span slot="en" lang="en">Lens:</span>
+											<span slot="ja" lang="ja">レンズ:</span>
+											<span slot="en_simple" lang="en">Lens:</span>
+										</T>
+									</span>
+									<span class="lightbox-camera__name" data-camera-lens-name />
+								</span>
 							</div>
 						</div>
 						{/* is:inline so Astro leaves it alone instead of trying to bundle it as JS */}
@@ -681,6 +714,8 @@ const heroStyle = [
 					};
 					const cameraEl = dialog.querySelector<HTMLElement>('.lightbox-camera');
 					const cameraNameEl = dialog.querySelector<HTMLElement>('[data-camera-name]');
+					const cameraLensEl = dialog.querySelector<HTMLElement>('[data-camera-lens]');
+					const cameraLensNameEl = dialog.querySelector<HTMLElement>('[data-camera-lens-name]');
 					const cameraStickerEl = dialog.querySelector<HTMLImageElement>('.lightbox-camera__sticker');
 					const cameraJson = dialog.querySelector('[data-camera-manifest]')?.textContent;
 					let cameraData: CameraData | null = null;
@@ -715,6 +750,12 @@ const heroStyle = [
 						cameraEl.hidden = !model;
 						if (!model) return;
 						cameraNameEl.textContent = model;
+						// the fallback names a camera only, so a lens comes from EXIF or not at all
+						const lens = cameraData.byStem[stem]?.lens || '';
+						if (cameraLensEl && cameraLensNameEl) {
+							cameraLensEl.hidden = !lens;
+							cameraLensNameEl.textContent = lens;
+						}
 						// only some cameras have sticker art; the rest show the note alone
 						const sticker = cameraData.stickers[model];
 						if (cameraStickerEl) {

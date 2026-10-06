@@ -20,6 +20,8 @@
 </theme-toggle>
 
 <style>
+	/* Intentional exception to the global.css tokens: a day sky with a sun and
+	   a night sky with a moon, so the colors imitate those, not the site palette. */
 	button {
 		background-color: #bae6fd; 
 		border: 1px solid #7dd3fc;
@@ -30,7 +32,8 @@
 		align-items: center;
 		justify-content: center;
 		border-radius: 50%;
-		transition: all 0.3s ease;
+		transition: transform 0.3s ease, box-shadow 0.3s ease,
+			background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 		box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 	}
 	button:hover {

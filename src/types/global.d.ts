@@ -26,6 +26,7 @@ declare global {
     __settingsCogAfterSwapBound?: boolean;
     __settingsCogPageLoadBound?: boolean;
     __settingsCogLanguageBound?: boolean;
+    __settingsCogThemeBound?: boolean;
   }
 }
 

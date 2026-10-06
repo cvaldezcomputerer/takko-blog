@@ -38,15 +38,23 @@
     const isDark = theme === 'dark';
     document.documentElement.classList.toggle('dark', isDark);
 
-    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-    if (metaThemeColor) {
-      metaThemeColor.setAttribute('content', isDark ? '#212121' : '#FAFAFA');
-    }
+    // Browser bar matches the header (--secondary in global.css). Set every
+    // theme-color meta: BaseHead has one per prefers-color-scheme, and the
+    // user's choice must win over the OS scheme.
+    const themeColor = isDark ? '#2d2d2d' : '#f5f1eb';
+    document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => {
+      meta.setAttribute('content', themeColor);
+    });
   }
 
   function setTheme(theme) {
     safeSet(STORAGE_KEYS.theme, theme);
     applyTheme(theme);
+    document.dispatchEvent(
+      new CustomEvent('takko:settings-change', {
+        detail: { key: 'theme', value: theme },
+      }),
+    );
   }
 
   function toggleTheme() {

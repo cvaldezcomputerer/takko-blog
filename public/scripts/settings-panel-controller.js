@@ -8,6 +8,10 @@
 
   let panel = null;
   let backdrop = null;
+  // The cog that opened the sheet; focus goes back to it on close.
+  let lastTrigger = null;
+
+  const FOCUSABLE = 'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
   function hasLiveNodes() {
     return Boolean(panel && backdrop && panel.isConnected && backdrop.isConnected);
@@ -24,6 +28,8 @@
 
     panel = panels[0];
     panel.classList.add('settings-sheet');
+    // Closed sheet sits off-screen but stays rendered; keep it out of tab order.
+    panel.inert = !panel.classList.contains('is-open');
     if (panel.parentElement !== document.body) {
       document.body.appendChild(panel);
     }
@@ -45,17 +51,32 @@
     return { panel, backdrop };
   }
 
+  function isOpen() {
+    return Boolean(panel && panel.classList.contains('is-open'));
+  }
+
+  // A cog the user can actually reach (the island's is inert while hidden).
+  function focusableTrigger() {
+    if (lastTrigger && lastTrigger.isConnected && !lastTrigger.closest('[inert]')) return lastTrigger;
+    return document.querySelector('header .settings-cog');
+  }
+
   function closeAllPanels() {
+    const focusWasInside = Boolean(panel && panel.contains(document.activeElement));
+
     const wrappers = document.querySelectorAll('.settings-cog-wrapper');
     for (const wrapper of wrappers) {
       wrapper.classList.remove('is-open');
-      if (wrapper instanceof HTMLDetailsElement) {
-        wrapper.open = false;
-      }
+      wrapper.querySelector('.settings-cog')?.setAttribute('aria-expanded', 'false');
     }
 
-    if (panel) panel.classList.remove('is-open');
+    if (panel) {
+      panel.classList.remove('is-open');
+      panel.inert = true;
+    }
     if (backdrop) backdrop.classList.remove('is-open');
+
+    if (focusWasInside) focusableTrigger()?.focus({ preventScroll: true });
   }
 
   function openForWrapper(wrapper) {
@@ -72,7 +93,29 @@
 
     host.classList.add('is-open');
     nodes.panel.classList.add('is-open');
+    nodes.panel.inert = false;
     nodes.backdrop.classList.add('is-open');
+
+    lastTrigger = host.querySelector('.settings-cog');
+    lastTrigger?.setAttribute('aria-expanded', 'true');
+    nodes.panel.querySelector(FOCUSABLE)?.focus({ preventScroll: true });
+  }
+
+  // Keep Tab cycling inside the open sheet (it is aria-modal).
+  function trapTab(event) {
+    if (!isOpen() || !panel) return;
+    const items = [...panel.querySelectorAll(FOCUSABLE)];
+    if (!items.length) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    const active = document.activeElement;
+    if (event.shiftKey && (active === first || !panel.contains(active))) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && (active === last || !panel.contains(active))) {
+      event.preventDefault();
+      first.focus();
+    }
   }
 
   function bindTriggers() {
@@ -96,8 +139,10 @@
     window.__takkoSettingsPanelCloseBound = true;
 
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') {
+      if (event.key === 'Escape' && isOpen()) {
         closeAllPanels();
+      } else if (event.key === 'Tab') {
+        trapTab(event);
       }
     });
 

@@ -170,11 +170,24 @@ if (isArticle) {
 		}, 0);
 	}
 
+	// Pages that opt in with <html data-random-hue> (blog posts) get a random
+	// --theme-hue for the like balloon and scrapbook highlights. Set here because
+	// a view-transition swap replaces <html>'s style attribute.
+	function applyRandomHue() {
+		const root = document.documentElement;
+		if (!root.hasAttribute('data-random-hue')) return;
+		root.style.setProperty('--theme-hue', String(Math.floor(Math.random() * 360)));
+	}
+
 	// Apply immediately on load
 	applyTheme();
+	applyRandomHue();
 
 	// Apply on view transitions
-	document.addEventListener('astro:after-swap', applyTheme);
+	document.addEventListener('astro:after-swap', () => {
+		applyTheme();
+		applyRandomHue();
+	});
 </script>
 
 <script is:inline type="application/ld+json" set:html={JSON.stringify({

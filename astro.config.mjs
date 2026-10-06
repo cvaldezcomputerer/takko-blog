@@ -7,6 +7,9 @@ import path from "path";
 import fs from "fs";
 
 import cloudflare from "@astrojs/cloudflare";
+import { satteri } from "@astrojs/markdown-satteri";
+
+import headingIds from "./tools/heading-ids.mjs";
 
 import devEditor from "./tools/scripts/dev-editor-integration.mjs";
 
@@ -70,6 +73,11 @@ export default defineConfig({
         avif: { effort: 3 },
       },
     },
+  },
+  markdown: {
+    // MDX inherits this. Clean heading ids from the English slot, used by the
+    // table of contents links; see tools/heading-ids.mjs.
+    processor: satteri({ hastPlugins: [headingIds] }),
   },
   integrations: [
     devEditor(),

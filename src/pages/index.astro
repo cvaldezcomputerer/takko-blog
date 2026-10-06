@@ -189,6 +189,20 @@ function isOptimizedImageSrc(value: unknown): value is ImageMetadata | string {
 				}
 			}
 
+			@media (prefers-reduced-motion: reduce) {
+				ul li {
+					opacity: 1;
+					animation: none;
+				}
+				ul li :global(img),
+				ul li .placeholder-image {
+					transition: outline 0.3s ease;
+				}
+				ul li a:hover :global(img) {
+					transform: none;
+				}
+			}
+
 			@media (max-width: 1024px) {
 				.content-wrapper {
 					width: 100%;

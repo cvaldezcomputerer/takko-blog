@@ -66,7 +66,7 @@ import SettingsCog from '../settings/SettingsCog.astro';
 		z-index: 100;
 		position: sticky;
 		top: 0;
-		transition: all 0.3s ease;
+		transition: opacity 0.3s ease, transform 0.3s ease;
 	}
 	nav {
 		display: flex;
@@ -90,7 +90,7 @@ import SettingsCog from '../settings/SettingsCog.astro';
 	.logo-link :global(.takko-logo) {
 		height: 44px;
 		width: auto;
-		transition: all 0.3s ease;
+		transition: transform 0.3s ease;
 	}
 	.logo-link:hover :global(.takko-logo) {
 		transform: scale(1.1);
@@ -100,7 +100,6 @@ import SettingsCog from '../settings/SettingsCog.astro';
 		transform-origin: center;
 	}
 	.site-title-text {
-		transition: all 0.3s ease;
 		opacity: 1;
 		max-width: 400px;
 		overflow: hidden;
@@ -162,12 +161,6 @@ import SettingsCog from '../settings/SettingsCog.astro';
 		align-items: center;
 		border-left: 1px solid rgba(var(--gray), 25%);
 		padding-left: 1.5em;
-		transition: all 0.3s ease;
-		
-	}
-	.social-links {
-		display: flex;
-		
 	}
 	nav a {
 		padding: 1em 0.5em;
@@ -176,7 +169,7 @@ import SettingsCog from '../settings/SettingsCog.astro';
 	}
 	.internal-links :global(a) {
 		position: relative;
-		transition: all 0.3s ease;
+		transition: color 0.3s ease;
 		opacity: 1;
 		max-width: 200px;
 		overflow: hidden;
@@ -260,11 +253,6 @@ import SettingsCog from '../settings/SettingsCog.astro';
 			align-items: center;
 			width: 100%;
 		}
-		.social-links {
-            border-left: none; 
-            padding-left: 0;
-            margin-top: 0.5rem; 
-        }
         .internal-links :global(a) {
             padding: 0.75rem 1rem;
         }

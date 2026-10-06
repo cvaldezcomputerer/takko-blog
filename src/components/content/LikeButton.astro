@@ -14,7 +14,7 @@ const { slug } = Astro.props as Props;
     </svg>
     <span class="count">...</span>
   </div>
-  <div aria-label="Like this post" role="button" tabindex="0" class="cat-button">
+  <div aria-label="Like this post" aria-pressed="false" role="button" tabindex="0" class="cat-button">
    
     <svg class="cat-icon" viewBox="0 0 687 508" xmlns="http://www.w3.org/2000/svg">
       <g id="logo-anim" fill="currentColor">
@@ -48,8 +48,23 @@ const { slug } = Astro.props as Props;
     count: number;
   };
 
+  // One like per visitor per post, remembered in this browser (like the quiz's
+  // quiz_vote_<id>). The server cannot tell visitors apart; this keeps honest
+  // readers from inflating the count, and the API's rate limit handles the rest.
+  const likedKey = (slug: string) => `liked_post_${slug}`;
+  const hasLiked = (slug: string) => {
+    try { return localStorage.getItem(likedKey(slug)) === '1'; } catch { return false; }
+  };
+  const rememberLike = (slug: string, liked: boolean) => {
+    try {
+      if (liked) localStorage.setItem(likedKey(slug), '1');
+      else localStorage.removeItem(likedKey(slug));
+    } catch {}
+  };
+
   class LikeButton extends HTMLElement {
     isFlying = false;
+    handleScroll: (() => void) | null = null;
 
     constructor() {
       super();
@@ -57,10 +72,19 @@ const { slug } = Astro.props as Props;
       const slug = this.dataset.slug;
       const countSpan = this.querySelector<HTMLElement>('.count');
       if (!slug || !countSpan) return;
+      this.setLiked(hasLiked(slug));
 
       let lastScrollY = window.scrollY;
+      // Desktop: the button is fixed and hidden until you scroll down, so keep it
+      // out of tab order while hidden. Mobile: it sits in the page, always shown.
+      const desktop = window.matchMedia('(min-width: 768px)');
+      const syncInert = () => {
+        this.inert = desktop.matches
+          && (!this.classList.contains('is-visible') || this.classList.contains('fly-away'));
+      };
+      desktop.addEventListener('change', syncInert);
 
-      const handleScroll = () => {
+      this.handleScroll = () => {
         const currentScrollY = window.scrollY;
         const isAtTop = currentScrollY < 300;
         const isScrollingDown = currentScrollY > lastScrollY;
@@ -73,6 +97,7 @@ const { slug } = Astro.props as Props;
             this.isFlying = false; 
           }
           lastScrollY = currentScrollY;
+          syncInert();
           return;
         }
 
@@ -83,16 +108,17 @@ const { slug } = Astro.props as Props;
           this.classList.add('is-visible');
         }
         lastScrollY = currentScrollY;
+        syncInert();
       };
 
-      window.addEventListener('scroll', handleScroll, { passive: true });
-      handleScroll(); 
-
+      // Already liked: the cat still flies off, but nothing is counted again.
       const triggerLike = () => {
-        this.sendLike(slug, countSpan);
+        if (!this.classList.contains('is-liked')) this.sendLike(slug, countSpan);
         this.isFlying = true;
         this.classList.add('fly-away');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        syncInert();
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
       };
 
       this.addEventListener('click', triggerLike);
@@ -115,17 +141,46 @@ const { slug } = Astro.props as Props;
         .catch(e => console.error("Failed to fetch likes", e));
     }
 
+    // The scroll listener lives on window, so it is tied to the element being in
+    // the page; otherwise every view-transition navigation leaves one behind.
+    connectedCallback() {
+      if (!this.handleScroll) return;
+      window.addEventListener('scroll', this.handleScroll, { passive: true });
+      this.handleScroll();
+    }
+
+    disconnectedCallback() {
+      if (this.handleScroll) window.removeEventListener('scroll', this.handleScroll);
+    }
+
+    setLiked(liked: boolean) {
+      this.classList.toggle('is-liked', liked);
+      const control = this.querySelector('.cat-button');
+      control?.setAttribute('aria-pressed', String(liked));
+      control?.setAttribute('aria-label', liked ? 'You liked this post' : 'Like this post');
+    }
+
     sendLike(slug: string, countSpan: HTMLElement) {
-      const current = Number.parseInt(countSpan.textContent ?? '0', 10) || 0;
+      const previous = countSpan.textContent ?? '0';
+      const current = Number.parseInt(previous, 10) || 0;
       countSpan.textContent = String(current + 1);
+      this.setLiked(true);
+      rememberLike(slug, true);
 
       fetch(`/api/likes/${slug}`, { method: 'POST' })
         .then(async res => {
-          if (!res.ok) throw new Error(await res.text());
+          if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
           return res.json();
         })
         .then((data: LikeCountResponse) => { countSpan.textContent = String(data.count); })
-        .catch(e => console.error("Failed to update likes", e));
+        .catch(e => {
+          // Not counted (rate limited, offline, server error): undo, so the
+          // reader can try again later.
+          countSpan.textContent = previous;
+          this.setLiked(false);
+          rememberLike(slug, false);
+          console.error("Failed to update likes", e);
+        });
     }
   }
 
@@ -227,13 +282,16 @@ const { slug } = Astro.props as Props;
     overflow: visible;
   }
   .heart-path {
-    stroke: #888;
+    stroke: var(--text-muted);
     stroke-width: 1px;
     transition: fill 0.3s ease;
     fill: hsl(var(--theme-hue, 0), 85%, 90%);
   }
+  like-button.is-liked .heart-path {
+    fill: hsl(var(--theme-hue, 0), 85%, 72%);
+  }
   .balloon-string {
-    stroke: #888;
+    stroke: var(--text-muted);
     stroke-width: 1px;
     fill: none;
   }
@@ -244,6 +302,8 @@ const { slug } = Astro.props as Props;
     transform: translate(-50%, -50%);
     font-size: 0.75rem;
     font-weight: bold;
+    /* Fixed dark on purpose: the heart is pastel in both themes, and the text
+       tokens turn light in .dark. */
     color: #333;
     pointer-events: none;
   }
@@ -310,6 +370,19 @@ const { slug } = Astro.props as Props;
     .balloon-wrapper {
       width: 60px;
       height: 60px;
+    }
+  }
+
+  /* No sway, and the desktop entrance / fly-away become a plain fade. */
+  @media (prefers-reduced-motion: reduce) {
+    .cat-button {
+      animation: none;
+    }
+    like-button,
+    like-button.is-visible,
+    like-button.fly-away {
+      transform: none;
+      transition: opacity 0.4s ease;
     }
   }
 </style>

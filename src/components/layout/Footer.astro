@@ -58,7 +58,11 @@ const today = new Date();
 		</div>
 
 		<div class="copyright">
-			&copy; {today.getFullYear()} Cristian Valdez. All rights reserved.
+			<T fluid>
+				<span slot="en">&copy; {today.getFullYear()} Cristian Valdez. All rights reserved.</span>
+				<span slot="ja">&copy; {today.getFullYear()} Cristian Valdez. 無断転載を禁じます。</span>
+				<span slot="en_simple">&copy; {today.getFullYear()} Cristian Valdez.</span>
+			</T>
 		</div>
 	</div>
 </footer>
@@ -123,7 +127,7 @@ const today = new Date();
 		color: inherit; 
 		font-weight: 500;
 		opacity: 0.8;
-		transition: all 0.2s ease;
+		transition: opacity 0.2s ease, color 0.2s ease;
 	}
 
 	.footer-nav a:hover {
@@ -154,11 +158,11 @@ const today = new Date();
 	.social-icons a {
 		color: inherit; 
 		opacity: 0.7;
-		transition: all 0.2s ease;
+		transition: opacity 0.2s ease, color 0.2s ease, transform 0.2s ease;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 4px; 
+		padding: var(--space-1);
 	}
 
 	.social-icons a:hover {
