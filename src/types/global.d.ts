@@ -27,6 +27,7 @@ declare global {
     __settingsCogPageLoadBound?: boolean;
     __settingsCogLanguageBound?: boolean;
     __settingsCogThemeBound?: boolean;
+    __postContentsBound?: boolean;
   }
 }
 

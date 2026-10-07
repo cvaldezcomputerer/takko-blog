@@ -1,0 +1,109 @@
+---
+// The contents list at the top of a long post, between the hero and the first
+// paragraph. A static sibling of the floating TableOfContents: same torn
+// notebook page (it reuses that component's global .toc-* classes, so both
+// must render on the page), but always open, main sections only, and rows are
+// marked with a pen dash instead of a checkbox, since nothing gets ticked here. Rendered at build time from src/lib/post-toc.js, so nothing
+// shifts on load and the links work without JS.
+//
+// Scrapbook family: fixed hex for the paper is intentional, don't tokenize it.
+import T from '../i18n/T.astro';
+import type { TocEntry } from '../../lib/post-toc.js';
+
+interface Props {
+	entries: TocEntry[];
+}
+
+const { entries } = Astro.props as Props;
+const hasH2 = entries.some((e) => e.depth === 2);
+---
+
+{
+	entries.length > 0 && (
+		<nav class="toc-inline" aria-label="Contents">
+			<div class="toc-inline-sheet">
+				<div class="toc-panel">
+					<div class="toc-head">
+						<T>
+							<span slot="en">contents</span>
+							<span slot="en_simple">In this post</span>
+							<span slot="ja">目次</span>
+						</T>
+					</div>
+					<ol class="toc-list">
+						{entries.map((e) => (
+							<li class:list={[e.depth === 3 && hasH2 && 'toc-h3']}>
+								<a href={`#${e.id}`} data-toc-inline-link>
+									<span class="toc-dash" aria-hidden="true" />
+									<span class="toc-label">
+										<T fluid>
+											<span slot="en">{e.slots.en}</span>
+											<span slot="en_simple">{e.slots.en_simple || e.slots.en}</span>
+											<span slot="ja">{e.slots.ja || e.slots.en}</span>
+										</T>
+									</span>
+								</a>
+							</li>
+						))}
+					</ol>
+				</div>
+			</div>
+		</nav>
+	)
+}
+
+<style>
+	.toc-inline {
+		width: 100%;
+		max-width: 720px;
+		margin: 0 auto;
+		padding: 0 1em;
+	}
+	/* shadow on a wrapper: the panel's torn-edge clip-path would cut it off */
+	.toc-inline-sheet {
+		width: min(100%, 26rem);
+		margin: 0 auto var(--space-6);
+		transform: rotate(-0.6deg);
+		filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.15));
+	}
+	/* the floating page is a fixed-height scroller; this one is just paper */
+	.toc-inline .toc-panel {
+		width: 100%;
+		max-height: none;
+		min-height: 0;
+		overflow: visible;
+	}
+	/* a short hand-drawn pen stroke, tilted a little differently per row */
+	.toc-dash {
+		flex: none;
+		width: 0.7rem;
+		height: 2px;
+		border-radius: var(--radius-pill);
+		background: var(--ink);
+		opacity: 0.8;
+		transform: rotate(-6deg);
+	}
+	li:nth-child(3n) .toc-dash { transform: rotate(4deg); width: 0.6rem; }
+	li:nth-child(3n + 1) .toc-dash { transform: rotate(-2deg); }
+</style>
+
+<script>
+	// Same feel as the floating list: smooth scroll, and the hash is replaced
+	// rather than pushed, so Back still leaves the post.
+	function onClick(e: MouseEvent) {
+		const link = (e.target as Element | null)?.closest<HTMLAnchorElement>('a[data-toc-inline-link]');
+		if (!link) return;
+		const id = decodeURIComponent(link.hash.slice(1));
+		const target = document.getElementById(id);
+		if (!target) return;
+		e.preventDefault();
+		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+		history.replaceState(history.state, '', `#${id}`);
+	}
+
+	if (!window.__postContentsBound) {
+		window.__postContentsBound = true;
+		document.addEventListener('click', onClick);
+	}
+</script>

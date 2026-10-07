@@ -25,8 +25,8 @@ function englishText(node) {
   return (node.children ?? []).map(englishText).join("");
 }
 
-/** @param {string} text */
-function slugify(text) {
+/** Also used by src/lib/post-toc.js to predict these ids. @param {string} text */
+export function slugify(text) {
   return text
     .trim()
     .toLowerCase()

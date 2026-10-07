@@ -44,6 +44,8 @@ const { slug } = Astro.props as Props;
 </like-button>
 
 <script>
+  import { FLOATING_SHOW_AFTER } from '../../lib/floating-ui.js';
+
   type LikeCountResponse = {
     count: number;
   };
@@ -86,7 +88,7 @@ const { slug } = Astro.props as Props;
 
       this.handleScroll = () => {
         const currentScrollY = window.scrollY;
-        const isAtTop = currentScrollY < 300;
+        const isAtTop = currentScrollY < FLOATING_SHOW_AFTER;
         const isScrollingDown = currentScrollY > lastScrollY;
 
         if (this.isFlying) {

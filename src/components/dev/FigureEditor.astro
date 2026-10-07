@@ -1,0 +1,53 @@
+---
+// One image in the dev editor: thumbnail, src/alt, editable caption, and
+// ↑/↓ buttons that reorder it within its `group` (the post body, or a single
+// Gallery). The page script reads data-start/data-end/data-find to build the
+// move on save.
+import { slotFields, captionPlainField } from "../../lib/dev/parse-post.js";
+import SlotEditor from "./SlotEditor.astro";
+
+/** @typedef {import('../../lib/dev/parse-post.js').FigureBlock} FigureBlock */
+/** @typedef {{ type: "image", src: string, alt: string, raw: string, start: number }} ImageBlock */
+/**
+ * @type {{ block: FigureBlock | ImageBlock, ref: string, capRef: string | null, group: string,
+ *   imgUrl: string | null, href: string | null, tag?: string }}
+ */
+const { block, ref, capRef, group, imgUrl, href, tag = "image" } = Astro.props;
+
+const caption = block.type === "figure" ? block.caption : undefined;
+const captionText = block.type === "figure" ? block.captionText : undefined;
+const captionFields = caption ? slotFields(block.raw, block.start) : [];
+const plainCaption = captionText !== undefined ? captionPlainField(block.raw, block.start) : null;
+const hasCaption = captionFields.length > 0 || plainCaption !== null;
+---
+
+<div
+  class="block figure"
+  data-img
+  data-group={group}
+  data-start={block.start}
+  data-end={block.start + block.raw.length}
+  data-find={block.raw}
+>
+  <div class="tag">
+    {tag}
+    <span class="ref">{ref}</span>
+    {hasCaption && capRef && <span class="ref cap-ref">{capRef}</span>}
+    {href && <a class="jump" href={href} target="takko-preview" title="Open this spot in the post">&#8599;</a>}
+    <span class="img-move">
+      <button type="button" class="move-up" title="Move image up">&uarr;</button>
+      <button type="button" class="move-down" title="Move image down">&darr;</button>
+    </span>
+  </div>
+  <div class="body">
+    <figure class="fig">
+      {imgUrl && <img src={imgUrl} alt={block.alt ?? ""} loading="lazy" />}
+      <div class="fig-meta">
+        <div class="src">{block.src}</div>
+        {block.alt && <div class="cap">alt: {block.alt}</div>}
+        {captionFields.length > 0 && <SlotEditor fields={captionFields} />}
+        {plainCaption && <SlotEditor fields={[plainCaption]} />}
+      </div>
+    </figure>
+  </div>
+</div>

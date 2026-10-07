@@ -1,39 +1,57 @@
-// Pure string parsing for the dev editor's read-only viewer.
+// Pure string parsing for the dev editor (and check-post).
 // No Node/browser dependencies, so it is safe to import anywhere.
 //
 // This is intentionally a *pragmatic* block splitter, not a real MDX AST.
 // It recognizes the constructs this blog actually uses (frontmatter, imports,
 // <T> translation blocks, headings, <figure>/images, and known components) and
 // falls back to raw text for anything it does not understand. Good enough to
-// render an at-a-glance view of a post; it never rewrites the file.
+// render an at-a-glance view of a post. It never rewrites the file itself, but
+// every block and edit field carries its character offset in the
+// CRLF-normalized source, so the save endpoint can target the exact spot even
+// when the same text appears several times.
 
 /**
  * @typedef {{ en?: string, ja?: string, en_simple?: string }} Slots
+ * @typedef {{ type: "figure", src?: string, alt?: string, caption?: Slots, captionText?: string, raw: string, start: number }} FigureBlock
  * @typedef {(
- *   | { type: "imports", raw: string }
- *   | { type: "heading", level: number, slots?: Slots, text?: string, raw: string }
- *   | { type: "t", slots: Slots, raw: string }
- *   | { type: "figure", src?: string, alt?: string, caption?: Slots, captionText?: string, raw: string }
- *   | { type: "image", src: string, alt: string, raw: string }
- *   | { type: "component", name: string, raw: string }
- *   | { type: "paragraph", text: string, raw: string }
- *   | { type: "raw", raw: string }
+ *   | { type: "imports", raw: string, start: number }
+ *   | { type: "heading", level: number, slots?: Slots, text?: string, raw: string, start: number }
+ *   | { type: "t", slots: Slots, raw: string, start: number }
+ *   | FigureBlock
+ *   | { type: "image", src: string, alt: string, raw: string, start: number }
+ *   | { type: "component", name: string, raw: string, start: number, figures?: FigureBlock[] }
+ *   | { type: "paragraph", text: string, raw: string, start: number }
+ *   | { type: "raw", raw: string, start: number }
  * )} Block
+ * @typedef {{ start: number, end: number, line: string, value: string }} FrontmatterLine
  */
 
 /**
  * Split raw MDX file contents into frontmatter + an ordered list of blocks.
+ * Offsets (`start`, and the ones on frontmatter lines) index into the source
+ * with CRLF normalized to LF.
  * @param {string} source
- * @returns {{ frontmatter: string, fields: Record<string, string>, blocks: Block[] }}
+ * @returns {{ frontmatter: string, fields: Record<string, string>, blocks: Block[],
+ *   fmLines: Record<string, FrontmatterLine>, fmClose: number }}
  */
 export function parsePost(source) {
   const normalized = source.replace(/\r\n/g, "\n");
   const fmMatch = normalized.match(/^---\n([\s\S]*?)\n---\n?/);
   const frontmatter = fmMatch ? fmMatch[1] : "";
   const fields = parseFrontmatterFields(frontmatter);
-  const body = fmMatch ? normalized.slice(fmMatch[0].length) : normalized;
+  const fmLines = frontmatterLines(frontmatter, 4); // body starts after "---\n"
+  // Offset of the "\n---" that closes the frontmatter (where new keys go).
+  const fmClose = fmMatch ? 4 + frontmatter.length : -1;
+  const bodyStart = fmMatch ? fmMatch[0].length : 0;
+  const body = normalized.slice(bodyStart);
 
   const lines = body.split("\n");
+  /** Source offset of each line's first character. */
+  const lineAt = [];
+  for (let k = 0, off = bodyStart; k < lines.length; k++) {
+    lineAt.push(off);
+    off += lines[k].length + 1;
+  }
   /** @type {Block[]} */
   const blocks = [];
   let i = 0;
@@ -51,7 +69,7 @@ export function parsePost(source) {
     if (/^import\s/.test(line)) {
       const start = i;
       while (i < lines.length && /^import\s/.test(lines[i])) i++;
-      blocks.push({ type: "imports", raw: lines.slice(start, i).join("\n") });
+      blocks.push({ type: "imports", raw: lines.slice(start, i).join("\n"), start: lineAt[start] });
       continue;
     }
 
@@ -63,8 +81,8 @@ export function parsePost(source) {
       const slots = extractSlots(rest);
       blocks.push(
         hasSlots(slots)
-          ? { type: "heading", level, slots, raw: line }
-          : { type: "heading", level, text: cleanInline(rest), raw: line }
+          ? { type: "heading", level, slots, raw: line, start: lineAt[i] }
+          : { type: "heading", level, text: cleanInline(rest), raw: line, start: lineAt[i] }
       );
       i++;
       continue;
@@ -73,7 +91,7 @@ export function parsePost(source) {
     // Multi-line <T> translation block.
     if (/^<T(\s|>)/.test(line.trim())) {
       const { raw, next } = collectUntilClose(lines, i, "T");
-      blocks.push({ type: "t", slots: extractSlots(raw), raw });
+      blocks.push({ type: "t", slots: extractSlots(raw), raw, start: lineAt[i] });
       i = next;
       continue;
     }
@@ -81,16 +99,24 @@ export function parsePost(source) {
     // <figure> ... </figure> with an image + optional caption.
     if (/^<figure(\s|>)/.test(line.trim())) {
       const { raw, next } = collectUntilClose(lines, i, "figure");
-      blocks.push(parseFigure(raw));
+      blocks.push(parseFigure(raw, lineAt[i]));
       i = next;
       continue;
     }
 
-    // Known capitalized components (RecipeIngredients, Gallery, etc.). Shown raw.
+    // Known capitalized components (RecipeIngredients, Gallery, etc.). A
+    // Gallery's slotted <figure>s are parsed too so the editor can show them.
     const comp = line.trim().match(/^<([A-Z][A-Za-z0-9]*)(\s|\/|>|$)/);
     if (comp) {
       const { raw, next } = collectComponent(lines, i, comp[1]);
-      blocks.push({ type: "component", name: comp[1], raw });
+      /** @type {Block} */
+      const block = { type: "component", name: comp[1], raw, start: lineAt[i] };
+      if (comp[1] === "Gallery") {
+        block.figures = [...raw.matchAll(/<figure(?:\s[^>]*)?>[\s\S]*?<\/figure>/g)].map((m) =>
+          parseFigure(m[0], block.start + (m.index ?? 0))
+        );
+      }
+      blocks.push(block);
       i = next;
       continue;
     }
@@ -98,7 +124,7 @@ export function parsePost(source) {
     // Standalone markdown image.
     const img = line.trim().match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
     if (img) {
-      blocks.push({ type: "image", alt: img[1], src: img[2], raw: line });
+      blocks.push({ type: "image", alt: img[1], src: img[2], raw: line, start: lineAt[i] });
       i++;
       continue;
     }
@@ -107,10 +133,10 @@ export function parsePost(source) {
     const start = i;
     while (i < lines.length && lines[i].trim() !== "") i++;
     const raw = lines.slice(start, i).join("\n");
-    blocks.push({ type: "paragraph", text: cleanInline(raw), raw });
+    blocks.push({ type: "paragraph", text: cleanInline(raw), raw, start: lineAt[start] });
   }
 
-  return { frontmatter, fields, blocks };
+  return { frontmatter, fields, blocks, fmLines, fmClose };
 }
 
 /**
@@ -148,13 +174,13 @@ function collectComponent(lines, start, name) {
   return { raw: lines.slice(start, i).join("\n"), next: i };
 }
 
-/** @param {string} raw @returns {Block} */
-function parseFigure(raw) {
+/** @param {string} raw @param {number} start @returns {FigureBlock} */
+function parseFigure(raw, start) {
   const img = raw.match(/!\[([^\]]*)\]\(([^)]+)\)/);
   const captionMatch = raw.match(/<figcaption>([\s\S]*?)<\/figcaption>/);
   const captionSlots = captionMatch ? extractSlots(captionMatch[1]) : {};
-  /** @type {Block} */
-  const block = { type: "figure", raw };
+  /** @type {FigureBlock} */
+  const block = { type: "figure", raw, start };
   if (img) { block.alt = img[1]; block.src = img[2]; }
   if (hasSlots(captionSlots)) block.caption = captionSlots;
   else if (captionMatch) block.captionText = cleanInline(captionMatch[1]);
@@ -183,45 +209,50 @@ function hasSlots(s) {
 }
 
 /**
- * @typedef {{ key: string, find: string, prefix: string, suffix: string, core: string }} EditField
- * An exact, lossless edit target: `find` is the original element verbatim,
- * `prefix`/`suffix` wrap the editable `core` (the trimmed inner text), and
- * leading/trailing whitespace lives in prefix/suffix so only the words the user
- * touches change. Replacement = prefix + newCore + suffix.
+ * @typedef {{ key: string, find: string, prefix: string, suffix: string, core: string, start: number, end: number }} EditField
+ * An exact, lossless edit target: `find` is the original element verbatim and
+ * sits at [start, end) in the normalized source. `prefix`/`suffix` wrap the
+ * editable `core` (the trimmed inner text), and leading/trailing whitespace
+ * lives in prefix/suffix so only the words the user touches change.
+ * Replacement = prefix + newCore + suffix.
  */
 
-/** @param {string} open @param {string} key @param {string} inner @param {string} close @returns {EditField} */
-function makeField(open, key, inner, close) {
+/**
+ * @param {string} open @param {string} key @param {string} inner @param {string} close
+ * @param {number} start @returns {EditField}
+ */
+function makeField(open, key, inner, close, start) {
   const lead = inner.match(/^\s*/)?.[0] ?? "";
   const trail = inner.match(/\s*$/)?.[0] ?? "";
   const core = inner.slice(lead.length, inner.length - trail.length);
-  return { key, find: open + inner + close, prefix: open + lead, suffix: trail + close, core };
+  const find = open + inner + close;
+  return { key, find, prefix: open + lead, suffix: trail + close, core, start, end: start + find.length };
 }
 
 /**
  * Editable <span slot="..."> fields inside a raw block (T block, heading, or
- * a figcaption that uses <T> slots).
- * @param {string} raw @returns {EditField[]}
+ * a figcaption that uses <T> slots). `base` is the block's source offset.
+ * @param {string} raw @param {number} [base] @returns {EditField[]}
  */
-export function slotFields(raw) {
+export function slotFields(raw, base = 0) {
   /** @type {EditField[]} */
   const fields = [];
   const re = /(<span slot="(en|ja|en_simple)">)([\s\S]*?)(<\/span>)/g;
   let m;
   while ((m = re.exec(raw)) !== null) {
-    fields.push(makeField(m[1], m[2], m[3], m[4]));
+    fields.push(makeField(m[1], m[2], m[3], m[4], base + m.index));
   }
   return fields;
 }
 
 /**
  * Editable plain-text <figcaption> (one with no <T> slots inside).
- * @param {string} raw @returns {EditField | null}
+ * @param {string} raw @param {number} [base] @returns {EditField | null}
  */
-export function captionPlainField(raw) {
+export function captionPlainField(raw, base = 0) {
   const m = raw.match(/(<figcaption>)([\s\S]*?)(<\/figcaption>)/);
   if (!m || /<span slot=/.test(m[2])) return null;
-  return makeField(m[1], "caption", m[2], m[3]);
+  return makeField(m[1], "caption", m[2], m[3], base + (m.index ?? 0));
 }
 
 /**
@@ -238,6 +269,25 @@ function cleanInline(html) {
     .replace(/<\/?[a-zA-Z][^>]*>/g, "") // any remaining tags
     .replace(/\s+/g, " ")
     .trim();
+}
+
+/**
+ * Each top-level `key: value` frontmatter line with its source range (the line
+ * itself, no newline). `offset` is where the frontmatter text starts.
+ * @param {string} frontmatter @param {number} offset @returns {Record<string, FrontmatterLine>}
+ */
+function frontmatterLines(frontmatter, offset) {
+  /** @type {Record<string, FrontmatterLine>} */
+  const out = {};
+  let off = offset;
+  for (const line of frontmatter.split("\n")) {
+    const m = line.match(/^([A-Za-z_][A-Za-z0-9_]*):\s*(.*)$/);
+    if (m) {
+      out[m[1]] = { start: off, end: off + line.length, line, value: m[2].replace(/^["']|["']$/g, "").trim() };
+    }
+    off += line.length + 1;
+  }
+  return out;
 }
 
 /**

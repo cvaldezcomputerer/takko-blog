@@ -83,10 +83,18 @@ http://localhost:4321/dev/editor/<slug>
 
 (Port may differ — Astro bumps to 4322+ if 4321 is taken; check the dev output.)
 
-- Write the **English** (`en`) and **Simple English** (`en_simple`) slots, plus
-  `title_en_simple` in frontmatter. Each `<T>` block, heading, and caption is an
-  editable box; reorder images with the ↑/↓ buttons; press **Save changes** to
-  write back to the `.mdx`.
+- Write the **English** (`en`) and **Simple English** (`en_simple`) slots. Each
+  `<T>` block, heading, and caption (Gallery captions too) is an editable box.
+  The frontmatter panel at the top edits `title`, `title_en_simple`,
+  `description`, `pubDate` and the `draft` flag. Reorder images with ↑/↓: body
+  images among themselves, Gallery images within their Gallery. Save with
+  **Save changes** or ⌘S; the page warns before closing with unsaved edits.
+- Boxes with an empty `en`/`en_simple`, or a TKTK/TODO/FIXME/XXX marker, are red;
+  the top bar counts them and **next ↓** jumps to the next one. Each block's ↗
+  opens that spot on the real post.
+- Untick **Show Simple** to hide every `en_simple` row (and `title_en_simple`)
+  while settling the plain English first. The red count and **next ↓** then skip
+  Simple boxes. The setting is remembered across reloads.
 - Leave **Japanese (ja) for last** (step 5).
 - Add more `<T>` blocks, headings, and `<figure>` images by editing the `.mdx`
   (the editor reads/writes existing structure; new blocks are added in the file).
@@ -95,12 +103,14 @@ http://localhost:4321/dev/editor/<slug>
   language switching, `<Explain>` tooltips, `Quiz`, and the hero only appear on
   the real page.
 
-> **Editing the file while the editor tab is open:** the editor captures the
-> exact text of each box when the page loads and saves by find/replace, so if
-> Claude (or anything else) edits the `.mdx` in the meantime, **Save changes**
-> fails with *"target not found (file changed since load?)"* and your unsaved
-> edits are lost. Save or discard in the editor **before** handing the file over,
-> then reload the editor page afterwards.
+> **Editing the file while the editor tab is open:** each box saves to its exact
+> position in the file, checked against the text it had when the page loaded.
+> When Claude (or anything else) edits the `.mdx`, Vite reloads the editor tab
+> (a "Leave site?" prompt appears first if there are unsaved edits). If a save
+> still meets a changed file, text that was unique follows its new position, and
+> anything ambiguous is refused with *"no longer matches the file"* rather than
+> written into a look-alike box. Save in the editor **before** handing the file
+> over.
 
 Keep `en` natural, not over-literal. For the `en_simple` slot, **read
 `.claude/SIMPLE_ENGLISH_STYLE.md` first** — it is the source of truth for the
@@ -121,8 +131,8 @@ prop shapes (e.g. `chili-con-carne-easy.mdx` for `RecipeIngredients`,
 Components like `Quiz` — and other showcase pieces the author likes to drop in —
 are **optional extras**. The author decides whether a given post gets one and
 writes/designs the content themselves, so **don't add or fill these in on your
-own**. Whether to include them is **confirmed with the author near the end**, as
-one of the last steps before publishing (see step 6).
+own**. Whether to include them is settled by the components question at the
+start of step 6.
 
 ### Explain hints (tricky vocabulary)
 
@@ -148,12 +158,22 @@ one of the last steps before publishing (see step 6).
   literally**, tracking the English sentence-by-sentence so JA↔EN can be mapped.
   The exception is **idioms and figurative expressions** — render those
   **naturally**, since a word-for-word version would confuse.
-- The editor dims `ja` rows since they are generated last; they are still
-  editable there.
+- The editor does not edit Japanese: `ja` rows (and `title_ja`) are read-only
+  and hidden unless **Show Japanese** is ticked. Edit `ja` in the `.mdx`.
 
 ## 6. QA and publish
 
-Run the post checker first — it covers most of this list mechanically:
+Start with the **components question**: ask the author about each of these by
+name, then wait for the answers.
+
+- **Explain hints**: propose a list of `phrase → meaning` pairs from the `en`
+  text that pass the step 4 rules. Add only the ones the author approves.
+- **Quiz** and other optional extras: ask whether the post gets one, and where.
+  The author writes the question and options.
+
+This step is done when the author has answered both. "No" counts as an answer.
+
+Next, run the post checker. It covers most of the rest of this list mechanically:
 
 ```
 npm run check:post <slug>
@@ -178,8 +198,6 @@ Then:
 - Reread the post in the browser at `/blog/<slug>/` in all three languages —
   the checker catches empty and broken, not wrong.
 - Verify only intended files changed (`git status`).
-- **Confirm optional extras with the author** — ask whether this post should get
-  a `Quiz` or other author-driven extra (see step 4) before finishing.
 - Refresh `pubDate` if the post was drafted over several days.
 - **Remove `draft: true`**, then re-run `npm run check:post <slug>` and confirm
   the post now appears on `/` and in `/rss.xml`.

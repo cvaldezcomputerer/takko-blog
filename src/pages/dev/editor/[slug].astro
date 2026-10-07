@@ -1,10 +1,11 @@
 ---
-// Dev-only structured view of one post. See sibling index.astro for the
+// Dev-only structured editor for one post. See sibling index.astro for the
 // dev-gating / bundling rationale.
 // NOTE: static imports must stay above the DEV guard; the Astro compiler
 // mangles import statements that appear after top-level executable code.
-import { parsePost, slotFields, captionPlainField } from "../../../lib/dev/parse-post.js";
+import { parsePost, slotFields } from "../../../lib/dev/parse-post.js";
 import SlotEditor from "../../../components/dev/SlotEditor.astro";
+import FigureEditor from "../../../components/dev/FigureEditor.astro";
 
 export const prerender = false;
 
@@ -20,18 +21,89 @@ if (!raw) {
   return new Response("Post not found", { status: 404 });
 }
 
-const { fields, blocks } = parsePost(raw);
+const { fields, blocks, fmLines, fmClose } = parsePost(raw);
 const title = fields.title ?? slug;
+const postUrl = `/blog/${slug}`;
+
+/**
+ * Link that opens the post scrolled to `text` (a text fragment). Repeated
+ * text, like two identical placeholder captions, goes to the first match.
+ * @param {string | undefined} text
+ */
+function postHref(text) {
+  if (!text) return null;
+  const words = text.split(/\s+/).slice(0, 8).join(" ");
+  return `${postUrl}#:~:text=${encodeURIComponent(words).replace(/-/g, "%2D")}`;
+}
+
+/** @param {string | undefined} src */
+const imgUrl = (src) => (src ? assetFsUrl(src) : null);
+
+// Images passed to components as props (TwoImages) are imported by name.
+/** @type {Record<string, string>} */
+const importPaths = {};
+for (const block of blocks) {
+  if (block.type !== "imports") continue;
+  for (const m of block.raw.matchAll(/^import\s+(\w+)\s+from\s+["']([^"']+)["']/gm)) {
+    importPaths[m[1]] = m[2];
+  }
+}
+/** @param {string} raw @param {string} prop */
+const propOf = (raw, prop) =>
+  raw.match(new RegExp(`\\b${prop}=\\{\\s*(\\w+)\\s*\\}`))?.[1] ??
+  raw.match(new RegExp(`\\b${prop}="([^"]*)"`))?.[1];
+
+// Frontmatter fields editable in the top panel. Values are written back as
+// JSON strings, which YAML reads as double-quoted scalars.
+/** @param {string} key */
+function fmField(key) {
+  const line = fmLines[key];
+  if (!line) return null;
+  const rawValue = line.line.slice(line.line.indexOf(":") + 1).trim();
+  if (/^[>|]/.test(rawValue)) return null; // block scalar: edit in the file
+  let value = line.value;
+  if (/^".*"$/.test(rawValue)) {
+    try { value = JSON.parse(rawValue); } catch { /* keep the loose read */ }
+  }
+  return { key, value, start: line.start, end: line.end, find: line.line };
+}
+const fmText = [
+  { label: "title", key: "title" },
+  { label: "simple", key: "title_en_simple" },
+  { label: "desc", key: "description", multiline: true },
+].map((f) => ({ ...f, field: fmField(f.key) }));
+const pubDate = fmField("pubDate");
+const today = new Date().toISOString().slice(0, 10);
+
+// The draft toggle swaps one span of text: the existing `draft:` line (with
+// the newline before it), or else the closing "\n---" fence it goes above.
+const draftLine = fmLines.draft;
+const draft = draftLine
+  ? {
+      start: draftLine.start - 1,
+      end: draftLine.end,
+      checked: draftLine.value === "true",
+      on: "\ndraft: true",
+      off: draftLine.value === "true" ? "" : "\n" + draftLine.line,
+    }
+  : fmClose >= 0
+    ? { start: fmClose, end: fmClose + 4, checked: false, on: "\ndraft: true\n---", off: "\n---" }
+    : null;
+const draftFind = draft ? raw.replace(/\r\n/g, "\n").slice(draft.start, draft.end) : "";
 
 // Stable, visible reference IDs so edits can be requested by name
-// ("change cap-2", "swap img-3 and img-4"). Numbering follows parse order,
-// which is deterministic, so the same IDs map back to the same MDX spots.
+// ("change cap-2", "swap img-3 and img-4"). Numbering follows parse order and
+// matches check-post's (every heading counts, slotted or not).
 let nText = 0;
 let nImg = 0;
 let nHead = 0;
+let nGal = 0;
 const items = blocks.map((block) => {
   if (block.type === "t") return { block, ref: `txt-${++nText}`, capRef: null };
-  if (block.type === "heading" && block.slots) return { block, ref: `head-${++nHead}`, capRef: null };
+  if (block.type === "heading") {
+    const n = ++nHead;
+    return { block, ref: block.slots ? `head-${n}` : null, capRef: null };
+  }
   if (block.type === "figure" || block.type === "image") {
     const n = ++nImg;
     return { block, ref: `img-${n}`, capRef: `cap-${n}` };
@@ -47,8 +119,8 @@ const items = blocks.map((block) => {
     <meta name="robots" content="noindex" />
     <title>{title} - Dev Editor</title>
     <!-- is:global so rules reach elements rendered inside child components
-         (SlotEditor); Astro scopes a plain <style> to this page only. Safe here
-         because this is a standalone, dev-only document. -->
+         (SlotEditor, FigureEditor); Astro scopes a plain <style> to this page
+         only. Safe here because this is a standalone, dev-only document. -->
     <style is:global>
       :root { color-scheme: dark; }
       body {
@@ -56,17 +128,49 @@ const items = blocks.map((block) => {
         font: 16px/1.6 system-ui, sans-serif;
         background: #14161a;
         color: #e6e8eb;
-        padding: 2rem;
+        padding: 0 2rem 2rem;
       }
       .wrap { max-width: min(1180px, 94vw); margin: 0 auto; }
-      a.back { color: #7aa7f7; text-decoration: none; font-size: 0.85rem; }
-      .toolbar { display: flex; align-items: center; gap: 1rem; }
-      a.view {
-        margin-left: auto; color: #8ad6a0; text-decoration: none;
-        font-size: 0.85rem; border: 1px solid #2f5d3f; border-radius: 6px;
-        padding: 0.25rem 0.6rem;
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: rgba(20, 22, 26, 0.94);
+        backdrop-filter: blur(6px);
+        border-bottom: 1px solid #2a2e35;
+        margin: 0 -2rem 1rem;
+        padding: 0.6rem 2rem;
       }
+      .topbar .inner {
+        max-width: min(1180px, 94vw);
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        font-size: 0.85rem;
+      }
+      a.back { color: #7aa7f7; text-decoration: none; }
+      .todo { display: inline-flex; align-items: center; gap: 0.5rem; }
+      .todo #count { color: #e08a8a; font-weight: 600; }
+      .todo #count.done { color: #8bd17c; }
+      .toggle { display: inline-flex; align-items: center; gap: 0.35rem; color: #c4c8cd; cursor: pointer; }
+      button.small, a.view {
+        font: 0.8rem/1.2 system-ui, sans-serif;
+        color: #cdd2d8;
+        background: #2b3340;
+        border: 1px solid #3a4452;
+        border-radius: 6px;
+        padding: 0.25rem 0.6rem;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      button.small:hover:not(:disabled) { border-color: #4c8bf5; }
+      button.small:disabled { opacity: 0.4; cursor: default; }
+      a.view { margin-left: auto; color: #8ad6a0; border-color: #2f5d3f; background: none; }
       a.view:hover { background: #1d2a22; }
+
       h1 { font-size: 1.5rem; margin: 0.5rem 0 0.25rem; }
       .meta { color: #9aa0a6; font-size: 0.8rem; font-family: ui-monospace, monospace; margin-bottom: 1.5rem; }
 
@@ -77,6 +181,10 @@ const items = blocks.map((block) => {
         overflow: hidden;
         background: #1b1e24;
       }
+      .block:has(.lang.unfinished) { border-color: #6b3434; }
+      /* With Simple hidden, only the visible boxes flag a block. */
+      body.hide-simple .block:has(.lang.unfinished) { border-color: #2a2e35; }
+      body.hide-simple .block:has(.lang.unfinished:not(.en_simple)) { border-color: #6b3434; }
       .block > .tag {
         font: 0.7rem/1 ui-monospace, monospace;
         text-transform: uppercase;
@@ -101,6 +209,8 @@ const items = blocks.map((block) => {
         user-select: all;
       }
       .ref.cap-ref { color: #f0d8a8; background: #34301f; border-color: #4a4327; }
+      a.jump { color: #8ad6a0; text-decoration: none; font-size: 0.85rem; }
+      a.jump:hover { color: #b5f0c6; }
       .block > .body { padding: 0.85rem; }
 
       .heading .body { font-weight: 700; }
@@ -112,18 +222,22 @@ const items = blocks.map((block) => {
         font: 0.7rem/1.6 ui-monospace, monospace;
         color: #7aa7f7;
         text-transform: uppercase;
+        padding-top: 0.4rem;
       }
-      .lang.ja .k { color: #f7a77a; }
-      .lang.ja { opacity: 0.5; } /* JP is generated last, rarely hand-edited */
       .lang.en_simple .k { color: #8bd17c; }
-      .lang .v { white-space: pre-wrap; }
-      .missing { color: #c25b5b; font-style: italic; }
+      /* Japanese is translated last, outside the editor: read-only, hidden
+         unless "Show Japanese" is on. */
+      .lang.ja { display: none; opacity: 0.6; }
+      body.show-ja .lang.ja { display: grid; }
+      /* Simple English is written after the English pass; hide it meanwhile. */
+      body.hide-simple .lang.en_simple { display: none; }
+      .lang.ja .k { color: #f7a77a; }
+      .lang .v { white-space: pre-wrap; padding: 0.35rem 0; }
+      .lang .v.empty { color: #6b7280; font-style: italic; }
 
-      textarea.edit {
+      textarea.edit, input.edit {
         width: 100%;
-        box-sizing: border-box;
         resize: vertical;
-        overflow: hidden;
         font: inherit;
         color: #e6e8eb;
         background: #12151b;
@@ -132,8 +246,12 @@ const items = blocks.map((block) => {
         padding: 0.35rem 0.5rem;
         min-height: 1.9rem;
       }
-      textarea.edit:focus { outline: none; border-color: #4c8bf5; background: #151a22; }
-      .lang.ja textarea.edit { color: #c4c8cd; }
+      textarea.edit { overflow: hidden; }
+      .edit:focus { outline: none; border-color: #4c8bf5; background: #151a22; }
+      .edit.unfinished { border-color: #a04848; background: #241719; }
+      .edit.unfinished:focus { border-color: #e06666; }
+      .lang.unfinished .k { color: #e08a8a; }
+      .edit.dirty { box-shadow: inset 3px 0 0 #e0b04c; }
 
       .img-move { margin-left: auto; display: inline-flex; gap: 0.25rem; }
       .img-move button {
@@ -146,7 +264,32 @@ const items = blocks.map((block) => {
         cursor: pointer;
       }
       .img-move button:hover { border-color: #4c8bf5; }
-      .fig-meta { flex: 1; min-width: 0; }
+      .block.moved { border-color: #e0b04c; }
+      .fig-meta { flex: 1; min-width: 0; display: grid; gap: 0.4rem; }
+
+      /* Image above its caption, sized like the post's text column. */
+      figure.fig { margin: 0; display: grid; gap: 0.6rem; }
+      figure.fig img {
+        display: block; width: 100%; max-width: 720px; max-height: 80vh; height: auto;
+        margin: 0 auto; border-radius: 8px; object-fit: contain; background: #0e1014;
+      }
+      .fig .cap { font-size: 0.85rem; color: #c4c8cd; }
+      .fig .src { font: 0.7rem ui-monospace, monospace; color: #8a909a; word-break: break-all; }
+
+      /* Gallery: its figures sit inside, reorderable among themselves. */
+      .gallery > .body { display: grid; gap: 0.6rem; background: #171a1f; }
+      .gallery .block { margin: 0; }
+
+      .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; max-width: 720px; margin: 0 auto; }
+      .pair figure { margin: 0; display: grid; gap: 0.3rem; align-content: start; }
+      .pair img { width: 100%; height: auto; max-height: 60vh; object-fit: contain; }
+
+      .front .body { display: flex; gap: 1rem; align-items: flex-start; }
+      .front .hero { width: 200px; border-radius: 8px; object-fit: cover; background: #0e1014; flex: none; }
+      .front .langs { flex: 1; min-width: 0; }
+      .front .row-inline { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; padding-top: 0.15rem; }
+      .front input[type="date"] { width: auto; }
+      .front .note { color: #6b7280; font-size: 0.8rem; font-style: italic; padding-top: 0.35rem; }
 
       .savebar {
         position: sticky;
@@ -169,33 +312,169 @@ const items = blocks.map((block) => {
         cursor: pointer;
       }
       .savebar #save:disabled { background: #2a2e35; color: #6b7280; cursor: default; }
-      .status { font-size: 0.85rem; color: #9aa0a6; }
+      .savebar kbd { font: 0.75rem ui-monospace, monospace; color: #6b7280; }
+      .status { font-size: 0.85rem; color: #9aa0a6; background: #14161a; padding: 0.2rem 0.5rem; border-radius: 6px; }
+      .status:empty { display: none; }
       .status.ok { color: #8bd17c; }
-      .status.err { color: #e08a8a; }
-
-      figure.fig { margin: 0; display: flex; gap: 0.85rem; align-items: flex-start; }
-      figure.fig img {
-        max-width: 180px; max-height: 130px; border-radius: 8px;
-        object-fit: cover; background: #0e1014;
-      }
-      figure.fig .cap { font-size: 0.85rem; color: #c4c8cd; }
-      figure.fig .src { font: 0.7rem ui-monospace, monospace; color: #8a909a; word-break: break-all; }
+      .status.err { color: #e08a8a; max-width: 60ch; }
 
       pre.raw {
         margin: 0; white-space: pre-wrap; word-break: break-word;
         font: 0.78rem/1.5 ui-monospace, monospace; color: #b9bec5;
       }
       .imports .tag, .component .tag { color: #b48bd1; }
+
+      @media (max-width: 700px) {
+        body { padding: 0 1rem 1rem; }
+        .topbar { margin: 0 -1rem 1rem; padding: 0.6rem 1rem; }
+        .front .body { flex-direction: column; }
+        .pair { grid-template-columns: 1fr; }
+        .lang { grid-template-columns: 1fr; gap: 0.2rem; }
+        .lang .k { padding-top: 0; }
+      }
     </style>
   </head>
   <body>
-    <div class="wrap">
-      <div class="toolbar">
+    <script is:inline>
+      // @ts-nocheck — dev-only DOM glue (astro check reads this page's inline
+      // scripts as one file, so the directive has to lead the first one).
+      // Apply the remembered "Show Japanese" choice before first paint.
+      try {
+        if (localStorage.getItem("devEditor:showJa") === "1") document.body.classList.add("show-ja");
+        if (localStorage.getItem("devEditor:showSimple") === "0") document.body.classList.add("hide-simple");
+      } catch {}
+
+      // Writing the .mdx makes Vite reload every open page. For a save made
+      // here that reload is redundant (the page re-syncs itself) and would
+      // throw away scroll position, so drop full-reload messages for a few
+      // seconds after our own save. Edits from anywhere else still reload.
+      // Runs before Vite's HMR client, which is a deferred module script.
+      window.__devEditorMuteUntil = 0;
+      const NativeWebSocket = window.WebSocket;
+      window.WebSocket = class extends NativeWebSocket {
+        addEventListener(type, listener, options) {
+          if (type === "message" && typeof listener === "function") {
+            const inner = listener;
+            listener = (event) => {
+              const muted = Date.now() < window.__devEditorMuteUntil;
+              if (muted && typeof event.data === "string" && event.data.includes('"full-reload"')) return;
+              inner.call(this, event);
+            };
+          }
+          super.addEventListener(type, listener, options);
+        }
+      };
+    </script>
+
+    <header class="topbar">
+      <div class="inner">
         <a class="back" href="/dev/editor">&larr; all posts</a>
-        <a class="view" href={`/blog/${slug}`} target="_blank" rel="noopener">View post &#8599;</a>
+        <span class="todo">
+          <span id="count"></span>
+          <button type="button" class="small" id="next" title="Jump to the next unfinished box">next &darr;</button>
+        </span>
+        <label class="toggle"><input type="checkbox" id="show-simple" /> Show Simple</label>
+        <label class="toggle"><input type="checkbox" id="show-ja" /> Show Japanese</label>
+        <a class="view" href={postUrl} target="takko-preview">View post &#8599;</a>
       </div>
+    </header>
+
+    <div class="wrap">
       <h1>{title}</h1>
       <div class="meta">{slug} - {blocks.length} blocks</div>
+
+      <div class="block front">
+        <div class="tag">frontmatter</div>
+        <div class="body">
+          {fields.heroImage && <img class="hero" src={assetFsUrl(fields.heroImage)} alt="hero" />}
+          <div class="langs">
+            {
+              fmText.map(({ label, key, multiline, field }) => (
+                <div class={`lang fm-${key}${key === "title_en_simple" ? " en_simple" : ""}`}>
+                  <span class="k">{label}</span>
+                  {field ? (
+                    multiline ? (
+                      <textarea
+                        class="edit"
+                        rows="1"
+                        spellcheck="true"
+                        data-edit="fm"
+                        data-check
+                        data-key={key}
+                        data-start={field.start}
+                        data-end={field.end}
+                        data-find={field.find}
+                        data-orig={field.value}
+                      >{field.value}</textarea>
+                    ) : (
+                      <input
+                        class="edit"
+                        spellcheck="true"
+                        value={field.value}
+                        data-edit="fm"
+                        data-check
+                        data-key={key}
+                        data-start={field.start}
+                        data-end={field.end}
+                        data-find={field.find}
+                        data-orig={field.value}
+                      />
+                    )
+                  ) : (
+                    <span class="note">no {key} line in the frontmatter; add it in the file</span>
+                  )}
+                </div>
+              ))
+            }
+            <div class="lang ja">
+              <span class="k">ja</span>
+              <div class={fields.title_ja ? "v" : "v empty"}>{fields.title_ja || "(empty)"}</div>
+            </div>
+            <div class="lang">
+              <span class="k">date</span>
+              <div class="row-inline">
+                {pubDate ? (
+                  <>
+                    <input
+                      class="edit"
+                      type="date"
+                      value={pubDate.value}
+                      data-edit="fm"
+                      data-key="pubDate"
+                      data-start={pubDate.start}
+                      data-end={pubDate.end}
+                      data-find={pubDate.find}
+                      data-orig={pubDate.value}
+                    />
+                    <button type="button" class="small" id="today" data-today={today}>today</button>
+                  </>
+                ) : (
+                  <span class="note">no pubDate line</span>
+                )}
+              </div>
+            </div>
+            {draft && (
+              <div class="lang">
+                <span class="k">draft</span>
+                <label class="toggle row-inline">
+                  <input
+                    type="checkbox"
+                    checked={draft.checked}
+                    data-edit="draft"
+                    data-start={draft.start}
+                    data-end={draft.end}
+                    data-find={draftFind}
+                    data-on={draft.on}
+                    data-off={draft.off}
+                    data-orig={draft.checked ? "1" : "0"}
+                  />
+                  hidden from the live site
+                </label>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
 
       {
         items.map(({ block, ref, capRef }) => {
@@ -208,10 +487,15 @@ const items = blocks.map((block) => {
             );
           }
           if (block.type === "heading") {
-            const fields = block.slots ? slotFields(block.raw) : [];
+            const fields = block.slots ? slotFields(block.raw, block.start) : [];
+            const href = postHref(block.slots?.en ?? block.text);
             return (
               <div class="block heading">
-                <div class="tag">heading h{block.level}{ref && <span class="ref">{ref}</span>}</div>
+                <div class="tag">
+                  heading h{block.level}
+                  {ref && <span class="ref">{ref}</span>}
+                  {href && <a class="jump" href={href} target="takko-preview" title="Open this spot in the post">&#8599;</a>}
+                </div>
                 <div class="body">
                   <span class="lvl">{"#".repeat(block.level)}</span>
                   {fields.length ? <SlotEditor fields={fields} /> : block.text}
@@ -220,52 +504,69 @@ const items = blocks.map((block) => {
             );
           }
           if (block.type === "t") {
+            const href = postHref(block.slots.en);
             return (
               <div class="block t">
-                <div class="tag">text{ref && <span class="ref">{ref}</span>}</div>
-                <div class="body"><SlotEditor fields={slotFields(block.raw)} /></div>
+                <div class="tag">
+                  text<span class="ref">{ref}</span>
+                  {href && <a class="jump" href={href} target="takko-preview" title="Open this spot in the post">&#8599;</a>}
+                </div>
+                <div class="body"><SlotEditor fields={slotFields(block.raw, block.start)} /></div>
               </div>
             );
           }
           if (block.type === "figure" || block.type === "image") {
-            const caption = block.type === "figure" ? block.caption : undefined;
-            const captionText = block.type === "figure" ? block.captionText : undefined;
-            const hasCaption = Boolean(caption || captionText);
-            const captionFields = caption ? slotFields(block.raw) : [];
-            const plainCaption = captionText ? captionPlainField(block.raw) : null;
             return (
-              <div class="block figure" data-img data-block-raw={block.raw}>
-                <div class="tag">
-                  image
-                  {ref && <span class="ref">{ref}</span>}
-                  {hasCaption && capRef && <span class="ref cap-ref">{capRef}</span>}
-                  <span class="img-move">
-                    <button type="button" class="move-up" title="Move image up">&uarr;</button>
-                    <button type="button" class="move-down" title="Move image down">&darr;</button>
-                  </span>
-                </div>
+              <FigureEditor
+                block={block}
+                ref={ref ?? ""}
+                capRef={capRef}
+                group="body"
+                imgUrl={imgUrl(block.src)}
+                href={block.type === "figure" ? postHref(block.caption?.en ?? block.captionText) : null}
+              />
+            );
+          }
+          if (block.type === "component" && block.figures) {
+            const group = `gallery-${++nGal}`;
+            return (
+              <div class="block component gallery">
+                <div class="tag">component - {block.name} - {block.figures.length} images</div>
                 <div class="body">
-                  <figure class="fig">
-                    {block.src && <img src={assetFsUrl(block.src)} alt={block.alt ?? ""} />}
-                    <div class="fig-meta">
-                      <div class="src">{block.src}</div>
-                      {block.alt && <div class="cap">alt: {block.alt}</div>}
-                      {captionFields.length > 0 && <SlotEditor fields={captionFields} />}
-                      {plainCaption && (
-                        <div class="lang caption">
-                          <span class="k">caption</span>
-                          <textarea
-                            class="edit"
-                            rows="1"
-                            data-find={plainCaption.find}
-                            data-prefix={plainCaption.prefix}
-                            data-suffix={plainCaption.suffix}
-                            data-orig={plainCaption.core}
-                          >{plainCaption.core}</textarea>
-                        </div>
-                      )}
-                    </div>
-                  </figure>
+                  {block.figures.map((fig, i) => (
+                    <FigureEditor
+                      block={fig}
+                      ref={`gal${nGal}-${i + 1}`}
+                      capRef={null}
+                      group={group}
+                      imgUrl={imgUrl(fig.src)}
+                      href={postHref(fig.caption?.en ?? fig.captionText)}
+                      tag="gallery image"
+                    />
+                  ))}
+                </div>
+              </div>
+            );
+          }
+          if (block.type === "component" && block.name === "TwoImages") {
+            const pair = [1, 2].map((n) => {
+              const id = propOf(block.raw, `src${n}`);
+              const path = id ? importPaths[id] : undefined;
+              return { id, path, alt: propOf(block.raw, `alt${n}`), url: imgUrl(path) };
+            });
+            return (
+              <div class="block component">
+                <div class="tag">component - TwoImages (edit in the file)</div>
+                <div class="body">
+                  <div class="pair">
+                    {pair.map((p) => (
+                      <figure class="fig">
+                        {p.url ? <img src={p.url} alt={p.alt ?? ""} loading="lazy" /> : <span class="src">{p.id} (import not found)</span>}
+                        <div class="src">{p.path ?? p.id}</div>
+                        {p.alt && <div class="cap">alt: {p.alt}</div>}
+                      </figure>
+                    ))}
+                  </div>
                 </div>
               </div>
             );
@@ -291,6 +592,7 @@ const items = blocks.map((block) => {
 
     <div class="savebar">
       <span class="status" id="status"></span>
+      <kbd>&#8984;S</kbd>
       <button type="button" id="save" disabled>Save changes</button>
     </div>
 
@@ -298,113 +600,275 @@ const items = blocks.map((block) => {
       // @ts-nocheck — dev-only DOM glue; `slug` is injected via define:vars.
       (() => {
         const ENDPOINT = "/__dev/editor/save";
+        // Same markers check-post flags as leftover placeholders.
+        const PLACEHOLDER_RE = /\b(TODO|FIXME|TKTK|Lorem ipsum|XXX)\b/i;
         const saveBtn = document.getElementById("save");
         const statusEl = document.getElementById("status");
-        const textareas = [...document.querySelectorAll("textarea.edit")];
-        const imgBlocks = [...document.querySelectorAll("[data-img]")];
-        // Original image order, captured once at load.
-        const originalOrder = imgBlocks.map((el) => el.dataset.blockRaw);
+        const countEl = document.getElementById("count");
+        const nextBtn = document.getElementById("next");
+        const jaToggle = document.getElementById("show-ja");
+        const simpleToggle = document.getElementById("show-simple");
+        const editables = [...document.querySelectorAll("[data-edit]")];
+        const checked = [...document.querySelectorAll("[data-check]")];
+        let saving = false;
+        let reloading = false; // set once a save has written everything
 
-        function autosize(el) {
-          el.style.height = "auto";
-          el.style.height = el.scrollHeight + "px";
-        }
-        textareas.forEach((el) => {
-          autosize(el);
-          el.addEventListener("input", () => {
-            autosize(el);
-            refresh();
-          });
+        // Image order per group (post body, each Gallery), captured at load.
+        const groups = {};
+        document.querySelectorAll("[data-img]").forEach((el) => {
+          (groups[el.dataset.group] ??= []).push(el);
         });
+
+        /* ---------------------------------------------------------- edits */
+
+        function replacementFor(el) {
+          const d = el.dataset;
+          if (d.edit === "slot") return el.value === d.orig ? null : d.prefix + el.value + d.suffix;
+          if (d.edit === "fm") return el.value === d.orig ? null : d.key + ": " + JSON.stringify(el.value);
+          if (d.edit === "draft") {
+            if ((el.checked ? "1" : "0") === d.orig) return null;
+            return el.checked ? d.on : d.off;
+          }
+          return null;
+        }
+
+        // The server may follow text that moved in the file only when it was
+        // unique here; duplicates (e.g. two identical placeholders) never are.
+        function uniqueness() {
+          const counts = new Map();
+          document.querySelectorAll("[data-find]").forEach((el) => {
+            counts.set(el.dataset.find, (counts.get(el.dataset.find) ?? 0) + 1);
+          });
+          return (find) => counts.get(find) === 1;
+        }
 
         function textEdits() {
           const edits = [];
-          for (const el of textareas) {
-            if (el.value !== el.dataset.orig) {
-              edits.push({
-                find: el.dataset.find,
-                replace: el.dataset.prefix + el.value + el.dataset.suffix,
-              });
-            }
+          const isUnique = uniqueness();
+          for (const el of editables) {
+            const replace = replacementFor(el);
+            if (replace === null) continue;
+            const find = el.dataset.find;
+            edits.push({ start: +el.dataset.start, end: +el.dataset.end, find, unique: isUnique(find), replace });
           }
           return edits;
         }
 
-        function currentImageOrder() {
-          return [...document.querySelectorAll("[data-img]")].map((el) => el.dataset.blockRaw);
+        function moveEdits() {
+          const moves = [];
+          const isUnique = uniqueness();
+          for (const [name, original] of Object.entries(groups)) {
+            const current = [...document.querySelectorAll(`[data-img][data-group="${name}"]`)];
+            const order = current.map((el) => original.indexOf(el));
+            if (order.every((v, i) => v === i)) continue;
+            moves.push({
+              slots: original.map((el) => ({
+                start: +el.dataset.start,
+                end: +el.dataset.end,
+                find: el.dataset.find,
+                unique: isUnique(el.dataset.find),
+              })),
+              order,
+            });
+          }
+          return moves;
         }
 
-        function reorderEdits() {
-          const current = currentImageOrder();
-          const changed = current.some((raw, i) => raw !== originalOrder[i]);
-          if (!changed) return [];
-          const edits = [];
-          // Phase A: park each original block under a unique placeholder.
-          originalOrder.forEach((raw, i) => {
-            edits.push({ find: raw, replace: "<<<DEVSWAP:" + i + ">>>" });
-          });
-          // Phase B: fill each original slot with whatever now sits there.
-          current.forEach((raw, i) => {
-            edits.push({ find: "<<<DEVSWAP:" + i + ">>>", replace: raw });
-          });
-          return edits;
-        }
-
-        function allEdits() {
-          // Reorder first (uses original block text), then text/caption edits.
-          return [...reorderEdits(), ...textEdits()];
-        }
+        const pendingCount = () => textEdits().length + moveEdits().length;
 
         function refresh() {
-          const n = allEdits().length;
-          saveBtn.disabled = n === 0;
-          if (n === 0 && statusEl.dataset.sticky !== "1") statusEl.textContent = "";
+          editables.forEach((el) => el.classList.toggle("dirty", replacementFor(el) !== null));
+          for (const [name, original] of Object.entries(groups)) {
+            const current = [...document.querySelectorAll(`[data-img][data-group="${name}"]`)];
+            current.forEach((el, i) => el.classList.toggle("moved", original[i] !== el));
+          }
+          const n = pendingCount();
+          saveBtn.disabled = n === 0 || saving;
+          saveBtn.textContent = n ? `Save ${n} change${n === 1 ? "" : "s"}` : "Save changes";
         }
 
-        // Image move buttons reorder relative to other image blocks.
+        /* ----------------------------------------------------- unfinished */
+
+        const isUnfinished = (el) => !el.value.trim() || PLACEHOLDER_RE.test(el.value);
+
+        function markUnfinished(el) {
+          const bad = isUnfinished(el);
+          el.classList.toggle("unfinished", bad);
+          el.closest(".lang")?.classList.toggle("unfinished", bad);
+        }
+
+        // Boxes in a hidden row (Simple, when it is toggled off) don't count.
+        const flagged = () =>
+          checked.filter(
+            (el) =>
+              el.classList.contains("unfinished") &&
+              !(document.body.classList.contains("hide-simple") && el.closest(".lang.en_simple"))
+          );
+
+        function updateCount() {
+          const n = flagged().length;
+          countEl.textContent = n ? `${n} unfinished` : "all filled in";
+          countEl.classList.toggle("done", n === 0);
+          nextBtn.disabled = n === 0;
+        }
+
+        nextBtn.addEventListener("click", () => {
+          const list = flagged();
+          if (!list.length) return;
+          const at = list.indexOf(document.activeElement);
+          const topbar = document.querySelector(".topbar").getBoundingClientRect().bottom;
+          const target =
+            at >= 0
+              ? list[(at + 1) % list.length]
+              : (list.find((el) => el.getBoundingClientRect().top > topbar + 8) ?? list[0]);
+          target.scrollIntoView({ block: "center", behavior: "smooth" });
+          target.focus({ preventScroll: true });
+        });
+
+        /* --------------------------------------------------------- wiring */
+
+        function autosize(el) {
+          if (el.tagName !== "TEXTAREA") return;
+          el.style.height = "auto";
+          el.style.height = el.scrollHeight + 2 + "px";
+        }
+
+        editables.forEach((el) => {
+          autosize(el);
+          el.addEventListener("input", () => {
+            autosize(el);
+            if (el.hasAttribute("data-check")) {
+              markUnfinished(el);
+              updateCount();
+            }
+            refresh();
+          });
+          el.addEventListener("change", refresh);
+        });
+        checked.forEach(markUnfinished);
+        updateCount();
+
+        document.getElementById("today")?.addEventListener("click", (e) => {
+          const input = document.querySelector('[data-key="pubDate"]');
+          input.value = e.currentTarget.dataset.today;
+          refresh();
+        });
+
+        jaToggle.checked = document.body.classList.contains("show-ja");
+        jaToggle.addEventListener("change", () => {
+          document.body.classList.toggle("show-ja", jaToggle.checked);
+          try {
+            localStorage.setItem("devEditor:showJa", jaToggle.checked ? "1" : "0");
+          } catch {}
+        });
+
+        simpleToggle.checked = !document.body.classList.contains("hide-simple");
+        simpleToggle.addEventListener("change", () => {
+          document.body.classList.toggle("hide-simple", !simpleToggle.checked);
+          try {
+            localStorage.setItem("devEditor:showSimple", simpleToggle.checked ? "1" : "0");
+          } catch {}
+          updateCount();
+        });
+
+        // ↑/↓ move an image past the previous/next image of the same group.
         document.querySelectorAll(".move-up, .move-down").forEach((btn) => {
           btn.addEventListener("click", () => {
             const block = btn.closest("[data-img]");
-            const imgs = [...document.querySelectorAll("[data-img]")];
+            const imgs = [...document.querySelectorAll(`[data-img][data-group="${block.dataset.group}"]`)];
             const idx = imgs.indexOf(block);
             if (btn.classList.contains("move-up") && idx > 0) {
               imgs[idx - 1].before(block);
             } else if (btn.classList.contains("move-down") && idx < imgs.length - 1) {
               imgs[idx + 1].after(block);
             }
+            btn.focus();
+            block.scrollIntoView({ block: "nearest" });
             refresh();
           });
         });
 
-        saveBtn.addEventListener("click", async () => {
-          const edits = allEdits();
-          if (edits.length === 0) return;
+        document.addEventListener("keydown", (e) => {
+          if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "s") {
+            e.preventDefault();
+            save();
+          }
+        });
+
+        window.addEventListener("beforeunload", (e) => {
+          if (!reloading && pendingCount() > 0) {
+            e.preventDefault();
+            e.returnValue = "";
+          }
+        });
+
+        /* ----------------------------------------------------------- save */
+
+        function setStatus(text, kind) {
+          statusEl.className = "status" + (kind ? " " + kind : "");
+          statusEl.textContent = text;
+        }
+
+        // After a text-only save, shift every tracked range by the edits
+        // before it and re-read its text from the saved source, so the next
+        // save targets the right spots without a reload.
+        function rebase(edits, source) {
+          const deltas = edits.map((e) => ({ end: e.end, d: e.replace.length - (e.end - e.start) }));
+          const shift = (pos) => deltas.reduce((acc, x) => (x.end <= pos ? acc + x.d : acc), 0);
+          document.querySelectorAll("[data-start]").forEach((el) => {
+            const start = +el.dataset.start + shift(+el.dataset.start);
+            const end = +el.dataset.end + shift(+el.dataset.end);
+            el.dataset.start = start;
+            el.dataset.end = end;
+            el.dataset.find = source.slice(start, end);
+          });
+          for (const el of editables) {
+            if (el.dataset.edit === "draft") el.dataset.orig = el.checked ? "1" : "0";
+            else el.dataset.orig = el.value;
+          }
+          // Sanity check: every text box must still sit exactly on its slot.
+          return editables.every(
+            (el) => el.dataset.edit !== "slot" || el.dataset.find === el.dataset.prefix + el.value + el.dataset.suffix
+          );
+        }
+
+        async function save() {
+          if (saving) return;
+          const edits = textEdits();
+          const moves = moveEdits();
+          if (edits.length === 0 && moves.length === 0) return;
+          saving = true;
           saveBtn.disabled = true;
-          statusEl.dataset.sticky = "1";
-          statusEl.className = "status";
-          statusEl.textContent = "Saving " + edits.length + " edit(s)...";
+          setStatus("Saving...");
+          window.__devEditorMuteUntil = Date.now() + 5000;
           try {
             const res = await fetch(ENDPOINT, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ slug, edits }),
+              body: JSON.stringify({ slug, edits, moves }),
             });
             const data = await res.json();
-            if (res.ok && data.ok) {
-              statusEl.textContent = "Saved. Reloading...";
-              statusEl.classList.add("ok");
-              setTimeout(() => location.reload(), 500);
-            } else {
-              statusEl.textContent = "Error: " + (data.error || res.status);
-              statusEl.classList.add("err");
-              saveBtn.disabled = false;
+            if (!res.ok || !data.ok) throw new Error(data.error || "HTTP " + res.status);
+            if (moves.length || data.relocated || !rebase(edits, data.source)) {
+              // Image moves (or a file that changed underneath) reshuffle the
+              // ranges; nothing is unsaved now, so a reload is the clean reset.
+              setStatus("Saved. Reloading...", "ok");
+              reloading = true;
+              location.reload();
+              return;
             }
+            const time = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+            setStatus(`Saved ${edits.length} change${edits.length === 1 ? "" : "s"} at ${time}`, "ok");
           } catch (err) {
-            statusEl.textContent = "Request failed: " + err;
-            statusEl.classList.add("err");
-            saveBtn.disabled = false;
+            window.__devEditorMuteUntil = 0;
+            setStatus("Not saved: " + (err instanceof Error ? err.message : err), "err");
+          } finally {
+            saving = false;
+            refresh();
           }
-        });
+        }
+        saveBtn.addEventListener("click", save);
+        refresh();
       })();
     </script>
   </body>

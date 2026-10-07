@@ -1,8 +1,10 @@
 ---
-// Editable language slots for the dev editor. Each textarea carries the exact
-// data needed to build a lossless find/replace edit on save (see the page
-// script): `data-find` is the original element verbatim, `data-prefix` /
-// `data-suffix` wrap the editable core, `data-orig` is the unedited core.
+// Language slots for the dev editor. Each textarea carries the exact data
+// needed to build a lossless edit on save (see the page script): `data-start`
+// / `data-end` locate `data-find` (the original element verbatim) in the
+// source, `data-prefix` / `data-suffix` wrap the editable core, `data-orig` is
+// the unedited core. Japanese is shown read-only (and hidden unless the page's
+// "Show Japanese" toggle is on): it is translated last, outside the editor.
 /** @typedef {import('../../lib/dev/parse-post.js').EditField} EditField */
 /** @type {{ fields: EditField[] }} */
 const { fields } = Astro.props;
@@ -12,19 +14,30 @@ const labels = { en: "en", ja: "ja", en_simple: "simple", caption: "caption" };
 
 <div class="langs">
   {
-    fields.map((f) => (
-      <div class={`lang ${f.key}`}>
-        <span class="k">{labels[f.key] ?? f.key}</span>
-        <textarea
-          class="edit"
-          rows="1"
-          spellcheck="true"
-          data-find={f.find}
-          data-prefix={f.prefix}
-          data-suffix={f.suffix}
-          data-orig={f.core}
-        >{f.core}</textarea>
-      </div>
-    ))
+    fields.map((f) =>
+      f.key === "ja" ? (
+        <div class="lang ja">
+          <span class="k">ja</span>
+          <div class={f.core ? "v" : "v empty"}>{f.core || "(empty)"}</div>
+        </div>
+      ) : (
+        <div class={`lang ${f.key}`}>
+          <span class="k">{labels[f.key] ?? f.key}</span>
+          <textarea
+            class="edit"
+            rows="1"
+            spellcheck="true"
+            data-edit="slot"
+            data-check
+            data-start={f.start}
+            data-end={f.end}
+            data-find={f.find}
+            data-prefix={f.prefix}
+            data-suffix={f.suffix}
+            data-orig={f.core}
+          >{f.core}</textarea>
+        </div>
+      )
+    )
   }
 </div>

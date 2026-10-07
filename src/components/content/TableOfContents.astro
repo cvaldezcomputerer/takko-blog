@@ -11,7 +11,8 @@
 // cloning each heading's <T> spans, so they follow the language switcher with
 // no extra wiring. Heading ids come from the English slot at build time
 // (tools/heading-ids.mjs). Nothing is persisted. Hidden on posts with fewer
-// than 3 headings, and until the reader reaches the first one.
+// than 3 headings, and above FLOATING_SHOW_AFTER, so it appears together with
+// the like button. PostContents is the static list at the top of the post.
 import T from '../i18n/T.astro';
 ---
 
@@ -62,11 +63,17 @@ import T from '../i18n/T.astro';
 <style is:global>
 	[data-blog-content] > :is(h2, h3) { scroll-margin-top: 5rem; }
 
-	.toc {
+	/* paper palette, shared with the in-post list (PostContents.astro) */
+	.toc,
+	.toc-inline {
 		--ink: #2f8f5b;
 		--pencil: #e07a3a;
 		--paper: #fdfcf8;
 		--paper-text: #333;
+	}
+	.dark :is(.toc, .toc-inline) { --paper: #e9e4d8; }
+
+	.toc {
 		position: fixed;
 		left: var(--space-5);
 		bottom: var(--space-6);
@@ -88,7 +95,6 @@ import T from '../i18n/T.astro';
 		transform: none;
 		transition: opacity 0.25s ease, transform 0.25s ease;
 	}
-	.dark .toc { --paper: #e9e4d8; }
 
 	/* ---------- the torn notebook page ---------- */
 	.toc-sheet {
@@ -261,6 +267,8 @@ import T from '../i18n/T.astro';
 </style>
 
 <script>
+	import { FLOATING_SHOW_AFTER } from '../../lib/floating-ui.js';
+
 	const CHECK_SVG =
 		'<svg viewBox="0 0 20 20" aria-hidden="true"><path pathLength="30" d="M2 11 L7.5 16 L19 1"/></svg>';
 
@@ -367,8 +375,8 @@ import T from '../i18n/T.astro';
 				if (h.getBoundingClientRect().top <= line) active = i;
 			});
 
-			// Appears once the reader reaches the first heading, hides above it.
-			const shown = active >= 0;
+			// Appears and hides with the like button.
+			const shown = window.scrollY >= FLOATING_SHOW_AFTER;
 			if (root!.dataset.shown !== String(shown)) {
 				root!.dataset.shown = String(shown);
 				root!.inert = !shown;
