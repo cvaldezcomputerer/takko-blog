@@ -260,6 +260,144 @@
 			"model": "Canon PowerShot S90"
 		}
 	},
+	"garlic-festival-dogs": {
+		"cavalier-king-charles-2": {
+			"model": "Sony A6300",
+			"lens": "Sony 50mm f/1.8"
+		},
+		"chihuahua-mix-1": {
+			"model": "Sony A6300",
+			"lens": "Sony 50mm f/1.8"
+		},
+		"corgi-1": {
+			"model": "Sony A6300",
+			"lens": "Sigma 18-50mm f/2.8"
+		},
+		"crowd": {
+			"model": "Sony A6300",
+			"lens": "Sigma 18-50mm f/2.8"
+		},
+		"golden-retriever-a-1": {
+			"model": "Sony A6300",
+			"lens": "Sony 50mm f/1.8"
+		},
+		"golden-retriever-b-2": {
+			"model": "Sony A6300",
+			"lens": "Sony 50mm f/1.8"
+		},
+		"golden-retriever-c-1": {
+			"model": "Sony A6300",
+			"lens": "Sony 50mm f/1.8"
+		},
+		"goldendoodle-1-gallery": {
+			"model": "Sony A6300",
+			"lens": "Sony 50mm f/1.8"
+		},
+		"goldendoodle-2": {
+			"model": "Sony A6300",
+			"lens": "Sony 50mm f/1.8"
+		},
+		"hokkaido-dog-1": {
+			"model": "Sony A6300",
+			"lens": "Sigma 18-50mm f/2.8"
+		},
+		"jack-russell-mix-1-gallery": {
+			"model": "Sony A6300",
+			"lens": "Sony 50mm f/1.8"
+		},
+		"jack-russell-mix-2": {
+			"model": "Sony A6300",
+			"lens": "Sony 50mm f/1.8"
+		},
+		"kai-ken-1": {
+			"model": "Sony A6300",
+			"lens": "Sigma 18-50mm f/2.8"
+		},
+		"kai-ken-2": {
+			"model": "Sony A6300",
+			"lens": "Sigma 18-50mm f/2.8"
+		},
+		"labrador-mix-2": {
+			"model": "Sony A6300",
+			"lens": "Sony 50mm f/1.8"
+		},
+		"long-haired-chihuahua-1-gallery": {
+			"model": "Sony A6300",
+			"lens": "Sigma 18-50mm f/2.8"
+		},
+		"long-haired-chihuahua-2": {
+			"model": "Sony A6300",
+			"lens": "Sigma 18-50mm f/2.8"
+		},
+		"papillon-mix-1": {
+			"model": "Sony A6300",
+			"lens": "Sigma 18-50mm f/2.8"
+		},
+		"papillon-mix-2": {
+			"model": "Sony A6300",
+			"lens": "Sigma 18-50mm f/2.8"
+		},
+		"pit-bull-2": {
+			"model": "Sony A6300",
+			"lens": "Sony 50mm f/1.8"
+		},
+		"pomeranian-a-1": {
+			"model": "Sony A6300",
+			"lens": "Sony 50mm f/1.8"
+		},
+		"pomeranian-b-1-gallery": {
+			"model": "Sony A6300",
+			"lens": "Sony 50mm f/1.8"
+		},
+		"pomeranian-b-2": {
+			"model": "Sony A6300",
+			"lens": "Sony 50mm f/1.8"
+		},
+		"saint-bernard-1": {
+			"model": "Sony A6300",
+			"lens": "Sigma 18-50mm f/2.8"
+		},
+		"shiba-inu-1": {
+			"model": "Sony A6300",
+			"lens": "Sony 50mm f/1.8"
+		},
+		"shiba-inu-3-gallery": {
+			"model": "Sony A6300",
+			"lens": "Sony 50mm f/1.8"
+		},
+		"shiba-mix-a-1": {
+			"model": "Sony A6300",
+			"lens": "Sigma 18-50mm f/2.8"
+		},
+		"shiba-mix-b-1-gallery": {
+			"model": "Sony A6300",
+			"lens": "Sony 50mm f/1.8"
+		},
+		"shiba-mix-b-2": {
+			"model": "Sony A6300",
+			"lens": "Sony 50mm f/1.8"
+		},
+		"toy-poodle-1": {
+			"model": "Sony A6300",
+			"lens": "Sony 50mm f/1.8"
+		},
+		"toy-poodle-2-gallery": {
+			"model": "Sony A6300",
+			"lens": "Sony 50mm f/1.8"
+		},
+		"toy-poodle-mix-1": {
+			"model": "Sony A6300",
+			"lens": "Sigma 18-50mm f/2.8"
+		},
+		"toy-poodle-mix-2-gallery": {
+			"model": "Sony A6300",
+			"lens": "Sigma 18-50mm f/2.8"
+		},
+		"white-spitz-mix-1": {
+			"model": "Sony A6300",
+			"lens": "Sigma 18-50mm f/2.8"
+		}
+	},
 	"golden-week-2026": {
 		"Leaving-sign": {
 			"model": "Nikon D3300"

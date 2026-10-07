@@ -49,11 +49,23 @@ function tidyModel(raw) {
 	return model.replace(/^([A-Z]{3,})(?=\s)/, (word) => word[0] + word.slice(1).toLowerCase());
 }
 
+/**
+ * Lenses write their catalogue name too, and Sony bodies leave the maker off
+ * third-party glass entirely. Same idea as MODEL_NAMES: map the owned lenses,
+ * pass anything new through as written.
+ */
+const LENS_NAMES = {
+	'E 50mm F1.8 OSS': 'Sony 50mm f/1.8',
+	'18-50mm F2.8 DC DN | Contemporary 021': 'Sigma 18-50mm f/2.8',
+};
+
 /** @param {import('exif-reader').Exif} exif */
 function readLens(exif) {
 	const photo = exif.Photo ?? {};
-	const lens = photo.LensModel ?? photo.LensMake ?? '';
-	return typeof lens === 'string' ? lens.trim().replace(/\s+/g, ' ') : '';
+	const raw = photo.LensModel ?? photo.LensMake ?? '';
+	if (typeof raw !== 'string') return '';
+	const lens = raw.trim().replace(/\s+/g, ' ');
+	return LENS_NAMES[lens] ?? lens;
 }
 
 /** @param {string} file */
@@ -78,8 +90,8 @@ async function readCamera(file) {
 	if (!model && !lens) return null;
 
 	const entry = { model };
-	// No lens tag survives on any image today, but carrying the field from the
-	// start means the manifest shape does not change when one finally does.
+	// Only images that kept their lens tag get one; the lightbox hides the
+	// lens line when it is absent.
 	if (lens) entry.lens = lens;
 	return entry;
 }
