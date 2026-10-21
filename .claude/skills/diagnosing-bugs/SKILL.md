@@ -23,6 +23,7 @@ This codebase has a small set of silent failure modes that account for most "I c
 - **A section renders blank in one language only.** An empty `T.astro` slot. `npm run check:post <slug>` reports exactly this, so run it before reading the component.
 - **Dark mode looks wrong in Quiz, Recipe, Gallery, or TwoImages.** Those four deliberately use fixed hex for the paper aesthetic. Confirm it is a real bug before "fixing" it into tokens.
 - **Likes or quiz results are empty locally but fine in production (or the reverse).** Local `wrangler dev` uses a separate D1 database in `.wrangler/`. Check whether `npm run db:migrate` has been run against it, and which database you are actually querying.
+- **A new frontmatter field is ignored, even after a dev restart.** Astro caches each parsed entry in its data store, keyed by a digest of the file's text, so a post whose text has not changed since `src/content.config.js` gained the field keeps its old parse with the field stripped. Change any byte of the post (or delete `.astro/data-store.json` and `node_modules/.astro/`) to force a re-parse.
 - **Mojibake, a stray placeholder, or a giant image in a published post.** Content bug, not a code bug. `npm run check:post` covers all three, and it only errors once `draft: true` is removed, which is why these ship.
 
 If the symptom matches a tell, confirm it and fix it. If it does not, proceed to Phase 1 and do not force the match.

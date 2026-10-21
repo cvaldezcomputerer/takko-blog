@@ -1,30 +1,39 @@
-// Dev-only Astro integration that lets the /dev/editor panel write back to the
-// .mdx files. The Cloudflare adapter runs page SSR in workerd (no filesystem),
-// but the `astro:server:setup` hook runs in the Node dev process and can read
-// and write the real files. We prepend the handler to the Connect middleware
-// stack (unshift) so it runs before Astro's SSR catch-all; using `.use()`
-// appends it, so the request 404s before reaching us. The hook only fires for
-// the dev server, so nothing ships to production.
+// Dev-only Astro integration behind the in-page post editor (tools/dev-edit/).
+// It injects the editor script into every page under `astro dev` and serves
+// three endpoints: GET source returns a post's raw .mdx, GET images lists the
+// post's image folder for the insert-image picker, and POST save writes edits
+// back. The Cloudflare adapter runs page SSR in workerd (no filesystem), but
+// the `astro:server:setup` hook runs in the Node dev process and can read and
+// write the real files. We prepend the handler to the Connect middleware stack
+// (unshift) so it runs before Astro's SSR catch-all; using `.use()` appends it,
+// so the request 404s before reaching us. Both hooks only act under the dev
+// server, so nothing ships to production.
 
 import fs from "node:fs";
 import path from "node:path";
 
 const BLOG_DIR = () => path.resolve(process.cwd(), "src/content/blog");
+const IMAGE_DIR = () => path.resolve(process.cwd(), "src/assets/images/blog");
 const ENDPOINT = "/__dev/editor/save";
+const SOURCE_ENDPOINT = "/__dev/editor/source";
+const IMAGES_ENDPOINT = "/__dev/editor/images";
+const IMAGE_EXT = /\.(jpe?g|png|webp|avif|gif)$/i;
 
 /** @returns {import('astro').AstroIntegration} */
 export default function devEditor() {
   return {
     name: "dev-editor",
     hooks: {
+      "astro:config:setup": ({ command, injectScript }) => {
+        if (command === "dev") injectScript("page", `import "/tools/dev-edit/edit-mode.js";`);
+      },
       "astro:server:setup": ({ server }) => {
         const handler = async (
           /** @type {import('node:http').IncomingMessage} */ req,
           /** @type {import('node:http').ServerResponse} */ res,
           /** @type {() => void} */ next
         ) => {
-          const url = (req.url || "").split("?")[0];
-          if (req.method !== "POST" || url !== ENDPOINT) return next();
+          const [url, query = ""] = (req.url || "").split("?");
 
           /** @param {number} status @param {object} body */
           const json = (status, body) => {
@@ -32,6 +41,16 @@ export default function devEditor() {
             res.setHeader("Content-Type", "application/json");
             res.end(JSON.stringify(body));
           };
+
+          if (req.method === "GET" && (url === SOURCE_ENDPOINT || url === IMAGES_ENDPOINT)) {
+            const slug = new URLSearchParams(query).get("slug") ?? "";
+            const file = /^[A-Za-z0-9_-]+$/.test(slug) ? resolveFile(slug) : null;
+            if (!file) return json(404, { ok: false, error: `Post not found: ${slug}` });
+            const source = fs.readFileSync(file, "utf-8").replace(/\r\n/g, "\n");
+            if (url === SOURCE_ENDPOINT) return json(200, { ok: true, slug, source });
+            return json(200, { ok: true, slug, images: listImages(slug, source) });
+          }
+          if (req.method !== "POST" || url !== ENDPOINT) return next();
 
           try {
             const body = await readJson(req);
@@ -73,39 +92,25 @@ function readJson(req) {
   });
 }
 
-/**
- * @typedef {{ start: number, end: number, find: string, unique?: boolean }} Range
- *   `unique` is the page's word that this text appeared only once when it
- *   loaded; only then may a range that moved be followed by its text.
- * @typedef {Range & { replace: string }} Edit
- * @typedef {{ slots: Range[], order: number[] }} Move
- *   `slots` are the image blocks of one group (the post body, or one Gallery)
- *   in original order; `order[i]` says which original image now fills slot i.
- */
+/** @typedef {{ start: number, end: number, find: string, replace: string }} Edit */
 
 /**
  * Apply edits to one post by source offset (CRLF normalized to LF; restored on
- * write so CRLF files keep clean diffs). Every range is checked against the
- * file first. If the text moved (the file was edited elsewhere since the page
- * loaded), was unique on the page, and still occurs exactly once, the edit
- * follows it and the response says `relocated` so the page reloads. Anything
- * else is refused rather than risk writing into a look-alike box.
- * Returns the new source so the page can carry on without reloading.
+ * write so CRLF files keep clean diffs). Every range's `find` must still match
+ * the file at that spot; if the file changed on disk since the page loaded,
+ * the save is refused rather than written over the newer text.
  * A save that would turn a compiling post into one MDX can't parse (a stray
  * `<` or `{` in the text) is refused, so the post page never breaks.
  *
- * @param {{ slug?: string, edits?: Edit[], moves?: Move[] }} body
+ * @param {{ slug?: string, edits?: Edit[] }} body
  */
 async function applyEdits(body) {
   const { slug } = body;
   const edits = Array.isArray(body.edits) ? body.edits : [];
-  const moves = Array.isArray(body.moves) ? body.moves : [];
   if (typeof slug !== "string" || !/^[A-Za-z0-9_-]+$/.test(slug)) {
     return { ok: false, error: "Invalid slug" };
   }
-  if (edits.length === 0 && moves.length === 0) {
-    return { ok: false, error: "No edits provided" };
-  }
+  if (edits.length === 0) return { ok: false, error: "No edits provided" };
 
   const file = resolveFile(slug);
   if (!file) return { ok: false, error: `Post not found: ${slug}` };
@@ -113,70 +118,23 @@ async function applyEdits(body) {
   const original = fs.readFileSync(file, "utf-8");
   const hadCRLF = original.includes("\r\n");
   const text = original.replace(/\r\n/g, "\n");
-  let relocated = false;
-
-  /** @param {Range} r @param {string} what @returns {Range} */
-  const locate = (r, what) => {
-    const find = String(r.find).replace(/\r\n/g, "\n");
-    const valid = Number.isInteger(r.start) && Number.isInteger(r.end) && r.start >= 0 && r.end >= r.start;
-    if (valid && text.slice(r.start, r.end) === find) return { start: r.start, end: r.end, find };
-    const at = find && r.unique === true ? text.indexOf(find) : -1;
-    if (at !== -1 && text.indexOf(find, at + 1) === -1) {
-      relocated = true;
-      return { start: at, end: at + find.length, find };
-    }
-    const line = text.slice(0, Math.max(0, Math.min(r.start, text.length))).split("\n").length;
-    throw new Error(
-      `${what} (near line ${line}) no longer matches the file: it changed on disk since this page loaded. ` +
-        "Copy any unsaved text, then reload the editor."
-    );
-  };
-
-  /** @type {(Range & { replace: string })[]} */
-  let located;
-  /** @type {{ start: number, end: number, raw: string }[][]} */
-  let groups;
-  try {
-    located = edits.map((e, i) => {
-      if (typeof e.replace !== "string") throw new Error(`Edit ${i} has no replacement`);
-      return { ...locate(e, `Edit ${i}`), replace: e.replace.replace(/\r\n/g, "\n") };
-    });
-    groups = moves.map((m, g) => {
-      const slots = m.slots.map((r, i) => ({ ...locate(r, `Image ${i + 1} of group ${g + 1}`), raw: "" }));
-      const order = m.order;
-      const perm = [...order].sort((a, b) => a - b);
-      if (order.length !== slots.length || perm.some((v, i) => v !== i)) {
-        throw new Error(`Move ${g} order is not a permutation`);
-      }
-      return slots;
-    });
-  } catch (err) {
-    return { ok: false, error: err instanceof Error ? err.message : String(err) };
-  }
-
-  // Text edits that sit inside a moving image travel with it: apply them to
-  // that image's own text first, then place the images in their new slots.
-  const nested = new Set();
-  for (const slots of groups) {
-    for (const slot of slots) {
-      const inner = located.filter((e) => e.start >= slot.start && e.end <= slot.end);
-      inner.forEach((e) => nested.add(e));
-      slot.raw = splice(
-        text.slice(slot.start, slot.end),
-        inner.map((e) => ({ ...e, start: e.start - slot.start, end: e.end - slot.start }))
-      );
-    }
-  }
-  const top = located.filter((e) => !nested.has(e));
-  groups.forEach((slots, g) => {
-    slots.forEach((slot, i) => {
-      top.push({ start: slot.start, end: slot.end, find: slot.find, replace: slots[moves[g].order[i]].raw });
-    });
-  });
 
   let working;
   try {
-    working = splice(text, top);
+    const located = edits.map((e, i) => {
+      if (typeof e.replace !== "string") throw new Error(`Edit ${i} has no replacement`);
+      const find = String(e.find).replace(/\r\n/g, "\n");
+      const valid = Number.isInteger(e.start) && Number.isInteger(e.end) && e.start >= 0 && e.end >= e.start;
+      if (!valid || text.slice(e.start, e.end) !== find) {
+        const line = text.slice(0, Math.max(0, Math.min(e.start, text.length))).split("\n").length;
+        throw new Error(
+          `Edit ${i} (near line ${line}) no longer matches the file: it changed on disk since this page loaded. ` +
+            "Copy any unsaved text, then reload the page."
+        );
+      }
+      return { start: e.start, end: e.end, replace: e.replace.replace(/\r\n/g, "\n") };
+    });
+    working = splice(text, located);
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : String(err) };
   }
@@ -186,7 +144,7 @@ async function applyEdits(body) {
 
   const out = hadCRLF ? working.replace(/\n/g, "\r\n") : working;
   fs.writeFileSync(file, out, "utf-8");
-  return { ok: true, slug, applied: located.length, moved: moves.length, relocated, source: working };
+  return { ok: true, slug, applied: edits.length, source: working };
 }
 
 /**
@@ -239,6 +197,25 @@ function splice(text, ranges) {
     out = out.slice(0, sorted[i].start) + sorted[i].replace + out.slice(sorted[i].end);
   }
   return out;
+}
+
+/**
+ * The post's image folder, with whether the source already references each.
+ * @param {string} slug @param {string} source
+ */
+function listImages(slug, source) {
+  const dir = path.join(IMAGE_DIR(), slug);
+  if (!fs.existsSync(dir)) return [];
+  return fs
+    .readdirSync(dir)
+    .filter((name) => IMAGE_EXT.test(name))
+    .sort()
+    .map((name) => ({
+      name,
+      url: `/src/assets/images/blog/${slug}/${name}`,
+      path: `../../assets/images/blog/${slug}/${name}`,
+      used: source.includes(`/${slug}/${name}`),
+    }));
 }
 
 /** @param {string} slug @returns {string | null} */

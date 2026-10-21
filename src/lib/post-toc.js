@@ -1,7 +1,7 @@
 // Build-time data for the in-post contents list (PostContents.astro).
 //
-// Heading text comes from the MDX source, one string per language slot, via the
-// dev editor's parser. Ids are predicted with the same slugify + dedupe as
+// Heading text comes from the MDX source, one string per language slot, via
+// src/lib/dev/parse-post.js. Ids are predicted with the same slugify + dedupe as
 // tools/heading-ids.mjs, then checked against the ids Astro actually rendered;
 // any heading whose id cannot be confirmed is left out rather than linked wrong.
 import { parsePost } from "./dev/parse-post.js";

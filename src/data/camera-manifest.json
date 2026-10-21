@@ -1,4 +1,30 @@
 {
+	"akebi": {
+		"akebi-open-2": {
+			"model": "Sony A6300",
+			"lens": "Sigma 18-50mm f/2.8"
+		},
+		"akebi-tray": {
+			"model": "Sony A6300",
+			"lens": "Sigma 18-50mm f/2.8"
+		},
+		"akebi-vines-open": {
+			"model": "Sony A6300",
+			"lens": "Sigma 18-50mm f/2.8"
+		},
+		"akebi-vines": {
+			"model": "Sony A6300",
+			"lens": "Sigma 18-50mm f/2.8"
+		},
+		"akebi-yodaka-hero": {
+			"model": "iPhone 17",
+			"lens": "iPhone 17 back dual wide camera 2.22mm f/2.2"
+		},
+		"akebi-yodaka": {
+			"model": "iPhone 17",
+			"lens": "iPhone 17 back dual wide camera 2.22mm f/2.2"
+		}
+	},
 	"badminton-tournament": {
 		"just-naan-bread": {
 			"model": "Nikon D3300"

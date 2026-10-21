@@ -1,8 +1,8 @@
 // Scaffolds a new blog post for the new-post skill: writes the MDX with valid
 // frontmatter + the <T> skeleton (en + en_simple; Japanese added last) and
 // creates the post's image folder. Starts as draft: true, so it is excluded
-// from routes/RSS/index until you remove that flag, but the dev editor still
-// shows it (it reads raw files).
+// from routes/RSS/index until you remove that flag, but it stays routable at
+// /blog/<slug> in dev.
 //
 //   node .claude/skills/new-post/scaffold.mjs <kebab-slug> [Title words...]
 
@@ -69,9 +69,8 @@ console.log("  1. Start the dev server:  npm run dev");
 console.log(`  2. Drop photos into src/assets/images/blog/${slug}/ then optimize:`);
 console.log(`       node tools/scripts/optimize-images.mjs src/assets/images/blog/${slug}/`);
 console.log("     (do this first — you need the filenames to write <figure> blocks)");
-console.log(`  3. Write English + Simple English in the editor:`);
-console.log(`       http://localhost:4321/dev/editor/${slug}   (port may differ; check dev output)`);
-console.log(`     Preview the real page at http://localhost:4321/blog/${slug}/`);
+console.log(`  3. Write English on the page in edit mode, Simple English in the .mdx:`);
+console.log(`       http://localhost:4321/blog/${slug}?edit   (port may differ; check dev output)`);
 console.log("  4. Add heroImage + title_ja + title_en_simple + description to frontmatter.");
 console.log("  5. Generate the Japanese (ja) slots last.");
 console.log(`  6. Check, then publish by removing \`draft: true\`:`);

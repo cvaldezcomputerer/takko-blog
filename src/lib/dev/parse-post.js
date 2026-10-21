@@ -1,4 +1,4 @@
-// Pure string parsing for the dev editor (and check-post).
+// Pure string parsing for check-post and the post table of contents.
 // No Node/browser dependencies, so it is safe to import anywhere.
 //
 // This is intentionally a *pragmatic* block splitter, not a real MDX AST.
@@ -105,7 +105,7 @@ export function parsePost(source) {
     }
 
     // Known capitalized components (RecipeIngredients, Gallery, etc.). A
-    // Gallery's slotted <figure>s are parsed too so the editor can show them.
+    // Gallery's slotted <figure>s are parsed too.
     const comp = line.trim().match(/^<([A-Z][A-Za-z0-9]*)(\s|\/|>|$)/);
     if (comp) {
       const { raw, next } = collectComponent(lines, i, comp[1]);
@@ -206,53 +206,6 @@ function extractSlots(html) {
 /** @param {Slots} s */
 function hasSlots(s) {
   return Boolean(s.en || s.ja || s.en_simple);
-}
-
-/**
- * @typedef {{ key: string, find: string, prefix: string, suffix: string, core: string, start: number, end: number }} EditField
- * An exact, lossless edit target: `find` is the original element verbatim and
- * sits at [start, end) in the normalized source. `prefix`/`suffix` wrap the
- * editable `core` (the trimmed inner text), and leading/trailing whitespace
- * lives in prefix/suffix so only the words the user touches change.
- * Replacement = prefix + newCore + suffix.
- */
-
-/**
- * @param {string} open @param {string} key @param {string} inner @param {string} close
- * @param {number} start @returns {EditField}
- */
-function makeField(open, key, inner, close, start) {
-  const lead = inner.match(/^\s*/)?.[0] ?? "";
-  const trail = inner.match(/\s*$/)?.[0] ?? "";
-  const core = inner.slice(lead.length, inner.length - trail.length);
-  const find = open + inner + close;
-  return { key, find, prefix: open + lead, suffix: trail + close, core, start, end: start + find.length };
-}
-
-/**
- * Editable <span slot="..."> fields inside a raw block (T block, heading, or
- * a figcaption that uses <T> slots). `base` is the block's source offset.
- * @param {string} raw @param {number} [base] @returns {EditField[]}
- */
-export function slotFields(raw, base = 0) {
-  /** @type {EditField[]} */
-  const fields = [];
-  const re = /(<span slot="(en|ja|en_simple)">)([\s\S]*?)(<\/span>)/g;
-  let m;
-  while ((m = re.exec(raw)) !== null) {
-    fields.push(makeField(m[1], m[2], m[3], m[4], base + m.index));
-  }
-  return fields;
-}
-
-/**
- * Editable plain-text <figcaption> (one with no <T> slots inside).
- * @param {string} raw @param {number} [base] @returns {EditField | null}
- */
-export function captionPlainField(raw, base = 0) {
-  const m = raw.match(/(<figcaption>)([\s\S]*?)(<\/figcaption>)/);
-  if (!m || /<span slot=/.test(m[2])) return null;
-  return makeField(m[1], "caption", m[2], m[3], base + (m.index ?? 0));
 }
 
 /**

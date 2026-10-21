@@ -1,0 +1,425 @@
+/* In-page editor (tools/dev-edit/edit-mode.js), `astro dev` only. Page-level
+   rules apply under html.dev-editing; the editor's own chrome is .dev-edit-ui. */
+
+/* ---------------------------------------------------------------- the page */
+
+/* T stacks all three languages in one grid cell, so hidden translations still
+   take space. While editing, lay out by the English being written. */
+html.dev-editing .translatable-text > [data-lang-content].hidden {
+  display: none;
+}
+
+html.dev-editing [data-lang-btn] {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+html.dev-editing [contenteditable] {
+  outline: none;
+  border-radius: var(--radius-sm);
+  cursor: text;
+  transition: box-shadow 0.12s;
+}
+
+html.dev-editing [contenteditable]:hover {
+  box-shadow: 0 0 0 1px var(--border-strong);
+}
+
+html.dev-editing [contenteditable]:focus {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+html.dev-editing [contenteditable]:empty::before {
+  content: attr(data-placeholder);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Inline spans have nothing to click when empty: give them some width. */
+html.dev-editing span[contenteditable]:empty {
+  display: inline-block;
+  min-width: 8em;
+}
+
+html.dev-editing [data-dev-markup] {
+  cursor: default;
+  text-decoration: underline dotted var(--border-strong);
+  text-underline-offset: 0.3em;
+}
+
+.dev-edit-hover {
+  outline: 1px dashed rgba(var(--gray), 0.5);
+  outline-offset: var(--space-1);
+}
+
+.dev-edit-dragging {
+  opacity: 0.35;
+}
+
+.dev-edit-gone {
+  display: none !important;
+}
+
+/* Source was changed with </>; the page shows the old render until Save. */
+.dev-edit-stale {
+  opacity: 0.55;
+  outline: 2px dashed var(--info) !important;
+  outline-offset: var(--space-1);
+}
+
+/* ---------------------------------------------------------------- chrome */
+
+.dev-edit-ui {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.dev-edit-ui button {
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-1) var(--space-3);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dev-edit-ui button:hover:not(:disabled) {
+  border-color: var(--border-strong);
+}
+
+.dev-edit-ui button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.dev-edit-ui .dev-edit-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.dev-edit-ui .dev-edit-primary:hover:not(:disabled) {
+  background: var(--accent-dark);
+  border-color: var(--accent-dark);
+}
+
+.dev-edit-bar {
+  position: fixed;
+  left: 50%;
+  bottom: var(--space-4);
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: calc(100vw - 2 * var(--space-4));
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: var(--space-2);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--box-shadow);
+}
+
+.dev-edit-bar button {
+  border-radius: var(--radius-pill);
+}
+
+.dev-edit-status {
+  padding: 0 var(--space-2);
+  color: var(--text-muted);
+}
+
+.dev-edit-status.dirty {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.dev-edit-status.ok {
+  color: var(--success-strong);
+}
+
+.dev-edit-status.err {
+  color: var(--danger);
+  max-width: 40rem;
+  white-space: normal;
+}
+
+.dev-edit-tools {
+  position: absolute;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dev-edit-tools.inside {
+  flex-direction: row;
+  transform: translateY(-110%);
+}
+
+.dev-edit-tools > button {
+  width: 1.9rem;
+  height: 1.9rem;
+  padding: 0;
+  text-align: center;
+  font-size: 0.8rem;
+}
+
+.dev-edit-tools .dev-edit-handle {
+  cursor: grab;
+  touch-action: none;
+}
+
+.dev-edit-tools .dev-edit-handle:active {
+  cursor: grabbing;
+}
+
+/* Opens beside +, the fourth button (1.9rem buttons, 2px gaps). */
+.dev-edit-menu {
+  position: absolute;
+  top: calc(3 * (1.9rem + 2px));
+  left: 2.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-1);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--box-shadow);
+}
+
+.dev-edit-tools.inside .dev-edit-menu {
+  top: 2.2rem;
+  left: calc(3 * (1.9rem + 2px));
+}
+
+.dev-edit-menu[hidden] {
+  display: none;
+}
+
+.dev-edit-menu button {
+  border-color: transparent;
+  text-align: left;
+}
+
+.dev-edit-dropline {
+  position: absolute;
+  z-index: 998;
+  height: 3px;
+  margin-top: -1px;
+  background: var(--accent);
+  border-radius: var(--radius-pill);
+  pointer-events: none;
+}
+
+.dev-edit-stub {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-4) 0;
+  padding: var(--space-2) var(--space-3);
+  color: var(--text-muted);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+}
+
+.dev-edit-source {
+  margin: var(--space-4) 0;
+  padding: var(--space-3);
+  background: var(--surface);
+  border: 1px solid var(--info);
+  border-radius: var(--radius-md);
+}
+
+.dev-edit-source textarea {
+  display: block;
+  width: 100%;
+  font: 0.8rem/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--text);
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-2);
+  resize: vertical;
+}
+
+.dev-edit-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.dev-edit-note {
+  color: var(--text-muted);
+}
+
+.dev-edit-picker {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1001;
+  width: min(22rem, 100vw);
+  overflow-y: auto;
+  padding: var(--space-4);
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  box-shadow: var(--box-shadow);
+}
+
+.dev-edit-picker .dev-edit-row {
+  justify-content: space-between;
+  margin: 0 0 var(--space-3);
+}
+
+.dev-edit-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-2);
+}
+
+.dev-edit-ui .dev-edit-thumb {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  white-space: normal;
+  text-align: left;
+  font-size: 0.75rem;
+  word-break: break-all;
+}
+
+.dev-edit-thumb img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+}
+
+.dev-edit-used {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  padding: 0 var(--space-2);
+  color: #fff;
+  background: var(--accent-dark);
+  border-radius: var(--radius-pill);
+}
+
+/* ---------------------------------------------------------------- notes */
+
+/* Wide screens: pinned in the right margin by layoutNotes(). Narrow: a card
+   in the flow, just above the block. */
+html.dev-editing .prose[data-blog-content] {
+  position: relative;
+}
+
+.dev-edit-notes {
+  display: none;
+}
+
+html.dev-editing .dev-edit-notes:not([hidden]) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: var(--space-4) 0;
+}
+
+html.dev-editing:not(.dev-notes-inline) .dev-edit-notes {
+  position: absolute;
+  left: calc(100% + var(--space-6));
+  width: 15rem;
+  margin: 0;
+}
+
+.dev-edit-sticky {
+  --note: var(--text-muted);
+  position: relative;
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--note);
+  border-radius: var(--radius);
+  box-shadow: var(--box-shadow);
+}
+
+/* The line back to the post. */
+html.dev-editing:not(.dev-notes-inline) .dev-edit-sticky::before {
+  content: "";
+  position: absolute;
+  top: 1rem;
+  right: 100%;
+  width: var(--space-6);
+  border-top: 1px dashed var(--note);
+}
+
+.dev-edit-sticky.kind-suggestion { --note: var(--info); }
+.dev-edit-sticky.kind-add { --note: var(--success); }
+.dev-edit-sticky.kind-move { --note: var(--text); }
+.dev-edit-sticky.kind-question { --note: var(--danger); }
+.dev-edit-sticky.by-you { --note: var(--border-strong); }
+
+.dev-edit-sticky-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  color: var(--note);
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.dev-edit-ui .dev-edit-sticky-head button {
+  padding: 0 var(--space-1);
+  border-color: transparent;
+  background: none;
+  color: var(--text-muted);
+}
+
+.dev-edit-sticky p {
+  margin: var(--space-1) 0 0;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.dev-edit-sticky-quote {
+  display: block;
+  margin-top: var(--space-1);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.dev-edit-sticky-quote.missing {
+  text-decoration: line-through;
+}
+
+.dev-edit-sticky textarea {
+  display: block;
+  width: 100%;
+  margin-top: var(--space-1);
+  font: inherit;
+  color: var(--text);
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-2);
+  resize: vertical;
+}
+
+::highlight(dev-note) {
+  background-color: var(--highlight);
+}
+
+::highlight(dev-note-active) {
+  background-color: rgba(var(--gray), 0.35);
+}

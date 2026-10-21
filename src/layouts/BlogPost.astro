@@ -35,6 +35,7 @@ const {
 	cameraFallback,
 	cameraExclude,
 	contents = [],
+	toc,
 } = Astro.props as Props;
 
 /*
@@ -608,7 +609,7 @@ const heroStyle = [
 					  style={heroImageFit && `object-fit: ${heroImageFit}`} />
 					</div>
 				}
-				<PostContents entries={contents} />
+				{toc !== false && <PostContents entries={contents} />}
 				<div class="prose" data-blog-content>
 					<slot />
 					<div class="post-outro">
@@ -655,7 +656,7 @@ const heroStyle = [
 				</div>
 			</article>
 			{slug && <LikeButton slug={slug} />}
-			<TableOfContents />
+			{toc !== false && <TableOfContents />}
 		</main>
 		<dialog class="lightbox-dialog" id="post-image-lightbox" aria-label="Expanded image">
 			<div class="lightbox-content">

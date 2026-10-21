@@ -60,6 +60,7 @@ Contact form posts directly to Web3Forms (`https://api.web3forms.com/submit`) fr
   - `islandVisibility` controls root `html.island-hidden` class
 - Text size setting:
   - `textSize` controls root classes `html.text-size-sm|md|lg` and global font size vars
+- Contents lists (top `PostContents` + floating `TableOfContents`) appear automatically on posts with 3+ headings. `toc: false` in frontmatter hides both; never hide only one, since the top list borrows the floating one's global `.toc-*` CSS.
 - Letterboxed heroes: a tall or off-ratio hero gets `heroImageFit: "contain"` in post
   frontmatter so the whole photo shows. `src/layouts/BlogPost.astro` then fills the
   leftover space with a blurred, hue-tinted copy of the photo. That is the standard

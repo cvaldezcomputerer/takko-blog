@@ -16,6 +16,9 @@ const blog = defineCollection({
       heroImage: image().optional(),
       heroImageFit: z.string().optional(),
       heroImageMaxWidth: z.string().optional(),
+      // Opt-out only: both contents lists stay automatic (3+ headings) unless
+      // a short post sets `toc: false`, which hides both together.
+      toc: z.boolean().optional(),
       cameraUsedName: z.string().optional(),
       cameraUsedImage: z.string().optional(),
       cameraUsedImageAlt: z.string().optional(),

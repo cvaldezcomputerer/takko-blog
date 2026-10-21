@@ -108,25 +108,27 @@ class Report {
 /* ------------------------------------------------------------------ checks */
 
 /**
- * Collect every translatable slot group in the post, tagged with a stable
- * reference id matching the dev editor's (txt-N / head-N / cap-N) so a finding
- * can be acted on directly in the editor UI.
+ * Collect every translatable slot group in the post, tagged with a reference
+ * like `txt-3 (line 42)` so a finding can be found in the .mdx.
  * @param {import("../../src/lib/dev/parse-post.js").Block[]} blocks
+ * @param {string} source the post with CRLF normalized, which block offsets index
  */
-function collectSlotGroups(blocks) {
+function collectSlotGroups(blocks, source) {
   /** @type {{ ref: string, kind: string, slots: Record<string,string|undefined> }[]} */
   const groups = [];
   let nText = 0, nHead = 0, nImg = 0;
+  /** @param {string} id @param {{ start: number }} block */
+  const ref = (id, block) => `${id} (line ${source.slice(0, block.start).split("\n").length})`;
   for (const block of blocks) {
     if (block.type === "t") {
-      groups.push({ ref: `txt-${++nText}`, kind: "text", slots: block.slots });
+      groups.push({ ref: ref(`txt-${++nText}`, block), kind: "text", slots: block.slots });
     } else if (block.type === "heading") {
-      if (block.slots) groups.push({ ref: `head-${++nHead}`, kind: "heading", slots: block.slots });
+      if (block.slots) groups.push({ ref: ref(`head-${++nHead}`, block), kind: "heading", slots: block.slots });
       else nHead++;
     } else if (block.type === "figure" || block.type === "image") {
       const n = ++nImg;
       if (block.type === "figure" && block.caption) {
-        groups.push({ ref: `cap-${n}`, kind: "caption", slots: block.caption });
+        groups.push({ ref: ref(`cap-${n}`, block), kind: "caption", slots: block.caption });
       }
     }
   }
@@ -162,6 +164,11 @@ const MOJIBAKE_TAIL =
   "\\u2013\\u2014\\u02DC\\u2122\\u0161\\u203A\\u0153\\u017E\\u0178";
 const MOJIBAKE_RE = new RegExp(`\\uFFFD|[\\u00C2-\\u00C3\\u00E2-\\u00E3][${MOJIBAKE_TAIL}]`);
 const PLACEHOLDER_RE = /\b(TODO|FIXME|TKTK|Lorem ipsum|XXX)\b/i;
+// `Yodaka (link: takkotaco yodaka page)`: a link left as plain text while
+// drafting, so edit mode can still type over the sentence. Made real at the end.
+const LINK_REMINDER_RE = /\(link:[^)]*\)/i;
+// Sticky notes for the in-page editor (.claude/skills/review-post/SKILL.md).
+const NOTE_RE = /\{\/\*\s*@note\b/;
 // Kana + CJK ideographs. An `en` slot containing these is a Japanese proper
 // noun the author deliberately left as-is (shop and dish names like "加藤パン"),
 // so an identical `ja` slot is correct rather than a missed translation.
@@ -259,7 +266,7 @@ async function checkPost(slug) {
 
   /* -- translation slots -------------------------------------------------- */
 
-  const groups = collectSlotGroups(blocks);
+  const groups = collectSlotGroups(blocks, raw.replace(/\r\n/g, "\n"));
   /** @type {Record<string, string[]>} */
   const missing = { en: [], ja: [], en_simple: [] };
   const untranslated = [];
@@ -311,8 +318,24 @@ async function checkPost(slug) {
       placeholders.slice(0, 5).map(({ line, n }) => `line ${n}: ${line.trim().slice(0, 70)}`));
   }
 
+  const reminders = raw.split("\n")
+    .map((line, n) => ({ line, n: n + 1 }))
+    .filter(({ line }) => LINK_REMINDER_RE.test(line));
+  if (reminders.length) {
+    rep.incomplete(isDraft, `${reminders.length} link reminder${reminders.length > 1 ? "s" : ""} still need turning into real links`,
+      reminders.slice(0, 5).map(({ line, n }) => `line ${n}: ${line.match(LINK_REMINDER_RE)?.[0]}`));
+  }
+
+  const notes = raw.split("\n")
+    .map((line, n) => ({ line, n: n + 1 }))
+    .filter(({ line }) => NOTE_RE.test(line));
+  if (notes.length) {
+    rep.incomplete(isDraft, `${notes.length} review note${notes.length > 1 ? "s" : ""} still in the file (✕ them in edit mode)`,
+      notes.slice(0, 5).map(({ line, n }) => `line ${n}: ${line.trim().slice(0, 70)}`));
+  }
+
   // The review <Gallery> is meant to be deleted before publishing.
-  if (/\{\s*\/\*[\s\S]{0,400}?(delete|remove)[\s\S]{0,400}?\*\/\s*\}/i.test(raw)) {
+  if (/\{\s*\/\*(?!\s*@note)[\s\S]{0,400}?(delete|remove)[\s\S]{0,400}?\*\/\s*\}/i.test(raw)) {
     rep.incomplete(isDraft, "A 'delete before publishing' MDX comment is still in the file (review <Gallery>?)");
   }
 

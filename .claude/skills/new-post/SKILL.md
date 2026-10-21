@@ -21,7 +21,7 @@ node .claude/skills/new-post/scaffold.mjs <slug> "Optional Title"
 This creates `src/content/blog/<slug>.mdx` (frontmatter + an empty `<T>` intro
 block, `draft: true`) and `src/assets/images/blog/<slug>/`. It refuses to
 overwrite an existing post. `draft: true` keeps it out of routes, RSS, and the
-index until you remove the flag — but the dev editor still shows it.
+index until you remove the flag, but it stays routable at `/blog/<slug>` in dev.
 
 ## 2. Images (before drafting)
 
@@ -73,44 +73,49 @@ blocks, so images-first avoids a second pass over the text.
    extreme ratio is fine, but crop the original file, not the optimized JPEG.
    See `.claude/PROJECT_MAP.md` under Key UI Systems.
 
-## 3. Draft text in the dev editor
+## 3. Draft text in edit mode
 
-Start the dev server (`npm run dev`) and open the structured editor:
+Start the dev server (`npm run dev`) and open the post with edit mode on
+(drafts are routable in dev):
 
 ```
-http://localhost:4321/dev/editor/<slug>
+http://localhost:4321/blog/<slug>?edit
 ```
 
-(Port may differ — Astro bumps to 4322+ if 4321 is taken; check the dev output.)
+(Port may differ: Astro bumps to 4322+ if 4321 is taken; check the dev output.)
+The **Edit** button at the bottom of any post in dev does the same.
 
-- Write the **English** (`en`) and **Simple English** (`en_simple`) slots. Each
-  `<T>` block, heading, and caption (Gallery captions too) is an editable box.
-  The frontmatter panel at the top edits `title`, `title_en_simple`,
-  `description`, `pubDate` and the `draft` flag. Reorder images with ↑/↓: body
-  images among themselves, Gallery images within their Gallery. Save with
-  **Save changes** or ⌘S; the page warns before closing with unsaved edits.
-- Boxes with an empty `en`/`en_simple`, or a TKTK/TODO/FIXME/XXX marker, are red;
-  the top bar counts them and **next ↓** jumps to the next one. Each block's ↗
-  opens that spot on the real post.
-- Untick **Show Simple** to hide every `en_simple` row (and `title_en_simple`)
-  while settling the plain English first. The red count and **next ↓** then skip
-  Simple boxes. The setting is remembered across reloads.
-- Leave **Japanese (ja) for last** (step 5).
-- Add more `<T>` blocks, headings, and `<figure>` images by editing the `.mdx`
-  (the editor reads/writes existing structure; new blocks are added in the file).
-- **Preview the real page at `http://localhost:4321/blog/<slug>/`** — drafts are
-  routable in dev. The editor shows structure, not the reading experience:
-  language switching, `<Explain>` tooltips, `Quiz`, and the hero only appear on
-  the real page.
+Edit mode works on the real page, so wording and image placement are judged in
+context:
 
-> **Editing the file while the editor tab is open:** each box saves to its exact
-> position in the file, checked against the text it had when the page loaded.
-> When Claude (or anything else) edits the `.mdx`, Vite reloads the editor tab
-> (a "Leave site?" prompt appears first if there are unsaved edits). If a save
-> still meets a changed file, text that was unique follows its new position, and
-> anything ambiguous is refused with *"no longer matches the file"* rather than
-> written into a look-alike box. Save in the editor **before** handing the file
-> over.
+- Type over **English** paragraphs, headings and captions in place. Enter starts
+  a new paragraph below.
+- Hovering a block shows its gutter toolbar: drag handle, **+** (paragraph,
+  heading, or an image from the post's folder), **</>** (that block's raw MDX),
+  and delete with Undo.
+- While drafting, write links as plain-text reminders, not `<a>` tags:
+  `Yodaka (link: takkotaco.com/restaurants/yodaka)`. A real link makes the whole
+  paragraph source-only. Turn the reminders into links once the wording is
+  final; `check:post` lists any that are left. Keep `_` and `&` out of the note,
+  since those also make text source-only.
+- Text holding markup (`<Explain>`, links, bold) is dotted-underlined and edited
+  through **</>**, so the markup stays intact. `Quiz`, `Gallery`, `Recipe` and
+  `TwoImages` move as whole blocks; edit their insides through **</>** or in the
+  file.
+- Each block's toolbar also has ↑/↓ (move one place) and ✎ (add a note for
+  Claude; select text first to point at it). Notes from a review show in the
+  margin; see the `review-post` skill.
+- **Save** or ⌘S writes the `.mdx` and reloads into edit mode. The page warns
+  before closing with unsaved edits.
+- Edit mode edits English, or **Simple English** (`en_simple`) after the bar's
+  "Simple English" switch; the choice survives Save. Write frontmatter and
+  Japanese in the `.mdx`. New blocks arrive with an empty `en_simple` slot.
+
+> **Editing the file while edit mode is open:** a save replaces the post body as
+> it was when the page loaded. If the `.mdx` changed on disk since then (Claude
+> edited it, say), the save is refused with *"no longer matches the file"* rather
+> than overwriting the newer text. Save in the browser **before** handing the
+> file over, and reload after.
 
 Keep `en` natural, not over-literal. For the `en_simple` slot, **read
 `.claude/SIMPLE_ENGLISH_STYLE.md` first** — it is the source of truth for the
@@ -147,8 +152,8 @@ start of step 6.
   `meaning="famously"` for *notoriously*).
 - If a word is already explained earlier in the post, don't wrap a longer phrase
   containing it again — leave it as plain text.
-- The dev editor shows `<Explain>` as raw markup inside the text box so edits
-  never silently drop it. Edit around the tag; keep the tag intact.
+- In edit mode, text containing `<Explain>` is edited through **</>** as raw MDX,
+  so the tag is never typed over. Keep the tag intact.
 
 ## 5. Japanese (generate last)
 
@@ -158,8 +163,7 @@ start of step 6.
   literally**, tracking the English sentence-by-sentence so JA↔EN can be mapped.
   The exception is **idioms and figurative expressions** — render those
   **naturally**, since a word-for-word version would confuse.
-- The editor does not edit Japanese: `ja` rows (and `title_ja`) are read-only
-  and hidden unless **Show Japanese** is ticked. Edit `ja` in the `.mdx`.
+- Edit mode does not show Japanese: write `ja` (and `title_ja`) in the `.mdx`.
 
 ## 6. QA and publish
 
@@ -179,8 +183,8 @@ Next, run the post checker. It covers most of the rest of this list mechanically
 npm run check:post <slug>
 ```
 
-It reports empty `en` / `en_simple` / `ja` slots (by the same `txt-N` / `head-N`
-/ `cap-N` refs the dev editor shows), missing frontmatter, unreferenced or
+It reports empty `en` / `en_simple` / `ja` slots (by refs like `txt-3 (line 42)`, with
+`head-N` for headings and `cap-N` for captions), missing frontmatter, unreferenced or
 oversized or GPS-bearing images, broken image paths, mojibake, and leftover
 placeholders. While `draft: true` is set these are **warnings** — it doubles as a
 mid-draft "what's left?" list. Once you remove the flag they become **errors**,
@@ -194,7 +198,8 @@ Then:
 - `npm run build` — full production build.
 - Confirm section headers are finalized in **all** languages (headings use
   inline `<T>` slots too), and that any channel/profile/source links are present
-  in each language slot that needs them.
+  in each language slot that needs them. Every `(link: ...)` reminder becomes a
+  real `<a href>` in each slot that has one.
 - Reread the post in the browser at `/blog/<slug>/` in all three languages —
   the checker catches empty and broken, not wrong.
 - Verify only intended files changed (`git status`).

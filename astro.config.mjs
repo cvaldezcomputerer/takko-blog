@@ -10,10 +10,14 @@ import cloudflare from "@astrojs/cloudflare";
 import { satteri } from "@astrojs/markdown-satteri";
 
 import headingIds from "./tools/heading-ids.mjs";
+import devSourceMap from "./tools/dev-source-map.mjs";
 
 import devEditor from "./tools/scripts/dev-editor-integration.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// `astro dev` only: the in-page editor's source markers must never reach a build.
+const isDev = process.argv.includes("dev");
 
 // Build a map of "/blog/<slug>/" -> last-modified date by reading post frontmatter.
 // Used to add <lastmod> entries to the sitemap so search engines see freshness.
@@ -77,7 +81,9 @@ export default defineConfig({
   markdown: {
     // MDX inherits this. Clean heading ids from the English slot, used by the
     // table of contents links; see tools/heading-ids.mjs.
-    processor: satteri({ hastPlugins: [headingIds] }),
+    // In dev, devSourceMap also marks each block's place in the .mdx for the
+    // in-page editor (tools/dev-edit/).
+    processor: satteri({ hastPlugins: isDev ? [headingIds, devSourceMap] : [headingIds] }),
   },
   integrations: [
     devEditor(),

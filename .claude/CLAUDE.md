@@ -21,6 +21,8 @@ npm run db:migrate:prod  # remote D1 migrations
 
 Run `npm run check` after JS/TS changes. Run `npm run build` after UI or script changes.
 
+When pointing Cristian to a page, give the full clickable URL as a markdown link, e.g. [http://localhost:4321/blog/akebi?edit](http://localhost:4321/blog/akebi?edit), using the port the dev server actually printed.
+
 ## Key Architecture
 - **Settings state**: `public/scripts/settings-state.js` — browser-only, exposes `window.TakkoSettings`
 - **Settings panel lifecycle**: `public/scripts/settings-panel-controller.js` — manages open/close via `takko:settings-open` / `takko:settings-close` events
@@ -54,14 +56,14 @@ All design tokens live in `:root` / `.dark` in `src/styles/global.css`. **New co
 All settings applied as classes on `<html>`. See `.claude/SETTINGS_ARCHITECTURE.md` for full detail.
 
 ## New Blog Posts
-Use the **new-post skill** (`.claude/skills/new-post/SKILL.md`) when creating a new post — it is the source of truth and scaffolds the MDX + image folder, then walks through image optimization, drafting (English + Simple first, Japanese last), the dev editor, and publishing. Trigger it for any "new/make/write a post" request, or run `/new-post <slug>` directly.
+Use the **new-post skill** (`.claude/skills/new-post/SKILL.md`) when creating a new post — it is the source of truth and scaffolds the MDX + image folder, then walks through image optimization, drafting (English + Simple first, Japanese last), edit mode, and publishing. Trigger it for any "new/make/write a post" request, or run `/new-post <slug>` directly.
 
 Key steps:
 - **Images first**, as soon as they are dropped in (you need the filenames to write `<figure>` blocks): `node tools/scripts/optimize-images.mjs src/assets/images/blog/<post-slug>/`. Safe to re-run; also takes individual files. Converts iPhone HEIC to `.jpg`. No manual webp conversion needed — Astro handles avif/webp at build time.
 - **Sony a6300 photos** from `~/Pictures/<folder>/` are converted from raw by the user-level `convert-photos` skill (`~/bin/convert-raws`). Each shot is `DSC00401-1raw.ARW` (the original), `DSC00401-3new.jpg` (the converted JPEG) and sometimes `DSC00401-2cam.JPG` (the camera JPEG). **Use the `-3new.jpg`**: the optimizer can't read .ARW, and the camera JPEG blows out highlights. The -3new is an HDR gain-map JPEG, and sharp/Astro drop the HDR layer, so the site shows its normal render. That is expected, not a bug. EXIF (camera model) is copied over from the raw, so the camera manifest still works.
 - **Verify before publishing**: `npm run check:post <slug>` reports empty translation slots, missing frontmatter, unreferenced/oversized/GPS-bearing images, mojibake, and leftover placeholders. Warnings while `draft: true`, errors once it is removed.
 
-There is also a **dev editor** (dev only): `npm run dev`, then `http://localhost:4321/dev/editor` (port may differ) to edit post text, captions, and image order in a structured panel that writes back to the `.mdx`. See `src/pages/dev/editor/` and `tools/scripts/dev-editor-integration.mjs`.
+There is also an **edit mode** (dev only) on the real post page: `npm run dev`, then `/blog/<slug>?edit` or the Edit button. It edits English text in place (or Simple English, from the bar's switch), moves, adds and deletes blocks, inserts images, opens any block's raw MDX, and shows review notes, writing back to the `.mdx` on Save. Japanese and frontmatter are written in the file. Code: `tools/dev-edit/`, with source offsets from `tools/dev-source-map.mjs` and endpoints in `tools/scripts/dev-editor-integration.mjs`.
 
 ## Skills
 
@@ -73,6 +75,7 @@ All in `.claude/skills/<name>/SKILL.md`. Several are meant to fire on their own;
 - **`diagnosing-bugs`**: for anything broken, throwing, failing, slow, or silently not applying. Starts from this repo's known silent failure modes, then insists on a feedback loop that goes red before any hypothesis.
 - **`writing-for-agents`**: for editing this file, the reference docs, or any `SKILL.md`. It pulls the opposite way from `SIMPLE_ENGLISH_STYLE.md`, which governs post copy; keep the two apart.
 - **`new-post`**: see the section above.
+- **`review-post`**: feedback on a post as sticky notes (`@note` comments) that edit mode pins in the margin, and doing the notes Cristian leaves back.
 
 ## Git
 
